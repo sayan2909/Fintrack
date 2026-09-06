@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <filter id="dropShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#4f46e5" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="128" fill="url(#brandGradient)" />
+  <!-- Inner Glow Ring -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="4" />
+  <!-- Wallet Symbol -->
+  <g transform="translate(116, 116)" filter="url(#dropShadow)">
+    <path d="M230 40H50C27.9 40 10 57.9 10 80v160c0 22.1 17.9 40 40 40h180c22.1 0 40-17.9 40-40V80c0-22.1-17.9-40-40-40z" fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M270 140h-70c-16.6 0-30 13.4-30 30s13.4 30 30 30h70v-60z" fill="#ffffff" fill-opacity="0.25" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="200" cy="170" r="14" fill="#ffffff" />
+    <path d="M10 110V80c0-22.1 17.9-40 40-40h160" fill="none" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
