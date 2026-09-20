@@ -6,25 +6,29 @@ import { useEffect, useState, useRef } from "react";
 import {
   LayoutDashboard, ArrowLeftRight, Wallet, Target, BarChart3,
   Repeat, FileText, Sparkles, Settings, Bell, Search, Menu, X,
-  LogOut, Sun, Moon, Calendar, Landmark, Award, ChevronLeft, ChevronRight, Plus
+  LogOut, Calendar, Landmark, Award, ChevronLeft, ChevronRight, Plus,
+  ChevronDown, Sun, Moon, Tag,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Modal, Button, toast } from "@/components/ui";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { SessionTimeoutModal } from "@/components/SessionTimeoutModal";
+import { SUPPORTED_CURRENCIES, CURRENCY_SYMBOLS, getEstimatedRate, fetchLiveRates } from "@/lib/currency";
 
 const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/transactions", icon: ArrowLeftRight, label: "Transactions" },
   { href: "/accounts", icon: Landmark, label: "Accounts" },
-  { href: "/calendar", icon: Calendar, label: "Calendar" },
+  { href: "/categories", icon: Tag, label: "Categories" },
   { href: "/budgets", icon: Wallet, label: "Budgets" },
   { href: "/goals", icon: Target, label: "Savings Goals" },
-  { href: "/achievements", icon: Award, label: "Achievements" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
+  { href: "/calendar", icon: Calendar, label: "Calendar" },
   { href: "/recurring", icon: Repeat, label: "Recurring" },
   { href: "/reports", icon: FileText, label: "Reports" },
   { href: "/insights", icon: Sparkles, label: "Insights" },
+  { href: "/achievements", icon: Award, label: "Achievements" },
 ];
 
 const SECONDARY = [
@@ -40,7 +44,25 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [currencyModal, setCurrencyModal] = useState<string | null>(null);
+  const [switchingCurrency, setSwitchingCurrency] = useState(false);
+  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
+  const currencyMenuRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetchLiveRates().catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (currencyMenuRef.current && !currencyMenuRef.current.contains(event.target as Node)) {
+        setCurrencyMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/");
@@ -90,11 +112,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return () => clearInterval(t);
   }, [user]);
 
-  useEffect(() => {
-    if (user?.theme) {
-      document.documentElement.classList.toggle("dark", (localStorage.getItem("fintrack-theme") || user.theme) === "dark");
-    }
-  }, [user]);
 
   if (loading) {
     return (
@@ -112,10 +129,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const linkCls = (href: string, isSidebarCollapsed: boolean) => {
     const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
-    return `flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-sm font-medium transition-all ${
+    return `flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-sm transition-all ${
       isActive
-        ? "bg-indigo-600 text-white font-semibold shadow-sm shadow-indigo-600/20"
-        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
+        ? "bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-600/25 dark:bg-indigo-600 dark:text-white dark:shadow-indigo-600/20"
+        : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
     }`;
   };
 
@@ -123,13 +140,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-full flex-col">
       <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between"} px-1 py-1`}>
         <Link href="/dashboard" className="flex items-center gap-2.5" title="FinTrack Dashboard">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-500/25">
             <Wallet className="h-5 w-5" />
           </div>
           {!isSidebarCollapsed && (
             <div>
-              <p className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">FinTrack</p>
-              <p className="text-[11px] font-medium text-slate-500">Take Control of Your Money</p>
+              <p className="text-base font-black tracking-tight text-slate-900 dark:text-white">FinTrack</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Take Control of Your Money</p>
             </div>
           )}
         </Link>
@@ -197,10 +214,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 transition-colors">
+    <div className="min-h-screen bg-[#eef2f6] text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 transition-colors">
       {/* Desktop sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white p-4 lg:block dark:border-slate-800/80 dark:bg-[#111827] z-40 ${
+        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white p-4 lg:block dark:border-slate-800/80 dark:bg-[#111827] z-40 shadow-xs ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
@@ -225,17 +242,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className={`transition-all duration-300 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[260px]"}`}>
         {/* Top navbar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-md dark:border-slate-800/80 dark:bg-[#111827]/90">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-[#111827] shadow-2xs">
           <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
             <button
               onClick={() => setMobileOpen(true)}
-              className="rounded-xl p-2 hover:bg-slate-100 lg:hidden dark:hover:bg-slate-800 cursor-pointer"
+              className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 lg:hidden dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
             >
               <Menu className="h-5 w-5" />
             </button>
 
             {/* Quick Search with shortcut */}
-            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-1.5 text-sm text-slate-500 md:flex dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400 focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-900 transition">
+            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/90 bg-slate-50/90 px-3 py-1.5 text-sm text-slate-600 md:flex dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400 focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:ring-2 focus-within:ring-indigo-500/15 transition shadow-2xs">
               <Search className="h-4 w-4 shrink-0 text-slate-400" />
               <input
                 ref={searchInputRef}
@@ -245,24 +262,71 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   if (e.key === "Enter") router.push(`/transactions?search=${encodeURIComponent((e.target as HTMLInputElement).value)}`);
                 }}
               />
-              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 shadow-2xs dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
                 /
               </kbd>
             </div>
 
             <div className="ml-auto flex items-center gap-2">
 
+              {/* Quick Currency Selector */}
+              <div className="relative" ref={currencyMenuRef}>
+                <button
+                  onClick={() => setCurrencyMenuOpen(!currencyMenuOpen)}
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-slate-50/90 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer shadow-2xs"
+                  title="Active Currency (Click to switch)"
+                >
+                  <span className="text-indigo-600 dark:text-indigo-400 font-black">{CURRENCY_SYMBOLS[user.currency || "INR"] || "₹"}</span>
+                  <span>{user.currency || "INR"}</span>
+                  <ChevronDown className="h-3 w-3 text-slate-400" />
+                </button>
+
+                {currencyMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-xl dark:border-slate-800 dark:bg-[#111827] z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                      Switch Currency
+                    </div>
+                    <div className="mt-1 space-y-0.5">
+                      {SUPPORTED_CURRENCIES.map((c) => {
+                        const isCurrent = (user.currency || "INR") === c.code;
+                        return (
+                          <button
+                            key={c.code}
+                            onClick={() => {
+                              setCurrencyMenuOpen(false);
+                              if (!isCurrent) setCurrencyModal(c.code);
+                            }}
+                            className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold transition cursor-pointer ${
+                              isCurrent
+                                ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300"
+                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-indigo-500">{c.symbol}</span>
+                              <span>{c.code}</span>
+                            </div>
+                            <span className="text-[11px] text-slate-400">{c.name.split(" ")[0]}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Theme Mode Switcher */}
               <button
                 onClick={toggle}
-                className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 cursor-pointer transition"
-                title="Toggle theme"
+                className="rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition shadow-2xs"
+                title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
-                {theme === "dark" ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
+                {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-amber-400" /> : <Moon className="h-4.5 w-4.5 text-slate-600" />}
               </button>
 
               <Link
                 href="/notifications"
-                className="relative rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition"
+                className="relative rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 transition shadow-2xs"
               >
                 <Bell className="h-4.5 w-4.5" />
                 {unread > 0 && (
@@ -274,7 +338,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
               <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 mx-1" />
 
-              <Link href="/settings" className="flex items-center gap-2.5 rounded-xl p-1 pr-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <Link href="/settings" className="flex items-center gap-2.5 rounded-xl border border-slate-200/90 bg-slate-50/90 p-1 pr-2.5 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800 transition shadow-2xs">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-xs">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
@@ -290,6 +354,75 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-24 sm:px-6 lg:pb-10">{children}</main>
         <OnboardingModal />
         <SessionTimeoutModal />
+
+        {/* Currency Switch Confirmation Modal */}
+        {currencyModal && (
+          <Modal
+            open={Boolean(currencyModal)}
+            onClose={() => setCurrencyModal(null)}
+            title={`Convert Currency to ${currencyModal}?`}
+          >
+            <div className="space-y-4 pt-1">
+              <div className="rounded-xl border border-indigo-500/25 bg-indigo-500/10 p-4 text-xs text-slate-700 dark:text-slate-200">
+                <div className="flex items-center gap-2 font-bold text-indigo-600 dark:text-indigo-400">
+                  <ArrowLeftRight className="h-4 w-4" />
+                  <span>Real-time Financial Value Conversion</span>
+                </div>
+                <p className="mt-2 leading-relaxed text-xs text-slate-600 dark:text-slate-300">
+                  Switching your active currency from <strong>{user.currency || "INR"}</strong> to <strong>{currencyModal}</strong> will automatically convert all your existing financial records:
+                </p>
+                <ul className="mt-2 list-disc list-inside space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  <li>Bank & cash account balances</li>
+                  <li>All transaction income and expense records</li>
+                  <li>Configured monthly budgets</li>
+                  <li>Savings goals target and accumulated amounts</li>
+                  <li>Recurring bills and subscription commitments</li>
+                </ul>
+                <div className="mt-3 pt-2.5 border-t border-indigo-500/20 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-300">
+                  <span>Exchange Rate:</span>
+                  <span>1 {user.currency || "INR"} ≈ {getEstimatedRate(user.currency || "INR", currencyModal).toFixed(4)} {currencyModal}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setCurrencyModal(null)}
+                  disabled={switchingCurrency}
+                  className="h-9 px-4 text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    setSwitchingCurrency(true);
+                    try {
+                      const res = await fetch("/api/auth/profile", {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ currency: currencyModal }),
+                      });
+                      const json = await res.json();
+                      if (!json.success) throw new Error(json.message);
+                      toast(`Switched currency to ${currencyModal}! All amounts converted. 💱`);
+                      setCurrencyModal(null);
+                      window.location.reload();
+                    } catch (err: unknown) {
+                      toast(err instanceof Error ? err.message : "Failed to convert currency", "error");
+                    } finally {
+                      setSwitchingCurrency(false);
+                    }
+                  }}
+                  loading={switchingCurrency}
+                  className="h-9 px-4 text-xs font-bold cursor-pointer"
+                >
+                  Convert & Switch
+                </Button>
+              </div>
+            </div>
+          </Modal>
+        )}
 
         {/* Mobile bottom nav */}
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-md lg:hidden dark:border-slate-800/80 dark:bg-[#111827]/95">

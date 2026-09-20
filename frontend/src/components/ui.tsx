@@ -4,9 +4,12 @@ import { ReactNode, useEffect, useState } from "react";
 import { Loader2, X, AlertTriangle } from "lucide-react";
 
 // ---------- Card ----------
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({ children, className = "", onClick }: { children: ReactNode; className?: string; onClick?: () => void }) {
   return (
-    <div className={`rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)] transition-colors dark:border-slate-800/80 dark:bg-[#111827] ${className}`}>
+    <div
+      onClick={onClick}
+      className={`rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none ${className}`}
+    >
       {children}
     </div>
   );
@@ -33,10 +36,12 @@ export function Button({
   const styles: Record<string, string> = {
     primary:
       "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/20 font-semibold",
-    secondary: "bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 font-semibold",
+    secondary:
+      "bg-slate-100 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 dark:border-slate-700/80 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 font-semibold",
     ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 font-medium",
     danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 font-semibold",
-    outline: "border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800/80 font-medium",
+    outline:
+      "border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs dark:border-slate-700 dark:bg-transparent dark:text-slate-200 dark:hover:bg-slate-800/80 font-medium",
   };
   return (
     <button
@@ -55,7 +60,7 @@ export function Button({
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">{label}</span>
+      <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">{label}</span>
       {children}
       {hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
     </label>
@@ -63,7 +68,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-300/80 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-indigo-500";
+  "w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition hover:bg-white focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:bg-slate-800 dark:focus:bg-slate-800 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/30";
 
 // ---------- Modal ----------
 export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean }) {
@@ -165,7 +170,7 @@ export function Progress({ value, color }: { value: number; color?: string }) {
   let bar = color;
   if (!bar) bar = v >= 100 ? "bg-rose-500" : v >= 80 ? "bg-amber-500" : "bg-emerald-500";
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 border border-slate-200/50 dark:border-transparent dark:bg-slate-800">
       <div className={`h-full rounded-full transition-all duration-500 ${bar}`} style={{ width: `${v}%` }} />
     </div>
   );
@@ -174,12 +179,12 @@ export function Progress({ value, color }: { value: number; color?: string }) {
 // ---------- Badge ----------
 export function Badge({ children, tone = "slate" }: { children: ReactNode; tone?: "slate" | "green" | "red" | "amber" | "indigo" | "blue" }) {
   const map: Record<string, string> = {
-    slate: "bg-slate-100 text-slate-700 border border-slate-200/60 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700/60",
-    green: "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50",
-    red: "bg-rose-50 text-rose-700 border border-rose-200/70 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50",
-    amber: "bg-amber-50 text-amber-800 border border-amber-200/70 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50",
-    indigo: "bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/50",
-    blue: "bg-sky-50 text-sky-700 border border-sky-200/70 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800/50",
+    slate: "bg-slate-100 text-slate-700 border border-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700/60",
+    green: "bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50",
+    red: "bg-rose-50 text-rose-700 border border-rose-200/80 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50",
+    amber: "bg-amber-50 text-amber-800 border border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50",
+    indigo: "bg-indigo-50 text-indigo-700 border border-indigo-200/80 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/50",
+    blue: "bg-sky-50 text-sky-700 border border-sky-200/80 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800/50",
   };
   return <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${map[tone]}`}>{children}</span>;
 }
@@ -199,7 +204,7 @@ export function EmptyState({
   badge?: string;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-300/80 bg-gradient-to-b from-white to-slate-50/50 px-6 py-14 text-center transition-colors dark:border-slate-800 dark:from-slate-900/60 dark:to-slate-950/60">
+    <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-300/80 bg-gradient-to-b from-white to-slate-50/50 px-6 py-14 text-center transition-colors dark:border-slate-800 dark:from-slate-900/60 dark:to-slate-950/60 shadow-xs">
       {badge && (
         <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 px-3 py-1 text-xs font-semibold text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">
           {badge}
@@ -220,7 +225,7 @@ export function EmptyState({
 
 // ---------- Skeleton ----------
 export function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800 ${className}`} />;
+  return <div className={`animate-pulse rounded-xl bg-slate-200/80 dark:bg-slate-800 ${className}`} />;
 }
 
 // ---------- Toast ----------

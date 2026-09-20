@@ -11,6 +11,7 @@ import {
   ArrowRightLeft,
   Target,
   BellRing,
+  CalendarClock,
   X,
 } from "lucide-react";
 import {
@@ -27,7 +28,7 @@ import {
 } from "recharts";
 import AppShell from "@/components/AppShell";
 import { Card, Badge, Progress, Skeleton, EmptyState, Button } from "@/components/ui";
-import { formatCurrency } from "@/lib/currency";
+import { formatCurrency, formatDate, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface DashData {
@@ -82,15 +83,15 @@ interface DashData {
 }
 
 const PIE_COLORS = [
-  "#6366f1", // Indigo
-  "#10b981", // Emerald
-  "#0ea5e9", // Sky
-  "#f59e0b", // Amber
-  "#f43f5e", // Rose
-  "#8b5cf6", // Violet
-  "#14b8a6", // Teal
-  "#ec4899", // Pink
-  "#64748b", // Slate
+  "#4f46e5", // Executive Indigo
+  "#0284c7", // Cerulean
+  "#059669", // Jewel Emerald
+  "#d97706", // Amber Bronze
+  "#e11d48", // Crimson Rose
+  "#7c3aed", // Royal Violet
+  "#0891b2", // Teal
+  "#db2777", // Berry
+  "#475569", // Slate
 ];
 
 export default function DashboardPage() {
@@ -150,13 +151,19 @@ export default function DashboardPage() {
     Math.round(savingsRate * 0.7 + (data.cards.income.value >= data.cards.expenses.value ? 30 : 10))
   );
 
-  // Natural rupee axis formatter without awkward decimals
+  // Currency-aware axis formatter
+  const sym = CURRENCY_SYMBOLS[currency] ?? "₹";
   const formatYAxis = (v: number) => {
-    if (v === 0) return "₹0";
-    if (v >= 10000000) return `₹${(v / 10000000).toFixed(1)}Cr`;
-    if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
-    if (v >= 10000) return `₹${Math.round(v / 1000)}k`;
-    return `₹${v.toLocaleString("en-IN")}`;
+    if (v === 0) return `${sym}0`;
+    if (currency === "INR") {
+      if (v >= 10000000) return `₹${(v / 10000000).toFixed(1)}Cr`;
+      if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
+      if (v >= 10000) return `₹${Math.round(v / 1000)}k`;
+      return `₹${v.toLocaleString("en-IN")}`;
+    }
+    if (v >= 1000000) return `${sym}${(v / 1000000).toFixed(1)}M`;
+    if (v >= 1000) return `${sym}${Math.round(v / 1000)}k`;
+    return `${sym}${v.toLocaleString()}`;
   };
 
   // Custom Dark Tooltip
@@ -178,24 +185,24 @@ export default function DashboardPage() {
       const exp = payload.find((p) => p.dataKey === "expenses")?.value || 0;
       const net = inc - exp;
       return (
-        <div className="rounded-2xl border border-slate-700/80 bg-slate-900/95 p-3.5 shadow-2xl backdrop-blur-md text-xs dark:border-slate-800 dark:bg-[#111827]/95">
-          <p className="font-bold text-slate-300 mb-2 border-b border-slate-800 pb-1.5">{label}</p>
+        <div className="rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-md text-xs dark:border-slate-800 dark:bg-[#111827]/95">
+          <p className="font-bold text-slate-800 dark:text-slate-200 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">{label}</p>
           <div className="space-y-1.5">
             <div className="flex items-center justify-between gap-5">
-              <span className="flex items-center gap-1.5 text-slate-400">
+              <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                 <span className="h-2 w-2 rounded-full bg-emerald-500" /> Income
               </span>
-              <span className="font-bold text-emerald-400 tabular-nums">{formatCurrency(inc, currency)}</span>
+              <span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{formatCurrency(inc, currency)}</span>
             </div>
             <div className="flex items-center justify-between gap-5">
-              <span className="flex items-center gap-1.5 text-slate-400">
+              <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
                 <span className="h-2 w-2 rounded-full bg-rose-500" /> Expenses
               </span>
-              <span className="font-bold text-rose-400 tabular-nums">{formatCurrency(exp, currency)}</span>
+              <span className="font-bold text-rose-600 dark:text-rose-400 tabular-nums">{formatCurrency(exp, currency)}</span>
             </div>
-            <div className="flex items-center justify-between gap-5 border-t border-slate-800 pt-1.5 mt-1 font-semibold">
-              <span className="text-slate-400">Net Savings</span>
-              <span className={`tabular-nums ${net >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+            <div className="flex items-center justify-between gap-5 border-t border-slate-100 dark:border-slate-800 pt-1.5 mt-1 font-semibold">
+              <span className="text-slate-600 dark:text-slate-400">Net Savings</span>
+              <span className={`tabular-nums ${net >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
                 {formatCurrency(net, currency)}
               </span>
             </div>
@@ -218,7 +225,7 @@ export default function DashboardPage() {
               </h1>
 
               {/* Clean, Subtle Health Score */}
-              <div className="flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-white/70 px-3 py-1 text-xs shadow-2xs dark:border-slate-800 dark:bg-[#111827]">
+              <div className="flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/90 px-3 py-1 text-xs shadow-2xs dark:border-slate-800 dark:bg-[#111827]">
                 <span
                   className={`h-2 w-2 rounded-full ${
                     healthScore >= 70
@@ -228,21 +235,21 @@ export default function DashboardPage() {
                       : "bg-rose-500"
                   }`}
                 />
-                <span className="text-slate-400 text-[11px] font-medium">Health Score:</span>
+                <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold">Health Score:</span>
                 <span
                   className={`font-bold text-[11px] ${
                     healthScore >= 70
-                      ? "text-emerald-400"
+                      ? "text-emerald-600 dark:text-emerald-400"
                       : healthScore >= 40
-                      ? "text-amber-400"
-                      : "text-rose-400"
+                      ? "text-amber-600 dark:text-amber-400"
+                      : "text-rose-600 dark:text-rose-400"
                   }`}
                 >
                   {healthScore}/100
                 </span>
               </div>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Your consolidated financial position and monthly cash flow overview.
             </p>
           </div>
@@ -262,112 +269,173 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Sleek, Non-Intrusive Payment Reminder Banner */}
-        {showAlert && data.upcomingPayments && data.upcomingPayments.length > 0 && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 shadow-xs dark:bg-amber-950/20">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-500">
-                <BellRing className="h-4 w-4" />
-              </div>
-              <div className="min-w-0 text-xs text-slate-700 dark:text-slate-200">
-                <span className="font-bold text-amber-600 dark:text-amber-400 mr-1.5">Upcoming Bill:</span>
-                <span className="font-semibold">{data.upcomingPayments[0].name}</span>
-                <span className="text-slate-400 mx-1.5">•</span>
-                <span className="font-extrabold text-slate-900 dark:text-white">
-                  {formatCurrency(data.upcomingPayments[0].amount, currency)}
-                </span>
-                <span className="text-slate-400 ml-1.5">
-                  due {data.upcomingPayments[0].isDueToday ? "today" : data.upcomingPayments[0].isDueTomorrow ? "tomorrow" : `in ${data.upcomingPayments[0].daysUntil} days`} ({data.upcomingPayments[0].dueDate})
-                </span>
-              </div>
-            </div>
+        {showAlert && data.upcomingPayments && data.upcomingPayments.length > 0 && (() => {
+          const primaryBill = data.upcomingPayments[0];
+          const hasMultiple = data.upcomingPayments.length > 1;
+          return (
+            <div className="relative overflow-hidden rounded-2xl border border-amber-200/90 bg-gradient-to-r from-amber-50/80 via-amber-50/30 to-white dark:from-amber-950/20 dark:via-[#111827] dark:to-[#111827] p-4 sm:p-5 shadow-xs transition hover:border-amber-300 dark:border-amber-500/20 dark:hover:border-amber-500/35">
+              {/* Subtle Amber Left Accent Indicator */}
+              <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-400 to-amber-500 rounded-l-2xl" />
 
-            <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
-              <Link
-                href="/recurring"
-                className="text-xs font-bold text-amber-600 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300 transition"
-              >
-                View Bills →
-              </Link>
-              <button
-                onClick={() => setShowAlert(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800 transition cursor-pointer"
-                title="Dismiss"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pl-1 sm:pl-2">
+                {/* Left: Icon & Bill Details */}
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/70 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20 ring-1 ring-amber-500/20">
+                    <CalendarClock className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                        Upcoming Auto-Debit
+                      </span>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        primaryBill.isDueToday
+                          ? "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30"
+                          : primaryBill.isDueTomorrow
+                          ? "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30"
+                          : "bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700"
+                      }`}>
+                        {primaryBill.isDueToday
+                          ? "Due Today"
+                          : primaryBill.isDueTomorrow
+                          ? "Due Tomorrow"
+                          : `Due in ${primaryBill.daysUntil} days`}
+                      </span>
+                      {hasMultiple && (
+                        <span className="rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400">
+                          +{data.upcomingPayments.length - 1} more
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-0.5 truncate">
+                      {primaryBill.name}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Scheduled on{" "}
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        {formatDate(primaryBill.dueDate, "DD MMM YYYY")}
+                      </span>
+                      {primaryBill.paymentMethod && (
+                        <> via <span className="font-medium text-slate-600 dark:text-slate-400">{primaryBill.paymentMethod}</span></>
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right: Amount & Actions */}
+                <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0 pt-2 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-800/60">
+                  <div className="text-left sm:text-right">
+                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Amount Due
+                    </span>
+                    <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
+                      {formatCurrency(primaryBill.amount, currency)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href="/recurring"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 hover:text-slate-900 shadow-2xs dark:border-slate-700/80 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+                    >
+                      <span>Manage Bills</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                    <button
+                      onClick={() => setShowAlert(false)}
+                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition cursor-pointer"
+                      title="Dismiss reminder"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* 4 Clean KPI Metric Cards */}
+        {/* 4 Clean, Consistent KPI Metric Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Card 1: Total Balance */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total Balance
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
                 <Wallet className="h-4 w-4" />
               </div>
             </div>
             <p
-              className={`mt-2 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
-                data.cards.balance.value < 0 ? "text-rose-500" : "text-slate-900 dark:text-white"
+              className={`mt-2.5 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+                data.cards.balance.value < 0 ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-white"
               }`}
             >
               {formatCurrency(data.cards.balance.value, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-400">Net balance across all accounts</p>
+            <div className="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span>Net balance across accounts</span>
+              {data.cards.balance.value < 0 ? (
+                <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-200/60 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/40">
+                  Deficit
+                </span>
+              ) : (
+                <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200/60 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/40">
+                  Surplus
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Card 2: Income */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Income
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
                 <TrendingUp className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(data.cards.income.value, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-400">Total earned this month</p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Total earned this month</p>
           </div>
 
           {/* Card 3: Expenses */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Expenses
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500 ring-1 ring-rose-500/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
                 <TrendingDown className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(data.cards.expenses.value, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-400">Total spent this month</p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Total spent this month</p>
           </div>
 
           {/* Card 4: Savings in Goals */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Savings in Goals
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500/10 text-violet-500 ring-1 ring-violet-500/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
                 <Target className="h-4 w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(data.cards.savings.value, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
               {data.goals.length > 0 ? `${data.goals.length} active savings goals` : "Allocated to targets"}
             </p>
           </div>
@@ -391,18 +459,18 @@ export default function DashboardPage() {
         {/* Charts Row */}
         <div className="grid gap-5 lg:grid-cols-3">
           {/* Income vs Expenses Area Chart */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827] lg:col-span-2">
+          <div className="rounded-3xl border border-slate-200/80 bg-white/90 backdrop-blur-xl p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none lg:col-span-2">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">Income vs Expenses</h3>
-                <p className="text-xs text-slate-500">Daily cash flow over the last 30 days</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Daily cash flow over the last 30 days</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex items-center gap-3 text-xs font-semibold">
-                  <span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                  <span className="inline-flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" /> Income
                   </span>
-                  <span className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                  <span className="inline-flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                     <span className="h-2.5 w-2.5 rounded-full bg-rose-500" /> Expenses
                   </span>
                 </div>
@@ -420,24 +488,24 @@ export default function DashboardPage() {
                 <AreaChart data={data.series} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gInc" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0.0} />
+                      <stop offset="0%" stopColor="#059669" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#059669" stopOpacity={0.0} />
                     </linearGradient>
                     <linearGradient id="gExp" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.0} />
+                      <stop offset="0%" stopColor="#e11d48" stopOpacity={0.2} />
+                      <stop offset="100%" stopColor="#e11d48" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.25} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" opacity={0.35} />
                   <XAxis
                     dataKey="label"
-                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                    tick={{ fontSize: 11, fill: "#64748b" }}
                     interval={4}
-                    axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                    axisLine={{ stroke: "#cbd5e1", opacity: 0.4 }}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                    tick={{ fontSize: 11, fill: "#64748b" }}
                     width={58}
                     tickFormatter={formatYAxis}
                     axisLine={false}
@@ -447,17 +515,17 @@ export default function DashboardPage() {
                   <Area
                     type="monotone"
                     dataKey="income"
-                    stroke="#10b981"
+                    stroke="#059669"
                     fill="url(#gInc)"
-                    strokeWidth={2.2}
+                    strokeWidth={2.4}
                     name="Income"
                   />
                   <Area
                     type="monotone"
                     dataKey="expenses"
-                    stroke="#f43f5e"
+                    stroke="#e11d48"
                     fill="url(#gExp)"
-                    strokeWidth={2.2}
+                    strokeWidth={2.4}
                     name="Expenses"
                   />
                 </AreaChart>
@@ -466,12 +534,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Expense Breakdown Donut Chart */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827] flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-200/80 bg-white/90 backdrop-blur-xl p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">Expense Breakdown</h3>
-                  <p className="text-xs text-slate-500">By category this month</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">By category this month</p>
                 </div>
                 <Link
                   href="/analytics"
@@ -493,8 +561,8 @@ export default function DashboardPage() {
                         data={data.breakdown.slice(0, 8)}
                         dataKey="value"
                         nameKey="name"
-                        innerRadius={58}
-                        outerRadius={84}
+                        innerRadius={62}
+                        outerRadius={88}
                         paddingAngle={3}
                         stroke="transparent"
                       >
@@ -505,11 +573,13 @@ export default function DashboardPage() {
                       <Tooltip
                         formatter={(v: unknown) => [formatCurrency(Number(v), currency), ""]}
                         contentStyle={{
-                          backgroundColor: "#0f172a",
-                          border: "1px solid #334155",
-                          borderRadius: "12px",
-                          color: "#fff",
+                          backgroundColor: "#ffffff",
+                          borderColor: "#e2e8f0",
+                          borderRadius: "14px",
+                          color: "#0f172a",
                           fontSize: "12px",
+                          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+                          padding: "8px 12px",
                         }}
                       />
                     </PieChart>
@@ -517,7 +587,7 @@ export default function DashboardPage() {
 
                   {/* Center Metric */}
                   <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       Spent This Month
                     </span>
                     <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
@@ -573,11 +643,11 @@ export default function DashboardPage() {
         {/* Budgets & Goals Grid */}
         <div className="grid gap-5 lg:grid-cols-2">
           {/* Budget Allocation */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">Budget Allocation</h3>
-                <p className="text-xs text-slate-500">Monthly category spending targets</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Monthly category spending targets</p>
               </div>
               <Link
                 href="/budgets"
@@ -599,20 +669,20 @@ export default function DashboardPage() {
                 {data.budgets.slice(0, 4).map((b) => (
                   <div key={b.id}>
                     <div className="mb-1.5 flex items-center justify-between text-xs font-semibold">
-                      <span className="text-slate-800 dark:text-slate-200">{b.categoryName}</span>
-                      <span className="text-slate-400 tabular-nums">
+                      <span className="text-slate-900 dark:text-slate-100 font-bold">{b.categoryName}</span>
+                      <span className="text-slate-500 dark:text-slate-400 tabular-nums">
                         {formatCurrency(b.spent, currency)} / {formatCurrency(parseFloat(b.amount), currency)}
                       </span>
                     </div>
                     <Progress value={b.percentUsed} />
-                    <div className="mt-1 flex items-center justify-between text-[11px]">
+                    <div className="mt-1.5 flex items-center justify-between text-[11px]">
                       <span
                         className={`font-bold ${
                           b.status === "over"
-                            ? "text-rose-500"
+                            ? "text-rose-600 dark:text-rose-400"
                             : b.status === "warning"
-                            ? "text-amber-500"
-                            : "text-emerald-500"
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-emerald-600 dark:text-emerald-400"
                         }`}
                       >
                         {b.percentUsed}% utilized · {formatCurrency(b.remaining, currency)} remaining
@@ -630,11 +700,11 @@ export default function DashboardPage() {
           </div>
 
           {/* Savings Goals */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">Savings Goals</h3>
-                <p className="text-xs text-slate-500">Milestone targets and funding status</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Milestone targets and funding status</p>
               </div>
               <Link
                 href="/goals"
@@ -656,7 +726,7 @@ export default function DashboardPage() {
                 {data.goals.map((g) => (
                   <div
                     key={g.id}
-                    className="flex items-center gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/80 dark:bg-slate-800/40"
+                    className="flex items-center gap-3.5 rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 dark:border-slate-800/80 dark:bg-slate-800/40"
                   >
                     <div
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-xs"
@@ -672,7 +742,7 @@ export default function DashboardPage() {
                         </span>
                       </div>
                       <Progress value={g.percentComplete} />
-                      <p className="mt-1 text-[11px] text-slate-400 tabular-nums">
+                      <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
                         {formatCurrency(parseFloat(g.currentAmount), currency)} of{" "}
                         {formatCurrency(parseFloat(g.targetAmount), currency)}
                         {g.targetDate ? ` · target ${g.targetDate}` : ""}
@@ -686,11 +756,11 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Transactions */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Transactions</h3>
-              <p className="text-xs text-slate-500">Latest financial activities logged</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Latest financial activities logged</p>
             </div>
             <Link
               href="/transactions"

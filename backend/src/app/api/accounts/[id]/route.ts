@@ -63,6 +63,7 @@ export async function DELETE(
       .where(and(eq(accounts.id, id), eq(accounts.userId, user.id)))
       .limit(1);
 
+    if (!existing[0]) return fail("Account not found.", 404);
     const wasDefault = existing[0].isDefault;
 
     // Unlink transactions from this account

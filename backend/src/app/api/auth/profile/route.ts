@@ -4,6 +4,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getAuthUser, validateEmail } from "@/lib/auth";
 import { ok, fail, unauthorized } from "@/lib/response";
+import { convertAllUserAmounts } from "@/lib/currency";
 
 export async function PUT(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -22,7 +23,17 @@ export async function PUT(req: NextRequest) {
       if (existing.length && existing[0].id !== user.id) return fail("Email is already in use.", 409);
       updates.email = em;
     }
-    if (body.currency !== undefined) updates.currency = String(body.currency);
+
+    let conversionInfo: { rate: number; fromCurrency: string; toCurrency: string } | null = null;
+    if (body.currency !== undefined) {
+      const newCurr = String(body.currency).toUpperCase();
+      const oldCurr = (user.currency || "INR").toUpperCase();
+      if (newCurr !== oldCurr) {
+        conversionInfo = await convertAllUserAmounts(user.id, oldCurr, newCurr);
+      }
+      updates.currency = newCurr;
+    }
+
     if (body.theme !== undefined) updates.theme = String(body.theme);
     if (body.dateFormat !== undefined) updates.dateFormat = String(body.dateFormat);
     if (body.avatarUrl !== undefined) updates.avatarUrl = body.avatarUrl || null;
@@ -34,7 +45,7 @@ export async function PUT(req: NextRequest) {
     updates.updatedAt = new Date();
     const rows = await db.update(users).set(updates).where(eq(users.id, user.id)).returning();
     const { passwordHash: _p, resetToken: _r, resetExpires: _e, ...safe } = rows[0];
-    return ok({ user: safe });
+    return ok({ user: safe, conversion: conversionInfo });
   } catch (e) {
     console.error("profile update error", e);
     return fail("Unable to update profile.", 500);

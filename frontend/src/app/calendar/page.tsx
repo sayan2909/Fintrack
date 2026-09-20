@@ -637,15 +637,15 @@ export default function CalendarPage() {
             </div>
 
             {/* View Mode Pills (Month / Year / List) */}
-            <div className="flex items-center rounded-xl bg-slate-100 p-1 dark:bg-slate-800/80 text-xs font-semibold">
+            <div className="flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs font-semibold">
               {(["Month", "Year", "List"] as const).map((m) => (
                 <button
                   key={m}
                   onClick={() => setViewMode(m)}
                   className={`rounded-lg px-3 py-1.5 transition cursor-pointer ${
                     viewMode === m
-                      ? "bg-emerald-900 text-white shadow-sm dark:bg-emerald-800 font-bold"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0 font-bold"
+                      : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   {m}
@@ -657,43 +657,51 @@ export default function CalendarPage() {
           {/* Monthly / Period KPI Summary Cards (3 cards) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Total Income */}
-            <Card className="p-4 flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
-                <ArrowDown className="h-5 w-5" />
+            <Card className="p-4 flex items-center gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0">
+                <ArrowDown className="h-4.5 w-4.5" />
               </div>
               <div>
                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                   {viewMode === "Year" ? `Annual Income (${year})` : "Total Income"}
                 </p>
-                <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
                   {formatCurrency(monthMetrics.totalInc, currency)}
                 </p>
               </div>
             </Card>
 
             {/* Total Expenses */}
-            <Card className="p-4 flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400">
-                <ArrowUp className="h-5 w-5" />
+            <Card className="p-4 flex items-center gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-0">
+                <ArrowUp className="h-4.5 w-4.5" />
               </div>
               <div>
                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                   {viewMode === "Year" ? `Annual Expenses (${year})` : "Total Expenses"}
                 </p>
-                <p className="text-lg font-extrabold text-slate-900 dark:text-white">
+                <p className="text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums">
                   {formatCurrency(monthMetrics.totalExp, currency)}
                 </p>
               </div>
             </Card>
 
             {/* Net Savings */}
-            <Card className="p-4 flex items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
-                <Wallet className="h-5 w-5" />
+            <Card className="p-4 flex items-center gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-0">
+                <Wallet className="h-4.5 w-4.5" />
               </div>
               <div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Net Savings</p>
-                <p className={`text-lg font-extrabold ${monthMetrics.net >= 0 ? "text-slate-900 dark:text-white" : "text-rose-600"}`}>
+                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  {viewMode === "Year" ? `Annual Net (${year})` : "Net Savings"}
+                </p>
+                <p
+                  className={`text-lg font-black tabular-nums ${
+                    monthMetrics.net >= 0
+                      ? "text-slate-900 dark:text-white"
+                      : "text-rose-600 dark:text-rose-400"
+                  }`}
+                >
                   {formatCurrency(monthMetrics.net, currency)}
                 </p>
               </div>
@@ -702,11 +710,11 @@ export default function CalendarPage() {
 
           {/* Upcoming Payments Alert Banner */}
           {upcomingBillsSoon.length > 0 && (
-            <div className="flex items-center justify-between rounded-2xl border border-amber-400/40 bg-amber-50/50 p-3.5 px-4 text-xs dark:border-amber-500/30 dark:bg-amber-950/20 shadow-xs">
+            <div className="flex items-center justify-between rounded-2xl border border-amber-200/90 bg-amber-50/50 p-3.5 px-4 text-xs dark:border-amber-500/30 dark:bg-amber-950/20 shadow-xs">
               <div className="flex items-center gap-2.5 text-amber-900 dark:text-amber-200 min-w-0">
                 <BellRing className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
                 <span className="truncate">
-                  <strong>Upcoming Payment Alert:</strong> {upcomingBillsSoon.length} recurring payment{upcomingBillsSoon.length === 1 ? "" : "s"} due in the next 7 days ({upcomingBillsSoon.map((b) => `${b.name} - ₹${b.amount}`).join(", ")})
+                  <strong>Upcoming Payment Alert:</strong> {upcomingBillsSoon.length} recurring payment{upcomingBillsSoon.length === 1 ? "" : "s"} due in the next 7 days ({upcomingBillsSoon.map((b) => `${b.name} - ${formatCurrency(b.amount, currency)}`).join(", ")})
                 </span>
               </div>
               <a href="/recurring" className="font-bold text-amber-800 hover:underline dark:text-amber-300 shrink-0 ml-3">
@@ -761,8 +769,8 @@ export default function CalendarPage() {
                       onClick={() => setSelectedDate(cell.dateKey)}
                       className={`relative min-h-[72px] sm:min-h-[82px] rounded-2xl p-2 text-left transition-all flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? "border-2 border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 shadow-sm"
-                          : "border border-slate-100 hover:border-slate-300 hover:bg-slate-50/80 dark:border-slate-800 dark:hover:border-slate-700 dark:hover:bg-slate-800/50"
+                          ? "border-2 border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 shadow-xs"
+                          : "border border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80 dark:border-slate-800/80 dark:bg-slate-900/60 dark:hover:border-slate-700 dark:hover:bg-slate-800/50"
                       }`}
                     >
                       {/* Top Row: Day Number & Dots */}
@@ -770,7 +778,7 @@ export default function CalendarPage() {
                         <span
                           className={`text-xs font-semibold ${
                             isSelected
-                              ? "text-emerald-900 dark:text-emerald-300 font-bold"
+                              ? "text-indigo-900 dark:text-indigo-300 font-bold"
                               : "text-slate-800 dark:text-slate-200"
                           }`}
                         >
@@ -780,7 +788,7 @@ export default function CalendarPage() {
                         {/* Status indicator dots */}
                         <div className="flex items-center gap-1">
                           {isSelected && (
-                            <span className="h-2 w-2 rounded-full bg-emerald-600 dark:bg-emerald-400 ring-2 ring-emerald-200 dark:ring-emerald-900" />
+                            <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 ring-2 ring-indigo-200 dark:ring-indigo-900" />
                           )}
                           {!isSelected && hasRecurring && (
                             <span
@@ -805,11 +813,11 @@ export default function CalendarPage() {
                         {hasTransactions ? (
                           inc > 0 && exp === 0 ? (
                             <span className="block text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 truncate">
-                              ₹ {inc.toLocaleString("en-IN")}
+                              +{formatCurrency(inc, currency)}
                             </span>
                           ) : (
                             <span className="block text-[11px] sm:text-xs font-bold text-rose-500 dark:text-rose-400 truncate">
-                              ₹ {exp.toLocaleString("en-IN")}
+                              −{formatCurrency(exp, currency)}
                             </span>
                           )
                         ) : (

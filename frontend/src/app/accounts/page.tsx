@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Badge, inputCls, toast, ConfirmDialog } from "@/components/ui";
-import { formatCurrency } from "@/lib/currency";
+import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 
 export interface AccountItem {
@@ -316,17 +316,17 @@ export default function AccountsPage() {
         </div>
 
         {/* Net Worth & Assets Hero Overview */}
-        <div className="rounded-2xl border border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-[#111827] p-5 sm:p-6 shadow-xs">
+        <div className="rounded-2xl border border-slate-200/90 bg-white dark:border-slate-800/80 dark:bg-[#111827] p-5 sm:p-6 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             {/* Left: Prominent Net Worth */}
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 ring-2 ring-indigo-500/20">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20">
                 <Landmark className="h-7 w-7" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Net Worth</span>
-                  <span className="rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 px-2.5 py-0.5 text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400">
+                  <span className="rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-0 px-2.5 py-0.5 text-[10px] font-extrabold">
                     {stats.accountCount} {stats.accountCount === 1 ? "Account" : "Accounts"}
                   </span>
                 </div>
@@ -337,29 +337,29 @@ export default function AccountsPage() {
             </div>
 
             {/* Right: Liquid Assets vs Liabilities breakdown with clean divider */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-10 border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800/80 pt-4 lg:pt-0 lg:pl-10">
+            <div className="flex flex-wrap items-center gap-6 sm:gap-10 border-t lg:border-t-0 lg:border-l border-slate-200/80 dark:border-slate-800/80 pt-4 lg:pt-0 lg:pl-10">
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" />
                   <span>Liquid Assets</span>
                 </div>
-                <p className="mt-1 text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <p className="mt-1 text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
                   {formatCurrency(stats.totalAssets, currency)}
                 </p>
-                <span className="text-[11px] text-slate-400">Cash, savings & wallets</span>
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Cash, savings & wallets</span>
               </div>
 
-              <div className="h-10 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
+              <div className="h-10 w-px bg-slate-200/80 dark:bg-slate-800 hidden sm:block" />
 
               <div>
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
                   <span className="h-2 w-2 rounded-full bg-rose-500" />
                   <span>Total Liabilities</span>
                 </div>
-                <p className="mt-1 text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tabular-nums">
+                <p className="mt-1 text-xl sm:text-2xl font-black text-rose-700 dark:text-rose-400 tabular-nums">
                   {formatCurrency(stats.totalLiabilities, currency)}
                 </p>
-                <span className="text-[11px] text-slate-400">Credit cards & debt dues</span>
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Credit cards & debt dues</span>
               </div>
             </div>
           </div>
@@ -570,7 +570,7 @@ export default function AccountsPage() {
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                      Current Balance (₹)
+                      Current Balance ({CURRENCY_SYMBOLS[currency] || currency})
                     </label>
                     <input
                       type="number"
@@ -700,7 +700,7 @@ export default function AccountsPage() {
 
                 <div>
                   <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                    Transfer Amount (₹)
+                    Transfer Amount ({CURRENCY_SYMBOLS[currency] || currency})
                   </label>
                   <input
                     type="number"

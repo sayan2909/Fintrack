@@ -34,20 +34,20 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Badge, Button, Progress } from "@/components/ui";
-import { formatCurrency } from "@/lib/currency";
+import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 
 const COLORS = [
-  "#6366f1", // Indigo
-  "#10b981", // Emerald
-  "#0ea5e9", // Sky
-  "#f59e0b", // Amber
-  "#f43f5e", // Rose
-  "#8b5cf6", // Violet
-  "#14b8a6", // Teal
-  "#ec4899", // Pink
-  "#f97316", // Orange
-  "#64748b", // Slate
+  "#4f46e5", // Executive Indigo
+  "#0284c7", // Cerulean
+  "#059669", // Jewel Emerald
+  "#d97706", // Amber Bronze
+  "#e11d48", // Crimson Rose
+  "#7c3aed", // Royal Violet
+  "#0891b2", // Teal
+  "#db2777", // Berry
+  "#f97316", // Tangerine
+  "#475569", // Slate
 ];
 
 interface Overview {
@@ -138,13 +138,19 @@ export default function AnalyticsPage() {
   const cur = mc?.current;
   const prev = mc?.previous;
 
-  // Natural rupee axis formatter
+  // Currency-aware axis formatter
+  const sym = CURRENCY_SYMBOLS[currency] ?? "₹";
   const formatYAxis = (v: number) => {
-    if (v === 0) return "₹0";
-    if (v >= 10000000) return `₹${(v / 10000000).toFixed(1)}Cr`;
-    if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
-    if (v >= 10000) return `₹${Math.round(v / 1000)}k`;
-    return `₹${v.toLocaleString("en-IN")}`;
+    if (v === 0) return `${sym}0`;
+    if (currency === "INR") {
+      if (v >= 10000000) return `₹${(v / 10000000).toFixed(1)}Cr`;
+      if (v >= 100000) return `₹${(v / 100000).toFixed(1)}L`;
+      if (v >= 10000) return `₹${Math.round(v / 1000)}k`;
+      return `₹${v.toLocaleString("en-IN")}`;
+    }
+    if (v >= 1000000) return `${sym}${(v / 1000000).toFixed(1)}M`;
+    if (v >= 1000) return `${sym}${Math.round(v / 1000)}k`;
+    return `${sym}${v.toLocaleString()}`;
   };
 
   // Aggregated data for smooth presentation (eliminates 29-day empty spikes)
@@ -174,7 +180,7 @@ export default function AnalyticsPage() {
     return data.series;
   }, [data?.series, viewGrouping]);
 
-  // Custom Dark Tooltip
+  // Custom Dual-Mode Tooltip
   interface TooltipPayloadItem {
     name?: string;
     dataKey?: string;
@@ -193,19 +199,19 @@ export default function AnalyticsPage() {
   }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="rounded-2xl border border-slate-700/80 bg-slate-900/95 p-3.5 shadow-2xl backdrop-blur-md text-xs dark:border-slate-800 dark:bg-[#111827]/95">
-          <p className="font-bold text-slate-300 mb-2 border-b border-slate-800 pb-1.5">{label}</p>
+        <div className="rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-md text-xs dark:border-slate-800 dark:bg-[#111827]/95">
+          <p className="font-bold text-slate-700 dark:text-slate-300 mb-2 border-b border-slate-100 dark:border-slate-800 pb-1.5">{label}</p>
           <div className="space-y-1.5">
             {payload.map((p, i) => (
               <div key={i} className="flex items-center justify-between gap-5">
-                <span className="flex items-center gap-1.5 text-slate-400">
+                <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
                   <span
                     className="h-2 w-2 rounded-full"
                     style={{ background: p.color || p.fill || "#6366f1" }}
                   />
                   {p.name || p.dataKey}
                 </span>
-                <span className="font-bold tabular-nums text-white">
+                <span className="font-black tabular-nums text-slate-900 dark:text-white">
                   {typeof p.value === "number" ? formatCurrency(p.value, currency) : p.value}
                 </span>
               </div>
@@ -233,7 +239,7 @@ export default function AnalyticsPage() {
 
           {/* Time Range Selector */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 dark:bg-slate-800/80">
+            <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80">
               {[
                 ["7d", "7D"],
                 ["30d", "30D"],
@@ -246,8 +252,8 @@ export default function AnalyticsPage() {
                   onClick={() => setRange(v)}
                   className={`rounded-lg px-3 py-1 text-xs font-bold transition cursor-pointer ${
                     range === v
-                      ? "bg-indigo-600 text-white shadow-xs"
-                      : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0"
+                      : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   {l}
@@ -261,16 +267,16 @@ export default function AnalyticsPage() {
                   type="date"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
-                  className="h-8.5 rounded-xl border border-slate-200 bg-white px-2.5 text-xs text-slate-900 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2.5 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
-                <span className="text-xs text-slate-400">to</span>
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">to</span>
                 <input
                   type="date"
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
-                  className="h-8.5 rounded-xl border border-slate-200 bg-white px-2.5 text-xs text-slate-900 outline-none dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2.5 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
-                <Button onClick={() => load("custom", from, to)} className="h-8.5 px-3 text-xs font-bold">
+                <Button onClick={() => load("custom", from, to)} className="h-8.5 px-3 text-xs font-bold shadow-2xs">
                   Apply
                 </Button>
               </div>
@@ -294,17 +300,17 @@ export default function AnalyticsPage() {
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "income" ? "all" : "income")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] ${
+                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
                   spotlightMetric === "income"
                     ? "border-emerald-500 ring-2 ring-emerald-500/20"
-                    : "border-slate-200/80 dark:border-slate-800/80"
+                    : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Total Income
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20 group-hover:scale-110 transition">
+                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20 group-hover:scale-105 transition">
                     <ArrowDownLeft className="h-4 w-4" />
                   </div>
                 </div>
@@ -312,13 +318,13 @@ export default function AnalyticsPage() {
                   {formatCurrency(data.totals.income, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Credits in period</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Credits in period</span>
                   {spotlightMetric === "income" ? (
-                    <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
                       Spotlight On
                     </span>
                   ) : (
-                    <span className="text-[10px] text-slate-500 group-hover:text-slate-400">
+                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
                       Click to spotlight
                     </span>
                   )}
@@ -331,17 +337,17 @@ export default function AnalyticsPage() {
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "expenses" ? "all" : "expenses")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] ${
+                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
                   spotlightMetric === "expenses"
                     ? "border-rose-500 ring-2 ring-rose-500/20"
-                    : "border-slate-200/80 dark:border-slate-800/80"
+                    : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Total Expenses
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/10 text-rose-500 ring-1 ring-rose-500/20 group-hover:scale-110 transition">
+                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/20 group-hover:scale-105 transition">
                     <ArrowUpRight className="h-4 w-4" />
                   </div>
                 </div>
@@ -349,13 +355,13 @@ export default function AnalyticsPage() {
                   {formatCurrency(data.totals.expenses, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Debits in period</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Debits in period</span>
                   {spotlightMetric === "expenses" ? (
-                    <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[10px] font-bold text-rose-400">
+                    <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400">
                       Spotlight On
                     </span>
                   ) : (
-                    <span className="text-[10px] text-slate-500 group-hover:text-slate-400">
+                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
                       Click to spotlight
                     </span>
                   )}
@@ -368,35 +374,35 @@ export default function AnalyticsPage() {
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "net" ? "all" : "net")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] ${
+                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
                   spotlightMetric === "net"
                     ? "border-indigo-500 ring-2 ring-indigo-500/20"
-                    : "border-slate-200/80 dark:border-slate-800/80"
+                    : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Net Cash Flow
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20 group-hover:scale-110 transition">
+                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20 group-hover:scale-105 transition">
                     <Wallet className="h-4 w-4" />
                   </div>
                 </div>
                 <p
                   className={`mt-2 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
-                    data.totals.net >= 0 ? "text-emerald-500" : "text-rose-500"
+                    data.totals.net >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                   }`}
                 >
                   {formatCurrency(data.totals.net, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Net balance delta</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Net balance delta</span>
                   {spotlightMetric === "net" ? (
-                    <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 text-[10px] font-bold text-indigo-400">
+                    <span className="rounded-full bg-indigo-500/15 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
                       Spotlight On
                     </span>
                   ) : (
-                    <span className="text-[10px] text-slate-500 group-hover:text-slate-400">
+                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
                       Click to spotlight
                     </span>
                   )}
@@ -404,12 +410,12 @@ export default function AnalyticsPage() {
               </button>
 
               {/* Savings Rate Card */}
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition dark:border-slate-800/80 dark:bg-[#111827]">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Savings Rate
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500/10 text-violet-500 ring-1 ring-violet-500/20">
+                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-200/60 dark:bg-violet-500/15 dark:text-violet-400 dark:border-violet-500/20">
                     <Percent className="h-4 w-4" />
                   </div>
                 </div>
@@ -420,10 +426,10 @@ export default function AnalyticsPage() {
                   <span
                     className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold ${
                       data.totals.savingsRate >= 20
-                        ? "bg-emerald-500/15 text-emerald-400"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0"
                         : data.totals.savingsRate >= 0
-                        ? "bg-amber-500/15 text-amber-400"
-                        : "bg-rose-500/15 text-rose-400"
+                        ? "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-0"
+                        : "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-0"
                     }`}
                   >
                     {data.totals.savingsRate >= 20
@@ -432,13 +438,13 @@ export default function AnalyticsPage() {
                       ? "Moderate"
                       : "Overspending"}
                   </span>
-                  <span className="text-xs text-slate-400">of income retained</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">of income retained</span>
                 </div>
               </div>
             </div>
 
             {/* Main Interactive Cash Flow Chart */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
               {/* Chart Header & Interactive View Controls */}
               <div className="mb-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3.5">
                 <div>
@@ -449,7 +455,7 @@ export default function AnalyticsPage() {
                     {spotlightMetric !== "all" && (
                       <button
                         onClick={() => setSpotlightMetric("all")}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-400 hover:underline cursor-pointer"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
                       >
                         <RotateCcw className="h-3 w-3" /> Reset Filter
                       </button>
@@ -465,13 +471,13 @@ export default function AnalyticsPage() {
                 <div className="flex flex-wrap items-center gap-2.5">
                   {/* Aggregation Toggle (Daily vs Weekly) */}
                   {range !== "7d" && (
-                    <div className="inline-flex items-center rounded-xl bg-slate-100 p-0.5 dark:bg-slate-800/80 text-xs">
+                    <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs">
                       <button
                         onClick={() => setViewGrouping("daily")}
                         className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "daily"
-                            ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white"
-                            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                            ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                            : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
                         Daily
@@ -480,8 +486,8 @@ export default function AnalyticsPage() {
                         onClick={() => setViewGrouping("weekly")}
                         className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "weekly"
-                            ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white"
-                            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                            ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                            : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
                         Weekly
@@ -490,13 +496,13 @@ export default function AnalyticsPage() {
                   )}
 
                   {/* Chart Style Switcher */}
-                  <div className="inline-flex items-center rounded-xl bg-slate-100 p-0.5 dark:bg-slate-800/80 text-xs">
+                  <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs">
                     <button
                       onClick={() => setChartType("bar")}
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "bar"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white"
-                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
                       Bars
@@ -505,8 +511,8 @@ export default function AnalyticsPage() {
                       onClick={() => setChartType("area")}
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "area"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white"
-                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
                       Wave
@@ -515,8 +521,8 @@ export default function AnalyticsPage() {
                       onClick={() => setChartType("net")}
                       className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "net"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-slate-700 dark:text-white"
-                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
                       Net Cash
@@ -527,20 +533,20 @@ export default function AnalyticsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowIncomeSeries(!showIncomeSeries)}
-                      className={`inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-bold transition cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer border ${
                         showIncomeSeries
-                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                          : "border-slate-700 bg-slate-800/50 text-slate-500 line-through"
+                          ? "border-emerald-500/30 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400"
+                          : "border-slate-200 bg-slate-100 text-slate-400 line-through dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-500"
                       }`}
                     >
                       <span className="h-2 w-2 rounded-full bg-emerald-500" /> Income
                     </button>
                     <button
                       onClick={() => setShowExpenseSeries(!showExpenseSeries)}
-                      className={`inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-bold transition cursor-pointer border ${
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer border ${
                         showExpenseSeries
-                          ? "border-rose-500/30 bg-rose-500/10 text-rose-400"
-                          : "border-slate-700 bg-slate-800/50 text-slate-500 line-through"
+                          ? "border-rose-500/30 bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400"
+                          : "border-slate-200 bg-slate-100 text-slate-400 line-through dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-500"
                       }`}
                     >
                       <span className="h-2 w-2 rounded-full bg-rose-500" /> Expenses
@@ -557,16 +563,16 @@ export default function AnalyticsPage() {
                       data={displaySeries}
                       margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.25} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.25} />
                       <XAxis
                         dataKey="label"
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         interval={Math.max(0, Math.floor(displaySeries.length / 8))}
-                        axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        axisLine={{ stroke: "#94a3b8", opacity: 0.3 }}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         width={58}
                         tickFormatter={formatYAxis}
                         axisLine={false}
@@ -611,16 +617,16 @@ export default function AnalyticsPage() {
                           <stop offset="100%" stopColor="#f43f5e" stopOpacity={0.0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.25} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.25} />
                       <XAxis
                         dataKey="label"
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         interval={Math.max(0, Math.floor(displaySeries.length / 8))}
                         axisLine={false}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         width={58}
                         tickFormatter={formatYAxis}
                         axisLine={false}
@@ -656,16 +662,16 @@ export default function AnalyticsPage() {
                       data={displaySeries}
                       margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.25} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.25} />
                       <XAxis
                         dataKey="label"
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         interval={Math.max(0, Math.floor(displaySeries.length / 8))}
                         axisLine={false}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         width={58}
                         tickFormatter={formatYAxis}
                         axisLine={false}
@@ -693,7 +699,7 @@ export default function AnalyticsPage() {
             {/* Interactive Category Donut & Explorer */}
             <div className="grid gap-5 lg:grid-cols-2">
               {/* Donut Chart with Interactive Hover Explorer */}
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827] flex flex-col justify-between">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
                 <div>
                   <div className="mb-2">
                     <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -743,7 +749,7 @@ export default function AnalyticsPage() {
                       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center transition-all">
                         {activeCategoryIndex !== null && data.breakdown[activeCategoryIndex] ? (
                           <>
-                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-400 truncate max-w-[120px]">
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 truncate max-w-[120px]">
                               {data.breakdown[activeCategoryIndex].name}
                             </span>
                             <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums">
@@ -752,7 +758,7 @@ export default function AnalyticsPage() {
                                 currency
                               )}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-semibold">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                               {Math.round(
                                 (data.breakdown[activeCategoryIndex].value /
                                   (data.totals.expenses || 1)) *
@@ -763,13 +769,13 @@ export default function AnalyticsPage() {
                           </>
                         ) : (
                           <>
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                               Total Outflow
                             </span>
                             <span className="text-xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight">
                               {formatCurrency(data.totals.expenses, currency)}
                             </span>
-                            <span className="text-[10px] text-slate-400 font-semibold">
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                               {data.breakdown.length}{" "}
                               {data.breakdown.length === 1 ? "category" : "categories"}
                             </span>
@@ -790,7 +796,7 @@ export default function AnalyticsPage() {
                         onMouseLeave={() => setActiveCategoryIndex(null)}
                         className={`flex items-center justify-between rounded-xl p-2 text-xs transition cursor-pointer ${
                           activeCategoryIndex === i
-                            ? "bg-slate-100 dark:bg-slate-800 font-bold"
+                            ? "bg-indigo-50/90 text-indigo-950 font-bold dark:bg-slate-800 dark:text-white ring-1 ring-indigo-500/20"
                             : "hover:bg-slate-50 dark:hover:bg-slate-800/40"
                         }`}
                       >
@@ -799,10 +805,10 @@ export default function AnalyticsPage() {
                             className="h-2.5 w-2.5 rounded-full"
                             style={{ background: b.color || COLORS[i % COLORS.length] }}
                           />
-                          <span className="text-slate-700 dark:text-slate-300">{b.name}</span>
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">{b.name}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-[11px] text-slate-400 font-medium">
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
                             {Math.round((b.value / (data.totals.expenses || 1)) * 100)}%
                           </span>
                           <span className="font-black text-slate-900 dark:text-white tabular-nums">
@@ -818,7 +824,7 @@ export default function AnalyticsPage() {
               {/* Monthly Velocity & Ranked Categories */}
               <div className="flex flex-col gap-5">
                 {/* Month over Month Velocity */}
-                <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Monthly Velocity Comparison
                   </h3>
@@ -826,21 +832,21 @@ export default function AnalyticsPage() {
                     Current month vs previous month totals
                   </p>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
-                      <span className="text-xs font-semibold text-slate-400">Income Velocity</span>
-                      <p className="mt-1 text-lg font-black text-emerald-500 tabular-nums">
+                    <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Income Velocity</span>
+                      <p className="mt-1 text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
                         {formatCurrency(cur?.income || 0, currency)}
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                         Prev: {formatCurrency(prev?.income || 0, currency)}
                       </p>
                     </div>
-                    <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
-                      <span className="text-xs font-semibold text-slate-400">Expense Velocity</span>
-                      <p className="mt-1 text-lg font-black text-rose-500 tabular-nums">
+                    <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Expense Velocity</span>
+                      <p className="mt-1 text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums">
                         {formatCurrency(cur?.expenses || 0, currency)}
                       </p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                         Prev: {formatCurrency(prev?.expenses || 0, currency)}
                       </p>
                     </div>
@@ -848,7 +854,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Ranked Top Spending */}
-                <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Ranked Spending Categories
                   </h3>
@@ -879,7 +885,7 @@ export default function AnalyticsPage() {
                       );
                     })}
                     {data.breakdown.length === 0 && (
-                      <p className="text-xs text-slate-400 py-4 text-center">No category records.</p>
+                      <p className="text-xs text-slate-500 py-4 text-center">No category records.</p>
                     )}
                   </div>
                 </div>
@@ -888,7 +894,7 @@ export default function AnalyticsPage() {
 
             {/* Year-over-Year (YoY) Annual Comparison */}
             {yoyData && (
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 dark:border-slate-800/80">
                   <div>
                     <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -912,40 +918,40 @@ export default function AnalyticsPage() {
 
                 {/* YoY Summary Cards */}
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
-                    <p className="text-xs text-slate-400">{yoyData.currentYear} Annual Outflow</p>
-                    <p className="mt-1 text-lg font-black text-rose-500 tabular-nums">
+                  <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{yoyData.currentYear} Annual Outflow</p>
+                    <p className="mt-1 text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums">
                       {formatCurrency(yoyData.totals.currentYear.expenses, currency)}
                     </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                       vs {formatCurrency(yoyData.totals.previousYear.expenses, currency)} in{" "}
                       {yoyData.previousYear}
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
-                    <p className="text-xs text-slate-400">Expense Trend Growth</p>
+                  <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Expense Trend Growth</p>
                     <p
                       className={`mt-1 text-lg font-black tabular-nums ${
-                        yoyData.totals.expenseGrowthPct <= 0 ? "text-emerald-500" : "text-rose-500"
+                        yoyData.totals.expenseGrowthPct <= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                       }`}
                     >
                       {yoyData.totals.expenseGrowthPct > 0
                         ? `+${yoyData.totals.expenseGrowthPct}%`
                         : `${yoyData.totals.expenseGrowthPct}%`}
                     </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                       {yoyData.totals.expenseGrowthPct <= 0 ? "Decreased spending" : "Increased spending"}
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
-                    <p className="text-xs text-slate-400">Net Delta Difference</p>
+                  <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5 dark:border-slate-800/60 dark:bg-slate-800/40">
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Net Delta Difference</p>
                     <p
                       className={`mt-1 text-lg font-black tabular-nums ${
                         yoyData.totals.currentYear.net >= yoyData.totals.previousYear.net
-                          ? "text-emerald-500"
-                          : "text-rose-500"
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-rose-600 dark:text-rose-400"
                       }`}
                     >
                       {formatCurrency(
@@ -953,7 +959,7 @@ export default function AnalyticsPage() {
                         currency
                       )}
                     </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Annual net difference</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Annual net difference</p>
                   </div>
                 </div>
 
@@ -961,15 +967,15 @@ export default function AnalyticsPage() {
                 <div className="mt-5 h-72 sm:h-80 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={yoyData.monthly} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.25} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#94a3b8" opacity={0.25} />
                       <XAxis
                         dataKey="month"
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
-                        axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
+                        axisLine={{ stroke: "#94a3b8", opacity: 0.3 }}
                         tickLine={false}
                       />
                       <YAxis
-                        tick={{ fontSize: 11, fill: "#94a3b8" }}
+                        tick={{ fontSize: 11, fill: "#64748b" }}
                         width={58}
                         tickFormatter={formatYAxis}
                         axisLine={false}
@@ -981,7 +987,7 @@ export default function AnalyticsPage() {
                       />
                       <Bar
                         dataKey={(d) => d.previousYear.expenses}
-                        fill="#64748b"
+                        fill="#94a3b8"
                         radius={[4, 4, 0, 0]}
                         name={`${yoyData.previousYear} Expenses`}
                       />

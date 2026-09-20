@@ -8,7 +8,7 @@ import { ToastHost } from "@/components/ui";
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#090d16" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0f19" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -36,11 +36,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{const t=localStorage.getItem('fintrack-theme');if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}`,
+            __html: `try{const t=localStorage.getItem('fintrack-theme');if(t==='dark'){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}catch(e){}`,
           }}
         />
       </head>
-      <body className="bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+      <body className="bg-[#eef2f6] text-slate-900 antialiased dark:bg-[#0b0f19] dark:text-slate-100 min-h-screen">
         <ThemeProvider>
           <AuthProvider>
             {children}

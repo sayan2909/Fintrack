@@ -17,11 +17,18 @@ import {
   Clock,
   AlertTriangle,
   ShieldAlert,
+  ArrowRightLeft,
+  Eye,
+  EyeOff,
+  Lock,
+  XCircle,
+  Download,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Field, inputCls, toast, Modal } from "@/components/ui";
 import { useAuth, Session } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import { getEstimatedRate, SUPPORTED_CURRENCIES, fetchLiveRates } from "@/lib/currency";
 
 function formatRelativeTime(dateStr: string | Date | undefined) {
   if (!dateStr) return "Unknown";
@@ -63,6 +70,10 @@ export default function SettingsPage() {
     notifySummary: true,
   });
   const [pw, setPw] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [changingPw, setChangingPw] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Active sessions state
@@ -82,6 +93,30 @@ export default function SettingsPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  const [exportingBackup, setExportingBackup] = useState(false);
+
+  const handleExportBackup = async () => {
+    try {
+      setExportingBackup(true);
+      const res = await fetch("/api/auth/export-data", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to generate backup archive");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `fintrack-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      toast("Financial data backup downloaded successfully! 💾");
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Error downloading data backup", "error");
+    } finally {
+      setExportingBackup(false);
+    }
+  };
 
   const handlePurgeData = async () => {
     if (purgeInput.trim() !== "RESET DATA") {
@@ -136,6 +171,7 @@ export default function SettingsPage() {
   };
 
   useEffect(() => {
+    fetchLiveRates().catch(() => {});
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("fintrack_session_timeout_mins");
       const validOptions = ["0", "15", "30", "60", "240"];
@@ -248,7 +284,14 @@ export default function SettingsPage() {
       const json = await res.json();
       if (!json.success) throw new Error(json.message);
       setUser(json.data.user);
-      toast("Settings saved");
+      if (json.data.conversion) {
+        toast(`Currency changed to ${json.data.conversion.toCurrency}! All balances, transactions, and budgets converted (rate: ×${json.data.conversion.rate.toFixed(4)}). 💱`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast("Settings saved");
+      }
     } catch (e2: unknown) {
       toast(e2 instanceof Error ? e2.message : "Failed", "error");
     } finally {
@@ -258,6 +301,7 @@ export default function SettingsPage() {
 
   const changePw = async (e: React.FormEvent) => {
     e.preventDefault();
+    setChangingPw(true);
     try {
       const res = await fetch("/api/auth/password", {
         method: "PUT",
@@ -266,11 +310,13 @@ export default function SettingsPage() {
         body: JSON.stringify(pw),
       });
       const json = await res.json();
-      if (!json.success) throw new Error(json.message);
-      toast("Password changed");
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to update password");
+      toast("Password changed successfully! 🎉");
       setPw({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (e2: unknown) {
-      toast(e2 instanceof Error ? e2.message : "Failed", "error");
+      toast(e2 instanceof Error ? e2.message : "Failed to change password", "error");
+    } finally {
+      setChangingPw(false);
     }
   };
 
@@ -286,7 +332,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="mt-5 flex border-b border-slate-200/80 dark:border-slate-800 gap-1.5 overflow-x-auto pb-1">
+      <div className="mt-5 inline-flex items-center gap-1 rounded-2xl bg-slate-100/90 p-1 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-900/60 overflow-x-auto max-w-full">
         {[
           { id: "general", label: "Profile & Preferences", icon: User },
           { id: "security", label: "Security & Sessions", icon: Shield },
@@ -297,10 +343,10 @@ export default function SettingsPage() {
             key={t.id}
             type="button"
             onClick={() => setActiveTab(t.id as "general" | "security" | "notifications" | "data")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition cursor-pointer whitespace-nowrap ${
+            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
               activeTab === t.id
-                ? "bg-indigo-600 text-white shadow-xs shadow-indigo-600/20"
-                : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
+                ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0 font-bold"
+                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
             }`}
           >
             <t.icon className="h-4 w-4 shrink-0" />
@@ -316,7 +362,7 @@ export default function SettingsPage() {
             {/* Personal Information */}
             <Card>
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-slate-800">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-0">
                   <User className="h-4 w-4" />
                 </div>
                 <div>
@@ -356,7 +402,7 @@ export default function SettingsPage() {
             {/* Regional & Display */}
             <Card>
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-slate-800">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-200/60 dark:bg-violet-500/10 dark:text-violet-400 dark:border-0">
                   <Palette className="h-4 w-4" />
                 </div>
                 <div>
@@ -372,11 +418,11 @@ export default function SettingsPage() {
                       value={profile.currency}
                       onChange={(e) => setProfile({ ...profile, currency: e.target.value })}
                     >
-                      <option value="INR">INR (₹) - Indian Rupee</option>
-                      <option value="USD">USD ($) - US Dollar</option>
-                      <option value="EUR">EUR (€) - Euro</option>
-                      <option value="GBP">GBP (£) - British Pound</option>
-                      <option value="JPY">JPY (¥) - Japanese Yen</option>
+                      {SUPPORTED_CURRENCIES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.code} ({c.symbol}) - {c.name}
+                        </option>
+                      ))}
                     </select>
                   </Field>
                   <Field label="Date format">
@@ -392,14 +438,27 @@ export default function SettingsPage() {
                     </select>
                   </Field>
                 </div>
+
+                {/* Currency Conversion Live Preview Info */}
+                {profile.currency !== (user?.currency || "INR") && (
+                  <div className="rounded-xl border border-indigo-200/90 bg-indigo-50/70 p-3.5 text-xs text-indigo-900 dark:border-indigo-500/25 dark:bg-indigo-500/10 dark:text-indigo-300">
+                    <div className="flex items-center gap-2 font-bold">
+                      <ArrowRightLeft className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                      <span>Automatic Balance & Amount Conversion</span>
+                    </div>
+                    <p className="mt-1.5 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Switching currency from <strong>{user?.currency || "INR"}</strong> to <strong>{profile.currency}</strong> will automatically convert all your existing account balances, transactions, budgets, goals, and bills using the exchange rate (<strong>1 {user?.currency || "INR"} ≈ {getEstimatedRate(user?.currency || "INR", profile.currency).toFixed(4)} {profile.currency}</strong>).
+                    </p>
+                  </div>
+                )}
                 <Field label="Theme Mode">
                   <select
                     className={inputCls}
                     value={theme}
                     onChange={(e) => setTheme(e.target.value as "light" | "dark")}
                   >
-                    <option value="dark">Dark Theme (Recommended)</option>
-                    <option value="light">Light Theme</option>
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
                   </select>
                 </Field>
               </div>
@@ -428,38 +487,101 @@ export default function SettingsPage() {
                 <p className="text-xs text-slate-500">Ensure your account is protected with a strong, secure password.</p>
               </div>
             </div>
-            <form onSubmit={changePw} className="mt-4">
+            <form onSubmit={changePw} className="mt-4 space-y-4">
               <div className="grid gap-3.5 sm:grid-cols-3">
                 <Field label="Current Password">
-                  <input
-                    className={inputCls}
-                    type="password"
-                    required
-                    value={pw.currentPassword}
-                    onChange={(e) => setPw({ ...pw, currentPassword: e.target.value })}
-                  />
+                  <div className="relative">
+                    <input
+                      className={`${inputCls} pr-10`}
+                      type={showCurrentPw ? "text" : "password"}
+                      required
+                      value={pw.currentPassword}
+                      onChange={(e) => setPw({ ...pw, currentPassword: e.target.value })}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPw(!showCurrentPw)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    >
+                      {showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </Field>
                 <Field label="New Password">
-                  <input
-                    className={inputCls}
-                    type="password"
-                    required
-                    value={pw.newPassword}
-                    onChange={(e) => setPw({ ...pw, newPassword: e.target.value })}
-                  />
+                  <div className="relative">
+                    <input
+                      className={`${inputCls} pr-10`}
+                      type={showNewPw ? "text" : "password"}
+                      required
+                      value={pw.newPassword}
+                      onChange={(e) => setPw({ ...pw, newPassword: e.target.value })}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPw(!showNewPw)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    >
+                      {showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </Field>
                 <Field label="Confirm New Password">
-                  <input
-                    className={inputCls}
-                    type="password"
-                    required
-                    value={pw.confirmPassword}
-                    onChange={(e) => setPw({ ...pw, confirmPassword: e.target.value })}
-                  />
+                  <div className="relative">
+                    <input
+                      className={`${inputCls} pr-10`}
+                      type={showConfirmPw ? "text" : "password"}
+                      required
+                      value={pw.confirmPassword}
+                      onChange={(e) => setPw({ ...pw, confirmPassword: e.target.value })}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPw(!showConfirmPw)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    >
+                      {showConfirmPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </Field>
               </div>
-              <div className="mt-4 flex justify-end">
-                <Button type="submit">Update Password</Button>
+
+              {pw.newPassword.length > 0 && (
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3 text-[11px] dark:border-slate-800/80 dark:bg-slate-900/60 space-y-1.5 max-w-xl">
+                  <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px] block mb-1">
+                    Password Requirements
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    <div className={`flex items-center gap-1.5 ${pw.newPassword.length >= 8 ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-400"}`}>
+                      {pw.newPassword.length >= 8 ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      <span>8+ chars</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[A-Z]/.test(pw.newPassword) ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-400"}`}>
+                      {/[A-Z]/.test(pw.newPassword) ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      <span>1 uppercase</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[a-z]/.test(pw.newPassword) ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-400"}`}>
+                      {/[a-z]/.test(pw.newPassword) ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      <span>1 lowercase</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[0-9]/.test(pw.newPassword) ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-slate-400"}`}>
+                      {/[0-9]/.test(pw.newPassword) ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      <span>1 number</span>
+                    </div>
+                  </div>
+                  {pw.confirmPassword.length > 0 && (
+                    <div className={`flex items-center gap-1.5 pt-1 border-t border-slate-200/50 dark:border-slate-800 ${pw.newPassword === pw.confirmPassword ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-rose-500 font-semibold"}`}>
+                      {pw.newPassword === pw.confirmPassword ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      <span>{pw.newPassword === pw.confirmPassword ? "Passwords match" : "Passwords do not match"}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex justify-end pt-1">
+                <Button type="submit" loading={changingPw}>Update Password</Button>
               </div>
             </form>
           </Card>
@@ -662,74 +784,141 @@ export default function SettingsPage() {
         <div className="mt-4 space-y-4 animate-fade-up">
           {/* Account Session & Sign Out */}
           <Card>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Sign Out of FinTrack</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Sign out of your active session on this device and return to the login screen.
-                </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                  <LogOut className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Sign Out of FinTrack</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Terminate your active authenticated session on this browser device.
+                  </p>
+                </div>
               </div>
-              <Button variant="outline" onClick={logout} className="shrink-0 text-xs h-9 text-rose-600 border-rose-200 hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-400 dark:hover:bg-rose-950/30">
-                <LogOut className="h-3.5 w-3.5 mr-1" /> Logout Current Device
+              <Button
+                variant="outline"
+                onClick={logout}
+                className="shrink-0 text-xs h-9 px-4 font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white cursor-pointer"
+              >
+                <LogOut className="h-3.5 w-3.5 mr-1.5" /> Log Out
               </Button>
             </div>
           </Card>
 
-          {/* Danger Zone: Account & Data Deletion Controls */}
-          <Card className="border-rose-300/80 dark:border-rose-900/60 bg-rose-50/10 dark:bg-rose-950/10">
-            <div className="border-b border-rose-200/50 pb-3.5 dark:border-rose-900/40">
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-sm">
-                <ShieldAlert className="h-4.5 w-4.5" /> Danger Zone: Data Reset & Account Deletion
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Irreversible actions to reset your financial records or completely purge your profile.
-              </p>
-            </div>
-
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-[#111827] flex flex-col justify-between">
+          {/* Financial Data Backup & Portability Card */}
+          <Card>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-0">
+                  <Download className="h-5 w-5" />
+                </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <RefreshCw className="h-3.5 w-3.5 text-amber-600" /> Reset Financial Records
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Deletes all transactions, custom categories, budgets, and recurring bills, while keeping your account login credentials intact.
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Export Financial Data Backup</h3>
+                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                      JSON Archive
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+                    Download a complete offline backup archive of your accounts, transactions, custom categories, monthly budgets, and savings goals.
                   </p>
                 </div>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleExportBackup}
+                loading={exportingBackup}
+                className="shrink-0 text-xs h-9 px-4 font-bold cursor-pointer"
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" /> Download Backup
+              </Button>
+            </div>
+          </Card>
+
+          {/* Danger Zone: Unified Enterprise Action Panel */}
+          <div className="rounded-2xl border border-rose-200/80 bg-white dark:border-rose-950/60 dark:bg-[#111827] shadow-xs overflow-hidden">
+            {/* Danger Zone Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 border-b border-rose-100 dark:border-rose-950/50 bg-rose-50/40 dark:bg-rose-950/20">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 ring-1 ring-rose-500/25">
+                  <ShieldAlert className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      Danger Zone
+                    </h3>
+                    <span className="rounded-full bg-rose-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20">
+                      Irreversible
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Critical operations to reset your records or permanently purge your account.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions List */}
+            <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
+              {/* Action 1: Reset Financial Data */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20 mt-0.5 sm:mt-0">
+                    <RefreshCw className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                      Reset Financial Records
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed max-w-xl">
+                      Deletes all transactions, custom categories, budgets, and recurring bills, while keeping your account login credentials intact.
+                    </p>
+                  </div>
+                </div>
+
                 <Button
                   variant="outline"
                   onClick={() => {
                     setPurgeInput("");
                     setPurgeOpen(true);
                   }}
-                  className="mt-4 border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-800/80 dark:text-amber-400 dark:hover:bg-amber-950/30 text-xs h-8"
+                  className="shrink-0 h-9 px-4 text-xs font-semibold border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-800/80 dark:text-amber-400 dark:hover:bg-amber-950/40 transition cursor-pointer"
                 >
-                  Reset Financial Data
+                  Reset Records...
                 </Button>
               </div>
 
-              <div className="rounded-xl border border-rose-200/80 bg-white p-4 dark:border-rose-950/60 dark:bg-[#111827] flex flex-col justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
-                    <Trash2 className="h-3.5 w-3.5 text-rose-600" /> Delete FinTrack Account
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Permanently destroys your user account, active device sessions, and entire financial history. This action cannot be reversed.
-                  </p>
+              {/* Action 2: Delete Entire Account */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 hover:bg-rose-50/30 dark:hover:bg-rose-950/15 transition">
+                <div className="flex items-start gap-3.5 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/20 mt-0.5 sm:mt-0">
+                    <Trash2 className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400">
+                      Delete FinTrack Account
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed max-w-xl">
+                      Permanently destroys your user account, active device sessions, and entire monetary history. This action cannot be reversed.
+                    </p>
+                  </div>
                 </div>
+
                 <Button
                   variant="danger"
                   onClick={() => {
                     setDeletePassword("");
                     setDeleteOpen(true);
                   }}
-                  className="mt-4 text-xs h-8"
+                  className="shrink-0 h-9 px-4 text-xs font-semibold shadow-xs cursor-pointer"
                 >
-                  Delete Account
+                  Delete Account...
                 </Button>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       )}
 

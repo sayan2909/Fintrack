@@ -6,9 +6,19 @@ import { verifyPassword, signToken, setAuthCookie } from "@/lib/auth";
 import { createUserSession } from "@/lib/session";
 import { ok, fail } from "@/lib/response";
 import { ensureDefaultCategories } from "@/lib/server-utils";
+import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "127.0.0.1";
+    const rateLimit = checkRateLimit(`login:${ip}`, 7, 5 * 60 * 1000);
+    if (!rateLimit.allowed) {
+      return fail(
+        `Too many sign-in attempts. For your security, please wait ${rateLimit.retryAfterSeconds} seconds before trying again.`,
+        429
+      );
+    }
+
     const body = await req.json();
     const { email, password } = body ?? {};
     if (!email?.trim() || !password) return fail("Email and password are required.", 400);
@@ -18,6 +28,9 @@ export async function POST(req: NextRequest) {
     if (!user) return fail("Invalid email or password.", 401);
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) return fail("Invalid email or password.", 401);
+
+    // Reset rate limiter on successful authentication
+    resetRateLimit(`login:${ip}`);
 
     await ensureDefaultCategories(user.id);
     const token = signToken({ id: user.id, email: user.email });

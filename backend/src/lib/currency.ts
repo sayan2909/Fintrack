@@ -1,74 +1,113 @@
-export const CURRENCY_SYMBOLS: Record<string, string> = {
-  INR: "₹",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-  JPY: "¥",
+import { db } from "@/db";
+import { accounts, transactions, budgets, savingsGoals, recurringTransactions } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
+
+export const BASE_RATES_USD: Record<string, number> = {
+  USD: 1.0,
+  INR: 84.0,
+  EUR: 0.92,
+  GBP: 0.78,
+  JPY: 150.0,
+  CAD: 1.36,
+  AUD: 1.52,
+  AED: 3.67,
 };
 
-export function formatCurrency(amount: number | string, currency = "INR"): string {
-  const n = typeof amount === "string" ? parseFloat(amount) : amount;
-  if (Number.isNaN(n)) return `${CURRENCY_SYMBOLS[currency] ?? "₹"}0`;
-  const symbol = CURRENCY_SYMBOLS[currency] ?? currency + " ";
-  if (currency === "INR") {
-    return symbol + formatIndian(n);
-  }
-  return (
-    symbol +
-    n.toLocaleString("en-US", { maximumFractionDigits: n % 1 === 0 ? 0 : 2, minimumFractionDigits: 0 })
-  );
-}
+let liveRatesCache: { rates: Record<string, number>; timestamp: number } | null = null;
 
-export function formatIndian(n: number): string {
-  const neg = n < 0;
-  const abs = Math.abs(n);
-  const [intPart, decPart] = abs.toFixed(abs % 1 === 0 ? 0 : 2).split(".");
-  let out = "";
-  if (intPart.length <= 3) {
-    out = intPart;
-  } else {
-    const last3 = intPart.slice(-3);
-    let rest = intPart.slice(0, -3);
-    const groups: string[] = [];
-    while (rest.length > 2) {
-      groups.unshift(rest.slice(-2));
-      rest = rest.slice(0, -2);
+export async function getLiveRates(): Promise<Record<string, number>> {
+  if (liveRatesCache && Date.now() - liveRatesCache.timestamp < 3600000) {
+    return liveRatesCache.rates;
+  }
+  try {
+    const res = await fetch("https://open.er-api.com/v6/latest/USD", {
+      signal: AbortSignal.timeout(3000),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.rates) {
+        liveRatesCache = {
+          rates: { ...BASE_RATES_USD, ...json.rates },
+          timestamp: Date.now(),
+        };
+        return liveRatesCache.rates;
+      }
     }
-    if (rest) groups.unshift(rest);
-    out = groups.join(",") + "," + last3;
+  } catch {
+    // Network offline or timeout - safely fallback to base rates
   }
-  if (decPart) out += "." + decPart;
-  return (neg ? "-" : "") + out;
+  return BASE_RATES_USD;
 }
 
-export function formatCompact(amount: number | string, currency = "INR") {
-  const n = typeof amount === "string" ? parseFloat(amount) : amount;
-  const symbol = CURRENCY_SYMBOLS[currency] ?? "₹";
-  const abs = Math.abs(n);
-  if (abs >= 10000000) return `${symbol}${(n / 10000000).toFixed(2)} Cr`;
-  if (abs >= 100000) return `${symbol}${(n / 100000).toFixed(2)} L`;
-  if (abs >= 1000) return `${symbol}${(n / 1000).toFixed(1)}K`;
-  return formatCurrency(n, currency);
+export async function getExchangeRate(from: string, to: string): Promise<number> {
+  const f = (from || "INR").toUpperCase();
+  const t = (to || "INR").toUpperCase();
+  if (f === t) return 1.0;
+
+  const rates = await getLiveRates();
+  const fromRate = rates[f] ?? BASE_RATES_USD[f] ?? 1.0;
+  const toRate = rates[t] ?? BASE_RATES_USD[t] ?? 1.0;
+  if (!fromRate || !toRate || isNaN(fromRate) || isNaN(toRate) || fromRate <= 0) return 1.0;
+  return toRate / fromRate;
 }
 
-export function formatDate(d: string | Date, fmt = "DD/MM/YYYY") {
-  const dt = typeof d === "string" ? new Date(d) : d;
-  if (Number.isNaN(dt.getTime())) return String(d);
-  const dd = String(dt.getDate()).padStart(2, "0");
-  const mm = String(dt.getMonth() + 1).padStart(2, "0");
-  const yyyy = dt.getFullYear();
-  const mon = dt.toLocaleString("en", { month: "short" });
-  if (fmt === "MM/DD/YYYY") return `${mm}/${dd}/${yyyy}`;
-  if (fmt === "YYYY-MM-DD") return `${yyyy}-${mm}-${dd}`;
-  if (fmt === "DD MMM YYYY") return `${dd} ${mon} ${yyyy}`;
-  return `${dd}/${mm}/${yyyy}`;
-}
+/**
+ * Converts all existing monetary records for a user from their old currency to their new currency.
+ */
+export async function convertAllUserAmounts(userId: string, fromCurrency: string, toCurrency: string) {
+  const f = (fromCurrency || "INR").toUpperCase();
+  const t = (toCurrency || "INR").toUpperCase();
+  if (f === t) return { rate: 1.0, fromCurrency: f, toCurrency: t };
 
-export function toMonthKey(d: Date | string) {
-  const dt = typeof d === "string" ? new Date(d) : d;
-  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
-}
+  const rate = await getExchangeRate(f, t);
+  if (!rate || isNaN(rate) || rate <= 0) {
+    return { rate: 1.0, fromCurrency: f, toCurrency: t };
+  }
+  const decimals = t === "JPY" ? 0 : 2;
 
-export function currentMonthKey() {
-  return toMonthKey(new Date());
+  // 1. Accounts
+  await db
+    .update(accounts)
+    .set({
+      balance: sql`ROUND((COALESCE(${accounts.balance}, 0) * ${rate})::numeric, ${decimals})`,
+      updatedAt: new Date(),
+    })
+    .where(eq(accounts.userId, userId));
+
+  // 2. Transactions
+  await db
+    .update(transactions)
+    .set({
+      amount: sql`ROUND((COALESCE(${transactions.amount}, 0) * ${rate})::numeric, ${decimals})`,
+      updatedAt: new Date(),
+    })
+    .where(eq(transactions.userId, userId));
+
+  // 3. Budgets
+  await db
+    .update(budgets)
+    .set({
+      amount: sql`ROUND((COALESCE(${budgets.amount}, 0) * ${rate})::numeric, ${decimals})`,
+    })
+    .where(eq(budgets.userId, userId));
+
+  // 4. Savings Goals
+  await db
+    .update(savingsGoals)
+    .set({
+      targetAmount: sql`ROUND((COALESCE(${savingsGoals.targetAmount}, 0) * ${rate})::numeric, ${decimals})`,
+      currentAmount: sql`ROUND((COALESCE(${savingsGoals.currentAmount}, 0) * ${rate})::numeric, ${decimals})`,
+      updatedAt: new Date(),
+    })
+    .where(eq(savingsGoals.userId, userId));
+
+  // 5. Recurring Transactions
+  await db
+    .update(recurringTransactions)
+    .set({
+      amount: sql`ROUND((COALESCE(${recurringTransactions.amount}, 0) * ${rate})::numeric, ${decimals})`,
+    })
+    .where(eq(recurringTransactions.userId, userId));
+
+  return { rate, fromCurrency: f, toCurrency: t };
 }
