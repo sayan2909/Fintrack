@@ -124,3 +124,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border-color: rgba(30, 41, 59, 0.8) !important;
 }
 
+/* Universal Form Input Dark-Mode Protection & Autofill Harmonizer */
+.dark input,
+.dark select,
+.dark textarea {
+  color-scheme: dark;
+}
+
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark input:hover,
+.dark select:hover,
+.dark textarea:hover {
+  background-color: #0f172a !important;
+}
+
+/* Chrome / Safari / Edge Autofill Fix (prevents browser from forcing stark white backgrounds) */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover, 
+.dark input:-webkit-autofill:focus, 
+.dark input:-webkit-autofill:active,
+.dark select:-webkit-autofill,
+.dark textarea:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+  -webkit-text-fill-color: #f8fafc !important;
+  caret-color: #f8fafc !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Dropdown option tags in dark mode */
+.dark option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
