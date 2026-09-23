@@ -25,6 +25,8 @@ import {
   Download,
   Upload,
   Check,
+  Sparkles,
+  Camera,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Field, inputCls, toast, Modal } from "@/components/ui";
@@ -55,57 +57,126 @@ function formatLastActive(dateStr: string | Date | undefined) {
   });
 }
 
-export const PRESET_AVATARS = [
+const PRESET_AVATARS = [
   {
     id: "alex",
-    name: "Alex — Modern Professional",
+    name: "Alex",
+    role: "Modern Tech",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=b6e3f4",
   },
   {
     id: "maya",
-    name: "Maya — Creative Lead",
+    name: "Maya",
+    role: "Creative Lead",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/notionists/svg?seed=Maya&backgroundColor=ffd5dc",
   },
   {
     id: "felix",
-    name: "Felix — Tech Executive",
+    name: "Felix",
+    role: "Tech Executive",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=c0aede",
   },
   {
     id: "sophia",
-    name: "Sophia — Financial Analyst",
+    name: "Sophia",
+    role: "Financial Analyst",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia&backgroundColor=d1d4f9",
   },
   {
-    id: "finbot",
-    name: "FinBot — AI Assistant",
-    url: "https://api.dicebear.com/7.x/bottts/svg?seed=FinTrack&backgroundColor=b6e3f4",
-  },
-  {
     id: "leo",
-    name: "Leo — Strategic Investor",
+    name: "Leo",
+    role: "Strategic Investor",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/lorelei/svg?seed=Leo&backgroundColor=ffdfbf",
   },
   {
     id: "priya",
-    name: "Priya — Founder",
+    name: "Priya",
+    role: "Founder & CEO",
+    category: "personas",
     url: "https://api.dicebear.com/7.x/lorelei/svg?seed=Priya&backgroundColor=ffd5dc",
   },
   {
+    id: "marcus",
+    name: "Marcus",
+    role: "Portfolio Manager",
+    category: "personas",
+    url: "https://api.dicebear.com/7.x/adventurer/svg?seed=Marcus&backgroundColor=b6e3f4",
+  },
+  {
+    id: "elena",
+    name: "Elena",
+    role: "Venture Partner",
+    category: "personas",
+    url: "https://api.dicebear.com/7.x/lorelei/svg?seed=Elena&backgroundColor=c0aede",
+  },
+  {
+    id: "finbot",
+    name: "FinBot",
+    role: "AI Copilot",
+    category: "bots",
+    url: "https://api.dicebear.com/7.x/bottts/svg?seed=FinTrack&backgroundColor=b6e3f4",
+  },
+  {
+    id: "cyber",
+    name: "Cyber",
+    role: "Crypto Specialist",
+    category: "bots",
+    url: "https://api.dicebear.com/7.x/bottts/svg?seed=Cyber&backgroundColor=d1d4f9",
+  },
+  {
+    id: "pulse",
+    name: "Pulse",
+    role: "Market Radar",
+    category: "bots",
+    url: "https://api.dicebear.com/7.x/bottts/svg?seed=Pulse&backgroundColor=ffd5dc",
+  },
+  {
     id: "sparkle",
-    name: "Sparkle — Playful Emoji",
+    name: "Sparkle",
+    role: "Lucky Emoji",
+    category: "shapes",
     url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Lucky&backgroundColor=ffdfbf",
   },
   {
+    id: "cosmic",
+    name: "Cosmic",
+    role: "Space Explorer",
+    category: "shapes",
+    url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Cosmic&backgroundColor=b6e3f4",
+  },
+  {
     id: "geo",
-    name: "Geometric — Minimalist",
+    name: "Geometric",
+    role: "Minimal Art",
+    category: "shapes",
     url: "https://api.dicebear.com/7.x/shapes/svg?seed=FinWealth&backgroundColor=d1d4f9",
+  },
+  {
+    id: "orbit",
+    name: "Orbit",
+    role: "Modern Flow",
+    category: "shapes",
+    url: "https://api.dicebear.com/7.x/shapes/svg?seed=Orbit&backgroundColor=c0aede",
+  },
+  {
+    id: "diamond",
+    name: "Diamond",
+    role: "Sovereign Tier",
+    category: "shapes",
+    url: "https://api.dicebear.com/7.x/shapes/svg?seed=Diamond&backgroundColor=ffd5dc",
   },
 ];
 
 export default function SettingsPage() {
   const { user, setUser, logout } = useAuth();
   const { theme, setTheme } = useTheme();
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [avatarCategory, setAvatarCategory] = useState<"all" | "personas" | "bots" | "shapes">("all");
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -470,152 +541,168 @@ export default function SettingsPage() {
                   <p className="text-xs text-slate-500">Your profile details across FinTrack.</p>
                 </div>
               </div>
-              <div className="mt-4 space-y-3.5">
-                <Field label="Full Name">
-                  <input
-                    className={inputCls}
-                    required
-                    value={profile.name}
-                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                  />
-                </Field>
-                <Field label="Email Address">
-                  <input
-                    className={inputCls}
-                    type="email"
-                    required
-                    value={profile.email}
-                    onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                  />
-                </Field>
-                <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Profile Avatar / Picture
-                    </label>
-                    {profile.avatarUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setProfile({ ...profile, avatarUrl: "" })}
-                        className="text-[11px] font-medium text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
-                      >
-                        Reset to Initials
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Active Preview & Selection Dropdown */}
-                  <div className="flex items-center gap-3.5">
-                    <div className="relative shrink-0">
+              <div className="mt-4 space-y-4">
+                {/* Profile Avatar Hero Banner */}
+                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-800/80">
+                  <div className="relative group shrink-0">
+                    <div className="relative h-16 w-16 rounded-2xl overflow-hidden ring-2 ring-indigo-500/30 ring-offset-2 ring-offset-white dark:ring-offset-[#111827] shadow-sm transition-transform group-hover:scale-105">
                       {profile.avatarUrl ? (
                         <img
                           src={profile.avatarUrl}
-                          alt="Avatar preview"
-                          className="h-14 w-14 rounded-2xl object-cover border-2 border-indigo-500/40 shadow-xs dark:border-indigo-400/40"
+                          alt="Profile avatar"
+                          className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-black text-white shadow-xs">
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-2xl font-black text-white">
                           {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                         </div>
                       )}
-                    </div>
-
-                    <div className="flex-1 space-y-1.5">
-                      <select
-                        className={inputCls}
-                        value={
-                          PRESET_AVATARS.some((a) => a.url === profile.avatarUrl)
-                            ? profile.avatarUrl
-                            : profile.avatarUrl
-                            ? "custom"
-                            : ""
-                        }
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (val === "custom") return;
-                          setProfile({ ...profile, avatarUrl: val });
-                        }}
-                      >
-                        <option value="">Default (Initials Badge)</option>
-                        <optgroup label="Preset Personas">
-                          {PRESET_AVATARS.map((a) => (
-                            <option key={a.id} value={a.url}>
-                              {a.name}
-                            </option>
-                          ))}
-                        </optgroup>
-                        {profile.avatarUrl &&
-                          !PRESET_AVATARS.some((a) => a.url === profile.avatarUrl) && (
-                            <option value="custom">Custom Uploaded Photo</option>
-                          )}
-                      </select>
-
-                      <div className="flex items-center gap-2">
-                        <label className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg cursor-pointer transition">
-                          <Upload className="h-3.5 w-3.5" />
-                          <span>Choose File from Device</span>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleFileUpload}
-                          />
-                        </label>
-                      </div>
+                      {/* Interactive camera overlay on hover */}
+                      <label className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-xs">
+                        <Camera className="h-5 w-5" />
+                        <span className="text-[9px] font-bold mt-0.5">Upload</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                        />
+                      </label>
                     </div>
                   </div>
 
-                  {/* Preset Avatar Grid */}
-                  <div className="pt-1.5">
-                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-                      Or select directly from presets:
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        {profile.name || "FinTrack User"}
+                      </h4>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20">
+                        {profile.avatarUrl
+                          ? PRESET_AVATARS.find((a) => a.url === profile.avatarUrl)?.name || "Custom Photo"
+                          : "Initials Badge"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2.5 truncate">
+                      {profile.email || "No email set"}
                     </p>
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => setProfile({ ...profile, avatarUrl: "" })}
-                        className={`group relative flex h-11 w-11 items-center justify-center rounded-xl border transition cursor-pointer ${
-                          !profile.avatarUrl
-                            ? "border-indigo-600 ring-2 ring-indigo-500/30 bg-indigo-50 dark:bg-indigo-950/40"
-                            : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-slate-300"
-                        }`}
-                        title="Default Initials Badge"
+                        onClick={() => setAvatarModalOpen(true)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow-indigo-500/20 transition-all cursor-pointer"
                       >
-                        <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">
-                          {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
-                        </span>
-                        {!profile.avatarUrl && (
-                          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
-                            <Check className="h-2.5 w-2.5" />
-                          </span>
-                        )}
+                        <Sparkles className="h-3.5 w-3.5" />
+                        Choose Avatar
                       </button>
-
-                      {PRESET_AVATARS.map((a) => {
-                        const isSelected = profile.avatarUrl === a.url;
-                        return (
-                          <button
-                            key={a.id}
-                            type="button"
-                            onClick={() => setProfile({ ...profile, avatarUrl: a.url })}
-                            className={`group relative flex h-11 w-11 items-center justify-center rounded-xl border p-0.5 transition cursor-pointer overflow-hidden ${
-                              isSelected
-                                ? "border-indigo-600 ring-2 ring-indigo-500/30 shadow-xs"
-                                : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700"
-                            }`}
-                            title={a.name}
-                          >
-                            <img src={a.url} alt={a.name} className="h-full w-full rounded-lg object-cover" />
-                            {isSelected && (
-                              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
-                                <Check className="h-2.5 w-2.5" />
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
+                      <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-200/70 hover:bg-slate-200 text-slate-700 dark:bg-slate-700/60 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-300/50 dark:border-slate-600/50 transition-all cursor-pointer">
+                        <Upload className="h-3.5 w-3.5" />
+                        Upload
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleFileUpload}
+                        />
+                      </label>
+                      {profile.avatarUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setProfile({ ...profile, avatarUrl: "" })}
+                          className="text-xs font-medium text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 px-1 py-1 transition cursor-pointer"
+                          title="Reset to default initials badge"
+                        >
+                          Reset
+                        </button>
+                      )}
                     </div>
                   </div>
+                </div>
+
+                {/* Quick Presets Strip */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Quick Pick Avatars
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setAvatarModalOpen(true)}
+                      className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 flex items-center gap-1 cursor-pointer"
+                    >
+                      Browse all 16 <span aria-hidden="true">&rarr;</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    {/* Initials Option */}
+                    <button
+                      type="button"
+                      onClick={() => setProfile({ ...profile, avatarUrl: "" })}
+                      className={`group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 transition-all cursor-pointer ${
+                        !profile.avatarUrl
+                          ? "border-indigo-600 ring-2 ring-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/60 scale-105"
+                          : "border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:border-indigo-400/50"
+                      }`}
+                      title="Default Initials Badge"
+                    >
+                      <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">
+                        {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+                      </span>
+                    </button>
+
+                    {PRESET_AVATARS.slice(0, 6).map((a) => {
+                      const isSelected = profile.avatarUrl === a.url;
+                      return (
+                        <button
+                          key={a.id}
+                          type="button"
+                          onClick={() => setProfile({ ...profile, avatarUrl: a.url })}
+                          className={`group relative h-10 w-10 shrink-0 rounded-xl border-2 transition-all cursor-pointer overflow-hidden ${
+                            isSelected
+                              ? "border-indigo-600 ring-2 ring-indigo-500/40 scale-105 shadow-md"
+                              : "border-slate-200 dark:border-slate-700 hover:border-indigo-400/50 hover:scale-105"
+                          }`}
+                          title={`${a.name} (${a.role})`}
+                        >
+                          <img src={a.url} alt={a.name} className="h-full w-full object-cover" />
+                          {isSelected && (
+                            <span className="absolute inset-0 bg-indigo-600/20 flex items-center justify-center">
+                              <Check className="h-3.5 w-3.5 text-indigo-600 dark:text-white drop-shadow" />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      type="button"
+                      onClick={() => setAvatarModalOpen(true)}
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-dashed border-slate-300 hover:border-indigo-500 dark:border-slate-700 dark:hover:border-indigo-400 text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-all text-xs font-bold cursor-pointer"
+                      title="View all avatars"
+                    >
+                      +10
+                    </button>
+                  </div>
+                </div>
+
+                {/* User Input Fields */}
+                <div className="grid gap-3 pt-1 sm:grid-cols-2">
+                  <Field label="Full Name">
+                    <input
+                      className={inputCls}
+                      required
+                      value={profile.name}
+                      onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                    />
+                  </Field>
+                  <Field label="Email Address">
+                    <input
+                      className={inputCls}
+                      type="email"
+                      required
+                      value={profile.email}
+                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                    />
+                  </Field>
                 </div>
               </div>
             </Card>
@@ -1212,6 +1299,151 @@ export default function SettingsPage() {
               disabled={!deletePassword}
             >
               Permanently Delete Account
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Avatar Studio Modal */}
+      <Modal
+        open={avatarModalOpen}
+        onClose={() => setAvatarModalOpen(false)}
+        title="Avatar Studio"
+        wide
+      >
+        <div className="space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Select an official persona or upload your own photo to personalize your FinTrack workspace.
+            </p>
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition shadow-xs shrink-0">
+              <Camera className="h-3.5 w-3.5" />
+              <span>Upload Custom Photo</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  handleFileUpload(e);
+                  setAvatarModalOpen(false);
+                }}
+              />
+            </label>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 w-fit text-xs font-medium">
+            {[
+              { id: "all", label: "All (16)" },
+              { id: "personas", label: "Personas" },
+              { id: "bots", label: "AI & Bots" },
+              { id: "shapes", label: "Creative" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setAvatarCategory(tab.id as any)}
+                className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                  avatarCategory === tab.id
+                    ? "bg-white text-indigo-600 shadow-xs font-semibold dark:bg-slate-900 dark:text-white"
+                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Avatar Cards Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+            {/* Initials Badge Card */}
+            {(avatarCategory === "all" || avatarCategory === "personas") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setProfile({ ...profile, avatarUrl: "" });
+                  toast("Switched to Initials badge");
+                }}
+                className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
+                  !profile.avatarUrl
+                    ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20"
+                    : "border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 bg-slate-50/50 dark:bg-slate-900/40"
+                }`}
+              >
+                <div className="relative mb-2.5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-black text-white shadow-xs group-hover:scale-105 transition-transform">
+                    {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  {!profile.avatarUrl && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
+                      <Check className="h-3 w-3" />
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs font-bold text-slate-900 dark:text-white">Initials Badge</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Classic Default</div>
+              </button>
+            )}
+
+            {/* Presets */}
+            {PRESET_AVATARS.filter(
+              (a) => avatarCategory === "all" || a.category === avatarCategory
+            ).map((a) => {
+              const isSelected = profile.avatarUrl === a.url;
+              return (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => {
+                    setProfile({ ...profile, avatarUrl: a.url });
+                    toast(`Avatar set to ${a.name}! ✨`);
+                  }}
+                  className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
+                    isSelected
+                      ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20 shadow-xs"
+                      : "border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 bg-slate-50/50 dark:bg-slate-900/40"
+                  }`}
+                >
+                  <div className="relative mb-2.5">
+                    <img
+                      src={a.url}
+                      alt={a.name}
+                      className="h-14 w-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 group-hover:scale-105 transition-transform"
+                    />
+                    {isSelected && (
+                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
+                        <Check className="h-3 w-3" />
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-full">
+                    {a.name}
+                  </div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate max-w-full">
+                    {a.role}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+            {profile.avatarUrl ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setProfile({ ...profile, avatarUrl: "" });
+                  toast("Reset to Initials badge");
+                }}
+                className="text-xs font-medium text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
+              >
+                Reset to Initials
+              </button>
+            ) : (
+              <span />
+            )}
+            <Button variant="primary" onClick={() => setAvatarModalOpen(false)}>
+              Done
             </Button>
           </div>
         </div>
