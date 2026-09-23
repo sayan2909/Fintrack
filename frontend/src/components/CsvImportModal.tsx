@@ -13,7 +13,7 @@ interface AccountOption {
   id: string;
   name: string;
   type: string;
-  balance: string;
+  balance?: string;
 }
 
 interface CsvImportModalProps {

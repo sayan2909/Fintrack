@@ -1059,7 +1059,6 @@ function TransactionsContent() {
         onClose={() => setImportModalOpen(false)}
         onSuccess={() => {
           load();
-          loadSummary();
         }}
         accounts={accounts}
         currency={currency}
