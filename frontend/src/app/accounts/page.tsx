@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Link from "next/link";
 import {
   Building2,
   Wallet,
@@ -15,6 +16,8 @@ import {
   Shield,
   Coins,
   X,
+  Copy,
+  ChevronRight,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Badge, inputCls, toast, ConfirmDialog } from "@/components/ui";
@@ -315,73 +318,82 @@ export default function AccountsPage() {
           </div>
         </div>
 
-        {/* Net Worth & Assets Hero Overview */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white dark:border-slate-800/80 dark:bg-[#111827] p-5 sm:p-6 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:shadow-none">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Left: Prominent Net Worth */}
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20">
-                <Landmark className="h-7 w-7" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Net Worth</span>
-                  <span className="rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/60 dark:bg-indigo-500/20 dark:text-indigo-400 dark:border-0 px-2.5 py-0.5 text-[10px] font-extrabold">
-                    {stats.accountCount} {stats.accountCount === 1 ? "Account" : "Accounts"}
-                  </span>
-                </div>
-                <p className="mt-1 text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
-                  {formatCurrency(stats.netWorth, currency)}
-                </p>
+        {/* Net Worth & Assets 3-Card KPI Strip */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {/* Card 1: Net Worth */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Total Net Worth
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400 shadow-2xs">
+                <Landmark className="h-4 w-4" />
               </div>
             </div>
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+              {formatCurrency(stats.netWorth, currency)}
+            </p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              {stats.accountCount} {stats.accountCount === 1 ? "active account" : "active accounts"} connected
+            </p>
+          </div>
 
-            {/* Right: Liquid Assets vs Liabilities breakdown with clean divider */}
-            <div className="flex flex-wrap items-center gap-6 sm:gap-10 border-t lg:border-t-0 lg:border-l border-slate-200/80 dark:border-slate-800/80 pt-4 lg:pt-0 lg:pl-10">
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                  <span>Liquid Assets</span>
-                </div>
-                <p className="mt-1 text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
-                  {formatCurrency(stats.totalAssets, currency)}
-                </p>
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Cash, savings & wallets</span>
-              </div>
-
-              <div className="h-10 w-px bg-slate-200/80 dark:bg-slate-800 hidden sm:block" />
-
-              <div>
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                  <span className="h-2 w-2 rounded-full bg-rose-500" />
-                  <span>Total Liabilities</span>
-                </div>
-                <p className="mt-1 text-xl sm:text-2xl font-black text-rose-700 dark:text-rose-400 tabular-nums">
-                  {formatCurrency(stats.totalLiabilities, currency)}
-                </p>
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Credit cards & debt dues</span>
+          {/* Card 2: Liquid Assets */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Liquid Capital
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 shadow-2xs">
+                <TrendingUp className="h-4 w-4" />
               </div>
             </div>
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
+              {formatCurrency(stats.totalAssets, currency)}
+            </p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Cash, checking & liquid reserves
+            </p>
+          </div>
+
+          {/* Card 3: Total Liabilities */}
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Total Liabilities
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400 shadow-2xs">
+                <CreditCard className="h-4 w-4" />
+              </div>
+            </div>
+            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 tracking-tight tabular-nums">
+              {formatCurrency(stats.totalLiabilities, currency)}
+            </p>
+            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              Credit card dues & obligations
+            </p>
           </div>
         </div>
 
         {/* Section Heading */}
         <div className="flex items-center justify-between pt-1">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Your Bank Cards & Wallets</h2>
-            <p className="text-xs text-slate-500">Manage balances, transfer funds, or inspect card transaction history.</p>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Connected Accounts & Ledgers</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Real-time balances, institution routing numbers, and transfer controls.
+            </p>
           </div>
         </div>
 
-        {/* Accounts Virtual Cards Grid */}
+        {/* Accounts Grid (Mercury / Stripe Executive Standard) */}
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {loading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-56 rounded-3xl bg-slate-100 animate-pulse dark:bg-slate-800" />
+              <div key={i} className="h-64 rounded-2xl bg-slate-100 animate-pulse dark:bg-slate-800/60" />
             ))
           ) : accounts.length === 0 ? (
             <div className="col-span-full py-12 text-center text-slate-400">
-              No accounts created yet. Click &quot;Add Account&quot; to get started!
+              No accounts connected yet. Click &quot;Add Account&quot; to link your first bank or wallet!
             </div>
           ) : (
             <>
@@ -393,54 +405,46 @@ export default function AccountsPage() {
                 return (
                   <div
                     key={acc.id}
-                    className="group relative flex flex-col justify-between overflow-hidden rounded-3xl p-5 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-                    style={{
-                      background: `linear-gradient(135deg, ${acc.color || "#4f46e5"}dd 0%, #0f172a 100%)`,
-                      border: `1px solid ${acc.color || "#6366f1"}40`,
-                    }}
+                    className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] hover:shadow-xl hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-indigo-500/40 transition-all duration-200"
                   >
-                    {/* Decorative ambient glow */}
-                    <div
-                      className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full opacity-35 blur-2xl"
-                      style={{ backgroundColor: acc.color || "#6366f1" }}
-                    />
-                    <div className="pointer-events-none absolute -left-8 -bottom-8 h-28 w-28 rounded-full bg-white opacity-10 blur-xl" />
-
-                    <div className="relative z-10">
-                      {/* Card Header: Icon, Name, Type, Actions */}
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 text-white shadow-inner">
+                    <div>
+                      {/* Card Top: Institution Icon, Name, Type & Edit Actions */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
+                            style={{ backgroundColor: acc.color || "#4f46e5" }}
+                          >
                             <IconComp className="h-5 w-5" />
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-extrabold text-white text-base tracking-tight drop-shadow-xs">
+                              <h3 className="font-bold text-slate-900 dark:text-white text-base tracking-tight truncate">
                                 {acc.name}
                               </h3>
                               {acc.isDefault && (
-                                <span className="rounded-full bg-white/20 backdrop-blur-md px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white border border-white/20">
+                                <span className="shrink-0 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
                                   Default
                                 </span>
                               )}
                             </div>
-                            <p className="text-[11px] font-medium text-white/70 uppercase tracking-wide">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate mt-0.5">
                               {acc.type}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleOpenEdit(acc)}
-                            className="rounded-lg p-1.5 text-white/70 hover:bg-white/20 hover:text-white transition cursor-pointer"
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition cursor-pointer"
                             title="Edit Account"
                           >
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteAccount(acc.id, acc.name, acc.isDefault)}
-                            className="rounded-lg p-1.5 text-white/70 hover:bg-rose-500/30 hover:text-rose-200 transition cursor-pointer"
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/20 dark:hover:text-rose-300 transition cursor-pointer"
                             title="Delete Account"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
@@ -448,72 +452,80 @@ export default function AccountsPage() {
                         </div>
                       </div>
 
-                      {/* Card Chip & Wireless Contactless Indicator */}
-                      <div className="my-5 flex items-center justify-between">
-                        <div className="flex items-center gap-2.5">
-                          {/* Gold EMV Chip Simulation */}
-                          <div className="h-7 w-9 rounded-md bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 p-0.5 shadow-sm border border-amber-600/30 flex items-center justify-center">
-                            <div className="h-full w-full rounded-xs border border-amber-800/25 grid grid-cols-2 gap-0.5 p-0.5 opacity-70">
-                              <div className="border-r border-b border-amber-900/30" />
-                              <div className="border-b border-amber-900/30" />
-                              <div className="border-r border-amber-900/30" />
-                              <div />
-                            </div>
-                          </div>
-                          {/* Contactless symbol */}
-                          <svg className="h-4 w-4 text-white/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                            <path d="M8.5 16.5a5 5 0 0 1 0-9" strokeLinecap="round" />
-                            <path d="M12 19a8.5 8.5 0 0 0 0-14" strokeLinecap="round" />
-                            <path d="M15.5 21.5a12 12 0 0 0 0-19" strokeLinecap="round" />
-                          </svg>
-                        </div>
-
-                        {/* Masked Account Number */}
-                        <span className="font-mono text-xs font-bold tracking-widest text-white/80">
+                      {/* Account Number & 1-Click Copy */}
+                      <div className="mt-4 flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80">
+                        <span className="font-mono text-xs font-semibold text-slate-600 dark:text-slate-300 tracking-wider">
                           •••• {acc.accountNumber ? acc.accountNumber.slice(-4) : "2489"}
                         </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const num = acc.accountNumber || "2489";
+                            navigator.clipboard.writeText(num);
+                            toast(`Account number copied: ${num} 📋`);
+                          }}
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition cursor-pointer"
+                          title="Copy Account Number"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span>Copy</span>
+                        </button>
                       </div>
 
-                      {/* Balance Display */}
-                      <div className="mt-2">
-                        <span className="block text-[10px] font-bold uppercase tracking-widest text-white/60">
+                      {/* Available Balance */}
+                      <div className="mt-4">
+                        <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                           Available Balance
                         </span>
-                        <span className={`text-2xl sm:text-3xl font-black tracking-tight tabular-nums drop-shadow-xs ${isNegative ? "text-rose-300" : "text-white"}`}>
+                        <span className={`mt-0.5 block text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+                          isNegative ? "text-rose-600 dark:text-rose-400" : "text-slate-900 dark:text-white"
+                        }`}>
                           {formatCurrency(balNum, currency)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Card Footer: Activity & Quick Actions */}
-                    <div className="relative z-10 mt-5 flex items-center justify-between border-t border-white/15 pt-3.5 text-xs">
-                      <span className="text-white/60 text-[11px]">
-                        Added {new Date(acc.createdAt).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
-                      </span>
+                    {/* Footer: Quick Actions */}
+                    <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                       <button
-                        onClick={() => (window.location.href = `/transactions?search=${encodeURIComponent(acc.name)}`)}
-                        className="inline-flex items-center gap-1 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md px-3 py-1.5 text-xs font-bold text-white border border-white/20 transition cursor-pointer"
+                        onClick={() => {
+                          setTransferForm((prev) => ({
+                            ...prev,
+                            fromAccountId: acc.id,
+                            toAccountId: accounts.find((a) => a.id !== acc.id)?.id || "",
+                          }));
+                          setShowTransferModal(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition cursor-pointer"
                       >
-                        Transactions →
+                        <ArrowRightLeft className="h-3.5 w-3.5" />
+                        Transfer
                       </button>
+
+                      <Link
+                        href={`/transactions?search=${encodeURIComponent(acc.name)}`}
+                        className="inline-flex items-center gap-1 font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition"
+                      >
+                        Activity <ChevronRight className="h-3.5 w-3.5" />
+                      </Link>
                     </div>
                   </div>
                 );
               })}
 
-              {/* Add Account Card Button */}
+              {/* Connect New Account Card */}
               <button
                 onClick={handleOpenAdd}
-                className="flex min-h-[220px] flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-slate-300/80 hover:border-indigo-500 bg-slate-50/50 hover:bg-indigo-50/20 dark:border-slate-800 dark:hover:border-indigo-500/50 dark:bg-slate-900/20 dark:hover:bg-indigo-500/5 p-6 transition group cursor-pointer"
+                className="flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-slate-300/80 hover:border-indigo-500 bg-white/40 hover:bg-indigo-50/20 dark:border-slate-800 dark:hover:border-indigo-500/50 dark:bg-[#0f172a]/40 dark:hover:bg-indigo-500/5 p-6 transition-all group cursor-pointer"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 group-hover:scale-110 transition">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 group-hover:scale-110 transition-transform">
                   <Plus className="h-6 w-6" />
                 </div>
                 <div className="text-center">
-                  <p className="font-extrabold text-sm text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                  <p className="font-bold text-sm text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                     Connect New Account
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">Add a bank, credit card, or wallet pass</p>
+                  <p className="text-xs text-slate-400 mt-1">Bank, credit card, or digital wallet</p>
                 </div>
               </button>
             </>
