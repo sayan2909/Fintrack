@@ -542,10 +542,10 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div className="mt-4 space-y-4">
-                {/* Profile Avatar Hero Banner */}
-                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-800/80">
+                {/* Profile Picture Control */}
+                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/60 border border-slate-200/70 dark:bg-slate-800/30 dark:border-slate-800/60">
                   <div className="relative group shrink-0">
-                    <div className="relative h-16 w-16 rounded-2xl overflow-hidden ring-2 ring-indigo-500/30 ring-offset-2 ring-offset-white dark:ring-offset-[#111827] shadow-sm transition-transform group-hover:scale-105">
+                    <div className="relative h-14 w-14 rounded-2xl overflow-hidden ring-2 ring-indigo-500/20 ring-offset-2 ring-offset-white dark:ring-offset-[#111827] shadow-xs transition-transform group-hover:scale-105">
                       {profile.avatarUrl ? (
                         <img
                           src={profile.avatarUrl}
@@ -553,14 +553,13 @@ export default function SettingsPage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-2xl font-black text-white">
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-xl font-black text-white">
                           {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                         </div>
                       )}
-                      {/* Interactive camera overlay on hover */}
                       <label className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-xs">
-                        <Camera className="h-5 w-5" />
-                        <span className="text-[9px] font-bold mt-0.5">Upload</span>
+                        <Camera className="h-4 w-4" />
+                        <span className="text-[9px] font-bold mt-0.5">Edit</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -572,31 +571,32 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                        {profile.name || "FinTrack User"}
-                      </h4>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-500/20">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                        Profile Avatar
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                         {profile.avatarUrl
-                          ? PRESET_AVATARS.find((a) => a.url === profile.avatarUrl)?.name || "Custom Photo"
-                          : "Initials Badge"}
-                      </span>
+                          ? PRESET_AVATARS.find((a) => a.url === profile.avatarUrl)
+                            ? `Preset: ${PRESET_AVATARS.find((a) => a.url === profile.avatarUrl)?.name}`
+                            : "Custom Photo"
+                          : "Default Initials Badge"}
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2.5 truncate">
-                      {profile.email || "No email set"}
-                    </p>
-                    <div className="flex flex-wrap items-center gap-2">
+
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
                       <button
                         type="button"
                         onClick={() => setAvatarModalOpen(true)}
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow-indigo-500/20 transition-all cursor-pointer"
                       >
                         <Sparkles className="h-3.5 w-3.5" />
-                        Choose Avatar
+                        Choose Persona
                       </button>
-                      <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-200/70 hover:bg-slate-200 text-slate-700 dark:bg-slate-700/60 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-300/50 dark:border-slate-600/50 transition-all cursor-pointer">
+
+                      <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs transition-all cursor-pointer">
                         <Upload className="h-3.5 w-3.5" />
-                        Upload
+                        Upload File
                         <input
                           type="file"
                           accept="image/*"
@@ -604,87 +604,21 @@ export default function SettingsPage() {
                           onChange={handleFileUpload}
                         />
                       </label>
+
                       {profile.avatarUrl && (
                         <button
                           type="button"
                           onClick={() => setProfile({ ...profile, avatarUrl: "" })}
                           className="text-xs font-medium text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 px-1 py-1 transition cursor-pointer"
-                          title="Reset to default initials badge"
                         >
-                          Reset
+                          Remove
                         </button>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Quick Presets Strip */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Quick Pick Avatars
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setAvatarModalOpen(true)}
-                      className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 flex items-center gap-1 cursor-pointer"
-                    >
-                      Browse all 16 <span aria-hidden="true">&rarr;</span>
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                    {/* Initials Option */}
-                    <button
-                      type="button"
-                      onClick={() => setProfile({ ...profile, avatarUrl: "" })}
-                      className={`group relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 transition-all cursor-pointer ${
-                        !profile.avatarUrl
-                          ? "border-indigo-600 ring-2 ring-indigo-500/40 bg-indigo-50 dark:bg-indigo-950/60 scale-105"
-                          : "border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:border-indigo-400/50"
-                      }`}
-                      title="Default Initials Badge"
-                    >
-                      <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">
-                        {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
-                      </span>
-                    </button>
-
-                    {PRESET_AVATARS.slice(0, 6).map((a) => {
-                      const isSelected = profile.avatarUrl === a.url;
-                      return (
-                        <button
-                          key={a.id}
-                          type="button"
-                          onClick={() => setProfile({ ...profile, avatarUrl: a.url })}
-                          className={`group relative h-10 w-10 shrink-0 rounded-xl border-2 transition-all cursor-pointer overflow-hidden ${
-                            isSelected
-                              ? "border-indigo-600 ring-2 ring-indigo-500/40 scale-105 shadow-md"
-                              : "border-slate-200 dark:border-slate-700 hover:border-indigo-400/50 hover:scale-105"
-                          }`}
-                          title={`${a.name} (${a.role})`}
-                        >
-                          <img src={a.url} alt={a.name} className="h-full w-full object-cover" />
-                          {isSelected && (
-                            <span className="absolute inset-0 bg-indigo-600/20 flex items-center justify-center">
-                              <Check className="h-3.5 w-3.5 text-indigo-600 dark:text-white drop-shadow" />
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-
-                    <button
-                      type="button"
-                      onClick={() => setAvatarModalOpen(true)}
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-dashed border-slate-300 hover:border-indigo-500 dark:border-slate-700 dark:hover:border-indigo-400 text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-all text-xs font-bold cursor-pointer"
-                      title="View all avatars"
-                    >
-                      +10
-                    </button>
-                  </div>
-                </div>
-
-                {/* User Input Fields */}
+                {/* Form Fields: Full Name & Email Address */}
                 <div className="grid gap-3 pt-1 sm:grid-cols-2">
                   <Field label="Full Name">
                     <input
