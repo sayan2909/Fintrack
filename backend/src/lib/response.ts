@@ -1,25 +1,25 @@
-import { NextResponse } from "next/server";
+import type { Response } from "express";
 
-export function ok<T>(data: T, status = 200, extra?: Record<string, unknown>) {
-  return NextResponse.json({ success: true, data, ...extra }, { status });
+export function ok<T>(res: Response, data: T, status = 200, extra?: Record<string, unknown>) {
+  return res.status(status).json({ success: true, data, ...(extra || {}) });
 }
 
-export function fail(message: string, status = 400, errors?: unknown) {
-  return NextResponse.json({ success: false, message, ...(errors ? { errors } : {}) }, { status });
+export function fail(res: Response, message: string, status = 400, errors?: unknown) {
+  return res.status(status).json({ success: false, message, ...(errors ? { errors } : {}) });
 }
 
-export function unauthorized(message = "Authentication required") {
-  return fail(message, 401);
+export function unauthorized(res: Response, message = "Authentication required") {
+  return fail(res, message, 401);
 }
 
-export function forbidden(message = "Access denied") {
-  return fail(message, 403);
+export function forbidden(res: Response, message = "Access denied") {
+  return fail(res, message, 403);
 }
 
-export function notFound(message = "Not found") {
-  return fail(message, 404);
+export function notFound(res: Response, message = "Not found") {
+  return fail(res, message, 404);
 }
 
-export function serverError(message = "Something went wrong") {
-  return fail(message, 500);
+export function serverError(res: Response, message = "Something went wrong") {
+  return fail(res, message, 500);
 }

@@ -6,7 +6,7 @@ import * as schema from "./schema";
 import path from "path";
 import fs from "fs";
 
-// Schema DDL script to guarantee all 7 tables and indexes exist
+// Schema DDL script to guarantee all 9 tables and indexes exist
 export const DDL_SCHEMA = `
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,10 +39,25 @@ CREATE TABLE IF NOT EXISTS categories (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS accounts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(120) NOT NULL,
+  type VARCHAR(32) NOT NULL DEFAULT 'Bank Account',
+  balance NUMERIC(14, 2) NOT NULL DEFAULT '0',
+  account_number VARCHAR(32),
+  color VARCHAR(16) NOT NULL DEFAULT '#6366f1',
+  icon VARCHAR(32) NOT NULL DEFAULT 'Building2',
+  is_default BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  account_id UUID REFERENCES accounts(id) ON DELETE SET NULL,
   category_name VARCHAR(80),
   type VARCHAR(16) NOT NULL,
   amount NUMERIC(14, 2) NOT NULL,
@@ -53,6 +68,9 @@ CREATE TABLE IF NOT EXISTS transactions (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Ensure account_id column exists if table was previously created without it
+ALTER TABLE transactions ADD COLUMN IF NOT EXISTS account_id UUID REFERENCES accounts(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS budgets (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -122,9 +140,11 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE INDEX IF NOT EXISTS users_email_idx ON users(email);
 CREATE INDEX IF NOT EXISTS categories_user_idx ON categories(user_id);
 CREATE INDEX IF NOT EXISTS categories_user_type_idx ON categories(user_id, type);
+CREATE INDEX IF NOT EXISTS accounts_user_idx ON accounts(user_id);
 CREATE INDEX IF NOT EXISTS tx_user_idx ON transactions(user_id);
 CREATE INDEX IF NOT EXISTS tx_user_date_idx ON transactions(user_id, date);
 CREATE INDEX IF NOT EXISTS tx_user_cat_idx ON transactions(user_id, category_id);
+CREATE INDEX IF NOT EXISTS tx_user_account_idx ON transactions(user_id, account_id);
 CREATE INDEX IF NOT EXISTS budgets_user_month_idx ON budgets(user_id, month);
 CREATE INDEX IF NOT EXISTS goals_user_idx ON savings_goals(user_id);
 CREATE INDEX IF NOT EXISTS recurring_user_idx ON recurring_transactions(user_id);
@@ -139,13 +159,12 @@ const globalForDb = globalThis as typeof globalThis & {
   __fintrackDb?: any;
   __fintrackPool?: Pool;
   __fintrackPglite?: PGlite;
-  __fintrackInitialized?: boolean;
+  __fintrackInitPromise?: Promise<void>;
 };
 
 const databaseUrl = process.env.DATABASE_URL;
 
 // Determine if we should use external PostgreSQL or local embedded PGlite
-// Localhost 5432 defaults to PGlite unless USE_EXTERNAL_PG=true
 const isLocalhostPg =
   !databaseUrl ||
   databaseUrl.includes("127.0.0.1:5432") ||
@@ -155,6 +174,11 @@ const shouldUseExternalPg =
   Boolean(databaseUrl) &&
   !isLocalhostPg &&
   process.env.USE_PGLITE !== "true";
+
+let readyResolve: () => void;
+const readyPromise = new Promise<void>((resolve) => {
+  readyResolve = resolve;
+});
 
 function initDatabase() {
   if (globalForDb.__fintrackDb) {
@@ -169,6 +193,7 @@ function initDatabase() {
         new Pool({
           connectionString: databaseUrl,
           ssl: isLocalHost ? false : { rejectUnauthorized: false },
+          connectionTimeoutMillis: 5000,
         });
 
       if (process.env.NODE_ENV !== "production") {
@@ -177,13 +202,16 @@ function initDatabase() {
 
       const dbInstance = drizzleNodePg(pool, { schema });
 
-      // Run DDL in background
-      if (!globalForDb.__fintrackInitialized) {
-        pool.query(DDL_SCHEMA).catch((err) => {
-          console.warn("[FinTrack DB] Auto-DDL warning:", err.message);
+      pool
+        .query(DDL_SCHEMA)
+        .then(() => {
+          console.log("[FinTrack DB] Connected to external PostgreSQL and schema verified");
+          readyResolve();
+        })
+        .catch((err) => {
+          console.warn("[FinTrack DB] Auto-DDL warning on external PG:", err.message);
+          readyResolve();
         });
-        globalForDb.__fintrackInitialized = true;
-      }
 
       globalForDb.__fintrackDb = dbInstance;
       return dbInstance;
@@ -198,6 +226,18 @@ function initDatabase() {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
+  // Clean stale lock files from previous abrupt process termination
+  const pidFile = path.join(dataDir, "postmaster.pid");
+  if (fs.existsSync(pidFile)) {
+    try {
+      fs.unlinkSync(pidFile);
+    } catch {
+      // ignore
+    }
+  }
+
+  console.log("[FinTrack DB] Initializing local embedded PGlite database (./data/pgdata)");
+
   const pglite =
     globalForDb.__fintrackPglite ??
     new PGlite(dataDir);
@@ -208,15 +248,24 @@ function initDatabase() {
 
   const dbInstance = drizzlePglite(pglite, { schema });
 
-  if (!globalForDb.__fintrackInitialized) {
-    pglite.exec(DDL_SCHEMA).catch((err) => {
-      console.warn("[FinTrack DB] PGlite Auto-DDL warning:", err.message);
+  pglite
+    .waitReady
+    .then(() => pglite.exec(DDL_SCHEMA))
+    .then(() => {
+      console.log("[FinTrack DB] Local PGlite ready — all 9 tables & indexes verified");
+      readyResolve();
+    })
+    .catch((err) => {
+      console.error("[FinTrack DB] PGlite initialization error:", err);
+      readyResolve();
     });
-    globalForDb.__fintrackInitialized = true;
-  }
 
   globalForDb.__fintrackDb = dbInstance;
   return dbInstance;
 }
 
 export const db = initDatabase();
+
+export async function ensureDatabaseReady(): Promise<void> {
+  await readyPromise;
+}

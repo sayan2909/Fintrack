@@ -24,7 +24,7 @@ export async function getLiveRates(): Promise<Record<string, number>> {
       signal: AbortSignal.timeout(3000),
     });
     if (res.ok) {
-      const json = await res.json();
+      const json = (await res.json()) as { rates?: Record<string, number> };
       if (json && json.rates) {
         liveRatesCache = {
           rates: { ...BASE_RATES_USD, ...json.rates },

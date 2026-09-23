@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { categories, notifications } from "@/db/schema";
+import { categories, accounts, notifications } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "./constants";
 
@@ -25,6 +25,24 @@ export async function ensureDefaultCategories(userId: string) {
     })),
   ];
   await db.insert(categories).values(rows);
+}
+
+export async function ensureDefaultAccount(userId: string) {
+  const existing = await db.select().from(accounts).where(eq(accounts.userId, userId)).limit(1);
+  if (existing.length > 0) return existing[0];
+  const [created] = await db
+    .insert(accounts)
+    .values({
+      userId,
+      name: "Main Account",
+      type: "Bank Account",
+      balance: "0",
+      color: "#6366f1",
+      icon: "Building2",
+      isDefault: true,
+    })
+    .returning();
+  return created;
 }
 
 export async function pushNotification(

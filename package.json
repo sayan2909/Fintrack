@@ -1,0 +1,17 @@
+{
+  "name": "fintrack-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FinTrack Financial Analytics Platform",
+  "scripts": {
+    "dev": "node run-dev.js",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "start": "node run-start.js",
+    "start:frontend": "npm --prefix frontend run start",
+    "start:backend": "npm --prefix backend run start"
+  }
+}

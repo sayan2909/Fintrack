@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import type { Request } from "express";
 import { db } from "@/db";
 import { sessions } from "@/db/schema";
 import { eq, and, ne, desc } from "drizzle-orm";
@@ -15,17 +15,14 @@ export function normalizeIp(rawIp?: string | null): string {
   if (!rawIp) return "127.0.0.1";
   let ip = rawIp.trim();
 
-  // If x-forwarded-for contains multiple IPs, take the first one
   if (ip.includes(",")) {
     ip = ip.split(",")[0].trim();
   }
 
-  // Strip IPv6-mapped IPv4 prefix (e.g. ::ffff:127.0.0.1 -> 127.0.0.1)
   if (ip.startsWith("::ffff:")) {
     ip = ip.slice(7);
   }
 
-  // Normalize IPv6 localhost loopback
   if (ip === "::1" || ip === "0:0:0:0:0:0:0:1" || ip === "localhost") {
     ip = "127.0.0.1";
   }
@@ -64,7 +61,7 @@ export async function resolvePublicIpIfLocal(ip: string): Promise<string> {
 /**
  * Parses user agent string to identify device category, browser, and OS without external dependencies.
  */
-export function parseClientInfo(req?: NextRequest | null): ParsedClientInfo {
+export function parseClientInfo(req?: Request | null): ParsedClientInfo {
   if (!req) {
     return {
       device: "Desktop",
@@ -75,16 +72,15 @@ export function parseClientInfo(req?: NextRequest | null): ParsedClientInfo {
     };
   }
 
-  const ua = req.headers.get("user-agent") || "";
+  const ua = (req.headers["user-agent"] as string) || "";
   
-  // Extract client IP with priority headers
   const rawIp =
-    req.headers.get("cf-connecting-ip") ||
-    req.headers.get("true-client-ip") ||
-    req.headers.get("x-real-ip") ||
-    req.headers.get("x-client-ip") ||
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    (req as unknown as { ip?: string }).ip ||
+    (req.headers["cf-connecting-ip"] as string) ||
+    (req.headers["true-client-ip"] as string) ||
+    (req.headers["x-real-ip"] as string) ||
+    (req.headers["x-client-ip"] as string) ||
+    (typeof req.headers["x-forwarded-for"] === "string" ? req.headers["x-forwarded-for"].split(",")[0].trim() : null) ||
+    req.ip ||
     "127.0.0.1";
 
   const ip = normalizeIp(rawIp);
@@ -133,9 +129,6 @@ export function parseClientInfo(req?: NextRequest | null): ParsedClientInfo {
   };
 }
 
-/**
- * Creates a new active session record in the database.
- */
 export async function createUserSession({
   userId,
   token,
@@ -144,7 +137,7 @@ export async function createUserSession({
 }: {
   userId: string;
   token: string;
-  req?: NextRequest | null;
+  req?: Request | null;
   expiresAt?: Date;
 }) {
   try {
@@ -174,16 +167,12 @@ export async function createUserSession({
   }
 }
 
-/**
- * Updates last active timestamp for a session if at least 1 minute has elapsed.
- */
 const lastActiveCache = new Map<string, number>();
 
 export async function touchSession(token: string) {
   try {
     const now = Date.now();
     const lastUpdate = lastActiveCache.get(token) || 0;
-    // Debounce to at most once per 60 seconds per token
     if (now - lastUpdate < 60000) return;
 
     lastActiveCache.set(token, now);
@@ -196,9 +185,6 @@ export async function touchSession(token: string) {
   }
 }
 
-/**
- * Revokes a single session by token (e.g. during logout).
- */
 export async function destroySessionByToken(token: string) {
   try {
     lastActiveCache.delete(token);
@@ -208,9 +194,6 @@ export async function destroySessionByToken(token: string) {
   }
 }
 
-/**
- * Revokes a session by ID belonging to a specific user.
- */
 export async function destroySessionById(sessionId: string, userId: string) {
   try {
     await db
@@ -223,9 +206,6 @@ export async function destroySessionById(sessionId: string, userId: string) {
   }
 }
 
-/**
- * Revokes all sessions for a user except their current session token.
- */
 export async function destroyAllOtherSessions(userId: string, currentToken: string) {
   try {
     await db
@@ -238,9 +218,6 @@ export async function destroyAllOtherSessions(userId: string, currentToken: stri
   }
 }
 
-/**
- * Lists all active, non-expired sessions for a user, marking the current session.
- */
 export async function listUserSessions(userId: string, currentToken?: string | null) {
   try {
     const rows = await db

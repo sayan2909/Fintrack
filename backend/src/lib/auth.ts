@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import type { NextRequest, NextResponse } from "next/server";
+import type { Request, Response, NextFunction } from "express";
 import { db } from "@/db";
 import { users, sessions } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -32,53 +31,40 @@ export function verifyToken(token: string): { id: string; email: string } | null
   }
 }
 
-export function getTokenFromRequest(req: NextRequest): string | null {
-  const cookieToken = req.cookies.get(AUTH_COOKIE)?.value;
+export function getTokenFromRequest(req: Request): string | null {
+  const cookieToken = req.cookies?.[AUTH_COOKIE];
   if (cookieToken) return cookieToken;
-  const auth = req.headers.get("authorization");
-  if (auth?.startsWith("Bearer ")) return auth.slice(7);
+  const auth = req.headers.authorization;
+  if (auth && typeof auth === "string" && auth.startsWith("Bearer ")) {
+    return auth.slice(7);
+  }
   return null;
 }
 
-export function shouldUseSecureCookies(req?: NextRequest | null): boolean {
-  if (process.env.NODE_ENV !== "production") return false;
-  if (!req) return false;
-  
-  const host = req.headers.get("host") || "";
-  if (host.includes("localhost") || host.includes("127.0.0.1") || host.startsWith("192.168.")) {
-    return false;
-  }
-  const proto = req.headers.get("x-forwarded-proto") || req.nextUrl?.protocol || "";
-  return proto.includes("https");
-}
-
-export function setAuthCookie(res: NextResponse, token: string, req?: NextRequest | null) {
-  res.cookies.set(AUTH_COOKIE, token, {
+export function setAuthCookie(res: Response, token: string) {
+  res.cookie(AUTH_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: shouldUseSecureCookies(req),
+    secure: process.env.NODE_ENV === "production" && !process.env.DISABLE_SECURE_COOKIE,
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 }
 
-export function clearAuthCookie(res: NextResponse) {
-  res.cookies.set(AUTH_COOKIE, "", {
-    httpOnly: true,
+export function clearAuthCookie(res: Response) {
+  res.clearCookie(AUTH_COOKIE, {
     path: "/",
-    maxAge: 0,
-    expires: new Date(0),
+    httpOnly: true,
     sameSite: "lax",
   });
 }
 
-export async function getAuthUser(req: NextRequest) {
+export async function getAuthUser(req: Request) {
   const token = getTokenFromRequest(req);
   if (!token) return null;
   const decoded = verifyToken(token);
   if (!decoded) return null;
 
-  // Check if session exists in DB
   const sessionRows = await db
     .select()
     .from(sessions)
@@ -88,17 +74,14 @@ export async function getAuthUser(req: NextRequest) {
   let currentSession = sessionRows[0];
 
   if (!currentSession) {
-    // Graceful auto-creation for valid existing JWT tokens
     currentSession = (await createUserSession({
       userId: decoded.id,
       token,
       req,
     })) as typeof sessions.$inferSelect;
   } else if (new Date(currentSession.expiresAt) < new Date()) {
-    // Session has expired in DB
     return null;
   } else {
-    // Touch session activity
     touchSession(token);
   }
 
@@ -109,7 +92,7 @@ export async function getAuthUser(req: NextRequest) {
   return { ...safe, currentSessionId: currentSession?.id };
 }
 
-export async function getActiveSession(req: NextRequest) {
+export async function getActiveSession(req: Request) {
   const token = getTokenFromRequest(req);
   if (!token) return null;
 
@@ -135,19 +118,27 @@ export async function getActiveSession(req: NextRequest) {
   };
 }
 
-export async function getAuthUserFromCookies() {
-  const store = await cookies();
-  const token = store.get(AUTH_COOKIE)?.value;
-  if (!token) return null;
-  const decoded = verifyToken(token);
-  if (!decoded) return null;
-  const rows = await db.select().from(users).where(eq(users.id, decoded.id)).limit(1);
-  if (!rows[0]) return null;
-  const { passwordHash: _ph, resetToken: _rt, resetExpires: _re, ...safe } = rows[0];
-  return safe;
+export type SafeUser = NonNullable<Awaited<ReturnType<typeof getAuthUser>>>;
+
+export interface AuthenticatedRequest extends Request {
+  user?: SafeUser;
 }
 
-export type SafeUser = NonNullable<Awaited<ReturnType<typeof getAuthUser>>>;
+/**
+ * Express middleware to require authentication.
+ */
+export async function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Authentication required" });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Authentication failed" });
+  }
+}
 
 export function validateEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

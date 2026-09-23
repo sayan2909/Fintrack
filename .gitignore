@@ -1,8 +1,13 @@
 # Dependencies
 node_modules/
 
-# Next.js build
+# Build outputs
 .next/
+dist/
+
+# Database data
+pgdata/
+backend/data/
 
 # Environment variables
 .env
