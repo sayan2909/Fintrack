@@ -19,8 +19,11 @@ export async function verifyPassword(pw: string, hash: string) {
   return bcrypt.compare(pw, hash);
 }
 
+import { randomBytes } from "crypto";
+
 export function signToken(payload: { id: string; email: string }) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+  const nonce = randomBytes(8).toString("hex");
+  return jwt.sign({ ...payload, nonce }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
 }
 
 export function verifyToken(token: string): { id: string; email: string } | null {

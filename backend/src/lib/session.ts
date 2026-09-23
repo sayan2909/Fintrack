@@ -158,6 +158,17 @@ export async function createUserSession({
         expiresAt: expiry,
         lastActive: new Date(),
       })
+      .onConflictDoUpdate({
+        target: sessions.token,
+        set: {
+          lastActive: new Date(),
+          ipAddress: resolvedIp,
+          userAgent: info.userAgent,
+          device: info.device,
+          browser: info.browser,
+          os: info.os,
+        },
+      })
       .returning();
 
     return inserted[0];
