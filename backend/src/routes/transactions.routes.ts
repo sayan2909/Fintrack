@@ -54,16 +54,18 @@ router.get("/", async (req, res) => {
     if (search) {
       const s = search.toLowerCase();
       const userAccs = await db.select().from(accounts).where(eq(accounts.userId, user.id));
-      const accMap = new Map(userAccs.map((a) => [a.id, (a.name || "").toLowerCase()]));
+      const accMap = new Map<string, string>(userAccs.map((a) => [a.id, (a.name || "").toLowerCase()]));
 
-      filtered = all.filter(
-        (t) =>
+      filtered = all.filter((t) => {
+        const accName = t.accountId ? accMap.get(t.accountId) || "" : "";
+        return (
           (t.description || "").toLowerCase().includes(s) ||
           (t.categoryName || "").toLowerCase().includes(s) ||
           (t.notes || "").toLowerCase().includes(s) ||
           (t.paymentMethod || "").toLowerCase().includes(s) ||
-          (t.accountId && (accMap.get(t.accountId) || "").includes(s))
-      );
+          accName.includes(s)
+        );
+      });
     }
 
     const total = filtered.length;

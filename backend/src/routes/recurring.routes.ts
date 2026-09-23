@@ -4,7 +4,7 @@ import { recurringTransactions, categories, transactions, accounts } from "@/db/
 import { and, eq } from "drizzle-orm";
 import { getAuthUser } from "@/lib/auth";
 import { ok, fail, unauthorized, notFound } from "@/lib/response";
-import { parseAmount, nextDueDate } from "@/lib/server-utils";
+import { parseAmount, nextDueDate, advanceRecurringDueDate } from "@/lib/server-utils";
 
 const router = Router();
 
@@ -204,20 +204,12 @@ router.post("/:id/pay", async (req, res) => {
         .where(eq(accounts.id, targetAccount.id));
     }
 
-    const now = new Date();
-    const nextDate = nextDueDate(rec.startDate, rec.frequency);
-    if (nextDate <= now) {
-      const f = rec.frequency.toLowerCase();
-      if (f === "daily") nextDate.setDate(nextDate.getDate() + 1);
-      else if (f === "weekly") nextDate.setDate(nextDate.getDate() + 7);
-      else if (f === "yearly") nextDate.setFullYear(nextDate.getFullYear() + 1);
-      else nextDate.setMonth(nextDate.getMonth() + 1);
-    }
+    const nextDateStr = advanceRecurringDueDate(rec.startDate, rec.frequency);
 
     const updated = await db
       .update(recurringTransactions)
       .set({
-        startDate: nextDate.toISOString().slice(0, 10),
+        startDate: nextDateStr,
       })
       .where(eq(recurringTransactions.id, id))
       .returning();

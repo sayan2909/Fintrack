@@ -59,13 +59,31 @@ export async function pushNotification(
   }
 }
 
+export function parseDateOnly(str: string): Date {
+  const parts = str.split("-").map(Number);
+  if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+  return new Date(str);
+}
+
+export function formatDateOnly(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export function nextDueDate(start: string, frequency: string, from = new Date()): Date {
-  const s = new Date(start);
+  const s = parseDateOnly(start);
   if (Number.isNaN(s.getTime())) return from;
   const f = frequency.toLowerCase();
+
+  const fromMidnight = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+
   let next = new Date(s);
   let guard = 0;
-  while (next < from && guard < 500) {
+  while (next < fromMidnight && guard < 500) {
     if (f === "daily") next.setDate(next.getDate() + 1);
     else if (f === "weekly") next.setDate(next.getDate() + 7);
     else if (f === "monthly") next.setMonth(next.getMonth() + 1);
@@ -74,6 +92,30 @@ export function nextDueDate(start: string, frequency: string, from = new Date())
     guard++;
   }
   return next;
+}
+
+export function advanceRecurringDueDate(startStr: string, frequency: string): string {
+  const curDue = nextDueDate(startStr, frequency);
+  const f = frequency.toLowerCase();
+  const nextDate = new Date(curDue);
+
+  if (f === "daily") nextDate.setDate(nextDate.getDate() + 1);
+  else if (f === "weekly") nextDate.setDate(nextDate.getDate() + 7);
+  else if (f === "yearly") nextDate.setFullYear(nextDate.getFullYear() + 1);
+  else nextDate.setMonth(nextDate.getMonth() + 1);
+
+  const fromMidnight = new Date();
+  fromMidnight.setHours(0, 0, 0, 0);
+  let guard = 0;
+  while (nextDate < fromMidnight && guard < 500) {
+    if (f === "daily") nextDate.setDate(nextDate.getDate() + 1);
+    else if (f === "weekly") nextDate.setDate(nextDate.getDate() + 7);
+    else if (f === "yearly") nextDate.setFullYear(nextDate.getFullYear() + 1);
+    else nextDate.setMonth(nextDate.getMonth() + 1);
+    guard++;
+  }
+
+  return formatDateOnly(nextDate);
 }
 
 export function monthRange(monthKey: string) {
