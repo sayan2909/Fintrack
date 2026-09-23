@@ -50,22 +50,22 @@ export default function LandingPage() {
       }`}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/30">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
               <Wallet className="h-5 w-5" />
             </div>
             <span className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">FinTrack</span>
           </div>
           <nav className="hidden items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300 md:flex">
-            <a href="#features" className="hover:text-indigo-600 dark:hover:text-[#bbf246] transition">Features</a>
-            <a href="#how"      className="hover:text-indigo-600 dark:hover:text-[#bbf246] transition">How it works</a>
-            <a href="#cta"      className="hover:text-indigo-600 dark:hover:text-[#bbf246] transition">Get started</a>
+            <a href="#features" className="hover:text-indigo-600 dark:hover:text-emerald-400 transition">Features</a>
+            <a href="#how"      className="hover:text-indigo-600 dark:hover:text-emerald-400 transition">How it works</a>
+            <a href="#cta"      className="hover:text-indigo-600 dark:hover:text-emerald-400 transition">Get started</a>
           </nav>
           <div className="hidden items-center gap-2 md:flex">
             <button onClick={toggle} className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-300 transition cursor-pointer" title={theme === "dark" ? "Switch to Light" : "Switch to Dark"}>
               {theme === "dark" ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-slate-600" />}
             </button>
             <Link href="/login"    className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100/80 dark:text-slate-300 dark:hover:bg-slate-800 transition">Sign In</Link>
-            <Link href="/register" className="rounded-full bg-[#bbf246] hover:bg-[#a8e030] px-5 py-2 text-sm font-black text-[#0b0e11] shadow-md shadow-[#bbf246]/25 transition active:scale-[0.97]">Get Started</Link>
+            <Link href="/register" className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 px-5 py-2 text-sm font-semibold shadow-xs transition active:scale-[0.98]">Get Started</Link>
           </div>
           <div className="flex items-center gap-2 md:hidden">
             <button onClick={toggle} className="rounded-xl border border-slate-200/80 bg-slate-50/80 p-2 text-slate-600 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-300 transition cursor-pointer">
@@ -80,7 +80,7 @@ export default function LandingPage() {
           <div className="border-t border-slate-200 bg-white px-4 py-3 md:hidden dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex flex-col gap-2">
               <Link href="/login"    className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">Sign In</Link>
-              <Link href="/register" className="rounded-full bg-[#bbf246] px-3 py-2 text-sm font-black text-[#0b0e11] text-center">Get Started</Link>
+              <Link href="/register" className="rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 px-3 py-2 text-sm font-semibold text-center">Get Started</Link>
             </div>
           </div>
         )}
@@ -89,27 +89,27 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden pt-10 pb-16 sm:pt-12 sm:pb-20">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 h-[500px] w-[500px] sm:h-[700px] sm:w-[700px] rounded-full bg-gradient-to-br from-[#bbf246]/10 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "6s" }} />
+          <div className="absolute -top-40 -right-40 h-[500px] w-[500px] sm:h-[700px] sm:w-[700px] rounded-full bg-gradient-to-br from-emerald-500/5 via-slate-500/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "6s" }} />
           <div className="absolute top-60 -left-40 h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-gradient-to-br from-emerald-400/8 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "8s", animationDelay: "1s" }} />
-          <div className="absolute bottom-0 right-1/3 h-[300px] w-[300px] sm:h-[400px] sm:w-[400px] rounded-full bg-gradient-to-br from-[#bbf246]/5 to-transparent blur-3xl" />
+          <div className="absolute bottom-0 right-1/3 h-[300px] w-[300px] sm:h-[400px] sm:w-[400px] rounded-full bg-gradient-to-br from-slate-500/5 to-transparent blur-3xl" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)]" />
         </div>
 
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:pt-6">
           {/* Left: copy */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-[#bbf246] shadow-sm">
-              <Sparkles className="h-3.5 w-3.5 text-[#bbf246] animate-pulse" /> Personal Finance, Simplified
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-emerald-400 shadow-sm">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-500 animate-pulse" /> Personal Finance, Simplified
             </div>
             <h1 className="mt-5 text-4xl font-black leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-[3.5rem]">
               Take Control of{" "}
-              <span className="bg-gradient-to-r from-[#bbf246] via-[#d4ff70] to-[#bbf246] bg-clip-text text-transparent">Your Money</span>
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">Your Money</span>
             </h1>
             <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg mx-auto max-w-lg lg:mx-0">
               Track your spending, manage budgets, reach your savings goals, and understand your financial habits — all in one place.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
-              <Link href="/register" className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-[#bbf246] hover:bg-[#a8e030] px-7 py-3.5 text-sm font-black text-[#0b0e11] shadow-lg shadow-[#bbf246]/20 transition-all duration-200 active:scale-[0.97]">
+              <Link href="/register" className="group inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 px-7 py-3.5 text-sm font-semibold shadow-xs transition-all duration-200 active:scale-[0.98]">
                 Get Started Free <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 stroke-[2.5]" />
               </Link>
               <Link href="/login" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-7 py-3.5 text-sm font-bold text-slate-700 hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-200 dark:hover:bg-[#20252e] shadow-sm transition-all duration-200 active:scale-[0.97]">
@@ -119,8 +119,8 @@ export default function LandingPage() {
             <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-slate-500 dark:text-slate-400 sm:flex sm:flex-wrap sm:items-center sm:gap-x-5 sm:justify-center lg:justify-start">
               {["Free to start", "INR formatting", "Smart alerts", "Instant reports"].map((t) => (
                 <span key={t} className="inline-flex items-center gap-1.5">
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#bbf246]/20 dark:bg-[#bbf246]/15">
-                    <Check className="h-2.5 w-2.5 text-[#0b0e11] dark:text-[#bbf246] stroke-[3]" />
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 dark:bg-emerald-500/10">
+                    <Check className="h-2.5 w-2.5 text-slate-950 dark:text-emerald-400 stroke-[3]" />
                   </span>
                   {t}
                 </span>
@@ -130,18 +130,18 @@ export default function LandingPage() {
 
           {/* Right: static dashboard preview — desktop only */}
           <div className="relative hidden md:block">
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-[#bbf246]/10 via-[#bbf246]/5 to-transparent blur-2xl" />
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-emerald-500/5 via-slate-500/5 to-transparent blur-2xl" />
             <div className="relative rounded-3xl border border-slate-200/90 bg-white p-6 shadow-2xl dark:border-white/[0.08] dark:bg-[#15181d]">
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">November 2026 · Net Worth</p>
                   <p className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-0.5">₹1,25,400</p>
-                  <p className="text-xs font-bold text-emerald-600 dark:text-[#bbf246] flex items-center gap-1 mt-1">
+                  <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-1">
                     <TrendingUp className="h-3 w-3" /> +12.4% this month
                   </p>
                 </div>
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-lg shadow-[#bbf246]/25">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
                   <Wallet className="h-5 w-5 stroke-[2.5]" />
                 </div>
               </div>
@@ -149,8 +149,8 @@ export default function LandingPage() {
               {/* 3 stat pills */}
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {[
-                  ["Income",   "₹85,000", "text-emerald-600 dark:text-[#bbf246]", "bg-emerald-50 dark:bg-[#bbf246]/10"],
-                  ["Expenses", "₹42,300", "text-rose-500 dark:text-[#ff6347]",       "bg-rose-50 dark:bg-rose-950/30"],
+                  ["Income",   "₹85,000", "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 dark:bg-emerald-500/10"],
+                  ["Expenses", "₹42,300", "text-rose-500 dark:text-rose-500",       "bg-rose-50 dark:bg-rose-950/30"],
                   ["Savings",  "50.2%",   "text-slate-900 dark:text-white",         "bg-slate-50 dark:bg-[#1b1f26]"],
                 ].map(([l, v, c, bg]) => (
                   <div key={l} className={`rounded-xl ${bg} p-2.5`}>
@@ -164,7 +164,7 @@ export default function LandingPage() {
               <div className="mb-4 space-y-2.5 border-t border-slate-100 dark:border-white/[0.06] pt-3">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Budget Usage</p>
                 {[
-                  { name: "Food",     pct: 80, bar: "bg-[#bbf246]" },
+                  { name: "Food",     pct: 80, bar: "bg-emerald-500" },
                   { name: "Shopping", pct: 88, bar: "bg-amber-400" },
                   { name: "Tech",     pct: 97, bar: "bg-rose-500" },
                 ].map((b) => (
@@ -190,12 +190,12 @@ export default function LandingPage() {
                 ].map((tx) => (
                   <div key={tx.label} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${tx.inc ? "bg-[#bbf246]/15 text-[#bbf246]" : "bg-rose-500/10 text-[#ff6347]"}`}>
+                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${tx.inc ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"}`}>
                         {tx.inc ? <ArrowDownLeft className="h-3.5 w-3.5 stroke-[2.5]" /> : <ArrowUpRight className="h-3.5 w-3.5 stroke-[2.5]" />}
                       </div>
                       <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{tx.label}</span>
                     </div>
-                    <span className={`text-xs font-black ${tx.inc ? "text-[#bbf246]" : "text-slate-900 dark:text-white"}`}>{tx.amt}</span>
+                    <span className={`text-xs font-black ${tx.inc ? "text-emerald-500" : "text-slate-900 dark:text-white"}`}>{tx.amt}</span>
                   </div>
                 ))}
               </div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
 
             {/* Floating badge */}
             <div className="absolute -right-4 -top-4 rounded-2xl border border-slate-200/80 bg-white/95 px-3.5 py-2.5 shadow-xl backdrop-blur-sm dark:border-white/[0.08] dark:bg-[#15181d]/95">
-              <p className="text-xs font-bold text-emerald-600 dark:text-[#bbf246] flex items-center gap-1"><Check className="h-3.5 w-3.5 stroke-[2.5]" /> High Precision Data</p>
+              <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><Check className="h-3.5 w-3.5 stroke-[2.5]" /> High Precision Data</p>
               <p className="text-[10px] text-slate-400 mt-0.5">Instant Local Processing</p>
             </div>
           </div>
@@ -219,19 +219,19 @@ export default function LandingPage() {
             <div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">November 2026</p>
               <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">₹1,25,400</p>
-              <p className="text-xs font-bold text-emerald-600 dark:text-[#bbf246] flex items-center gap-1 mt-0.5">
+              <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mt-0.5">
                 <TrendingUp className="h-3 w-3" /> +12.4% this month
               </p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/25">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
               <Wallet className="h-5 w-5 stroke-[2.5]" />
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 mb-4">
             {[
-              ["Income",   "₹85K",  "text-emerald-600 dark:text-[#bbf246]", "bg-emerald-50 dark:bg-[#bbf246]/10"],
-              ["Expenses", "₹42K",  "text-rose-500 dark:text-[#ff6347]",       "bg-rose-50 dark:bg-rose-950/40"],
+              ["Income",   "₹85K",  "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 dark:bg-emerald-500/10"],
+              ["Expenses", "₹42K",  "text-rose-500 dark:text-rose-500",       "bg-rose-50 dark:bg-rose-950/40"],
               ["Savings",  "50.2%", "text-slate-900 dark:text-white",         "bg-slate-50 dark:bg-[#1b1f26]"],
             ].map(([l, v, c, bg]) => (
               <div key={l} className={`rounded-xl ${bg} p-2.5 text-center`}>
@@ -268,11 +268,11 @@ export default function LandingPage() {
         <div className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d]">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm font-bold text-slate-900 dark:text-white">Monthly Budgets</p>
-            <span className="rounded-full bg-[#bbf246]/15 px-2.5 py-1 text-[11px] font-bold text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30">Healthy</span>
+            <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-slate-950 dark:text-emerald-400 border border-emerald-500/20">Healthy</span>
           </div>
           <div className="space-y-3">
             {[
-              { name: "Food & Groceries",  spent: 4000, limit: 5000, pct: 80, bar: "bg-[#bbf246]" },
+              { name: "Food & Groceries",  spent: 4000, limit: 5000, pct: 80, bar: "bg-emerald-500" },
               { name: "Retail & Shopping", spent: 4400, limit: 5000, pct: 88, bar: "bg-amber-400" },
               { name: "Tech & SaaS",       spent: 2900, limit: 3000, pct: 97, bar: "bg-rose-500" },
             ].map((b) => (
@@ -292,7 +292,7 @@ export default function LandingPage() {
         {/* Quick feature grid */}
         <div className="grid grid-cols-2 gap-3">
           {[
-            { icon: Receipt,   title: "Expense Log",      desc: "Log in seconds",           color: "from-[#bbf246] to-emerald-400",  bg: "bg-slate-50/70 dark:bg-[#1b1f26]" },
+            { icon: Receipt,   title: "Expense Log",      desc: "Log in seconds",           color: "from-emerald-600 to-teal-500",  bg: "bg-slate-50/70 dark:bg-[#1b1f26]" },
             { icon: PiggyBank, title: "Savings Goals",    desc: "Track progress",           color: "from-amber-400 to-orange-400",  bg: "bg-slate-50/70 dark:bg-[#1b1f26]" },
             { icon: Bell,      title: "Smart Alerts",     desc: "Budget warnings",          color: "from-rose-500 to-pink-500",     bg: "bg-slate-50/70 dark:bg-[#1b1f26]" },
             { icon: BarChart3, title: "Analytics",        desc: "Visual insights",          color: "from-emerald-400 to-teal-500",   bg: "bg-slate-50/70 dark:bg-[#1b1f26]" },
@@ -349,7 +349,7 @@ export default function LandingPage() {
               <div key={s.label}>
                 <p className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
                   <span>{s.val}</span>
-                  <span className="text-[#bbf246]">{s.suff}</span>
+                  <span className="text-emerald-500">{s.suff}</span>
                 </p>
                 <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">{s.label}</p>
               </div>
@@ -362,10 +362,10 @@ export default function LandingPage() {
       <div className="border-b border-slate-200/80 bg-slate-50/80 dark:border-white/[0.08] dark:bg-[#121519] py-5">
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-x-10 sm:gap-y-3 text-xs font-bold text-slate-500 dark:text-slate-400">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 shrink-0 text-[#bbf246]" /> Bank-Grade AES-256</span>
-            <span className="flex items-center gap-1.5"><Lock className="h-4 w-4 shrink-0 text-[#bbf246]" /> Zero 3rd-Party Trackers</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 shrink-0 text-emerald-500" /> Bank-Grade AES-256</span>
+            <span className="flex items-center gap-1.5"><Lock className="h-4 w-4 shrink-0 text-emerald-500" /> Zero 3rd-Party Trackers</span>
             <span className="flex items-center gap-1.5"><Zap className="h-4 w-4 shrink-0 text-amber-500" /> Embedded PGlite DB</span>
-            <span className="flex items-center gap-1.5"><Bot className="h-4 w-4 shrink-0 text-[#bbf246]" /> FinBot Copilot</span>
+            <span className="flex items-center gap-1.5"><Bot className="h-4 w-4 shrink-0 text-emerald-500" /> FinBot Copilot</span>
           </div>
         </div>
       </div>
@@ -373,10 +373,10 @@ export default function LandingPage() {
       {/* Features */}
       <section id="features" className="mx-auto max-w-6xl px-4 py-14 sm:py-20 sm:px-6">
         <div className="text-center mb-8 sm:mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-[#bbf246]">Features</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-emerald-400">Features</p>
           <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl lg:text-4xl">
             Everything you need to{" "}
-            <span className="text-slate-900 dark:text-[#bbf246]">master money</span>
+            <span className="text-slate-900 dark:text-emerald-400">master money</span>
           </h2>
           <p className="mt-3 mx-auto max-w-xl text-sm text-slate-500 dark:text-slate-400 sm:text-base">From daily expense logging to long-term goal tracking — every tool your financial life needs.</p>
         </div>
@@ -396,7 +396,7 @@ export default function LandingPage() {
       {/* Testimonials */}
       <section className="border-y border-slate-200/80 bg-slate-50/80 dark:border-white/[0.08] dark:bg-[#121519] py-12 sm:py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-[#bbf246] mb-6 sm:mb-8">What users say</p>
+          <p className="text-center text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-emerald-400 mb-6 sm:mb-8">What users say</p>
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               { name: "Priya S.",  role: "Freelance Designer",  quote: "FinTrack transformed how I manage irregular income. Recurring payments alone saved me ₹8,000 in missed bills.", stars: 5 },
@@ -407,7 +407,7 @@ export default function LandingPage() {
                 <div className="flex gap-0.5 mb-3">{Array.from({ length: r.stars }).map((_, i) => <span key={i} className="text-amber-400 text-sm">★</span>)}</div>
                 <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">"{r.quote}"</p>
                 <div className="mt-4 flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#bbf246] text-xs font-black text-[#0b0e11]">{r.name[0]}</div>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-xs font-bold text-white dark:bg-white/[0.1] dark:border dark:border-white/10 dark:text-white">{r.name[0]}</div>
                   <div>
                     <p className="text-xs font-bold text-slate-900 dark:text-white">{r.name}</p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">{r.role}</p>
@@ -423,7 +423,7 @@ export default function LandingPage() {
       <section id="how" className="py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center mb-8 sm:mb-10">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-[#bbf246]">Process</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 dark:text-emerald-400">Process</p>
             <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl lg:text-4xl">How it works</h2>
           </div>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
@@ -434,7 +434,7 @@ export default function LandingPage() {
               { n: "4", icon: BarChart3, t: "Understand your finances", d: "Charts, reports & AI-powered insights." },
             ].map(({ n, icon: Icon, t, d }) => (
               <div key={n} className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] text-center hover:-translate-y-1 transition-transform duration-200">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/20">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
                   <Icon className="h-5 w-5 stroke-[2.5]" />
                 </div>
                 <h3 className="mt-4 font-bold text-slate-900 dark:text-white">{t}</h3>
@@ -450,8 +450,8 @@ export default function LandingPage() {
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-gradient-to-br from-slate-900 via-[#121519] to-[#15181d] dark:border-white/[0.08] dark:from-[#15181d] dark:via-[#121519] dark:to-[#0b0e11] p-8 text-center text-white shadow-2xl sm:p-12 lg:p-16">
           <div className="pointer-events-none absolute inset-0">
             {/* Subtle Neon Lime Glow matching brand theme */}
-            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#bbf246]/10 blur-3xl" />
-            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#bbf246]/5 blur-3xl" />
+            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-emerald-500/5 blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-slate-500/5 blur-3xl" />
             <div className="absolute inset-0 bg-[radial-gradient(50%_50%_at_50%_0%,rgba(187,242,70,0.08),transparent)]" />
           </div>
           <div className="relative z-10">
@@ -464,7 +464,7 @@ export default function LandingPage() {
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
               <Link
                 href="/register"
-                className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-[#bbf246] hover:bg-[#a8e030] px-8 py-3.5 text-sm font-black text-[#0b0e11] shadow-lg shadow-[#bbf246]/25 transition-all duration-200 active:scale-[0.97]"
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 px-8 py-3.5 text-sm font-semibold shadow-xs transition-all duration-200 active:scale-[0.98]"
               >
                 <span>Get Started Free</span>
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 stroke-[2.5]" />
@@ -485,7 +485,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           {/* Centered Brand */}
           <div className="flex items-center justify-center gap-2.5 mb-7">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] font-black shadow-sm shadow-[#bbf246]/20">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
               <Wallet className="h-4 w-4 stroke-[2.5]" />
             </div>
             <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white">

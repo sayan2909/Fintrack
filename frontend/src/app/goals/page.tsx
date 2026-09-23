@@ -286,7 +286,7 @@ export default function GoalsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-xs animate-pulse" />
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Wealth & Milestones
               </span>
@@ -308,7 +308,7 @@ export default function GoalsPage() {
                   onClick={() => setViewMode(v)}
                   className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     viewMode === v
-                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11]"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -454,7 +454,7 @@ export default function GoalsPage() {
                 onClick={() => setStatusFilter(tab.id as any)}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   statusFilter === tab.id
-                    ? "bg-white text-slate-900 shadow-xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-bold"
+                    ? "bg-white text-slate-900 shadow-xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-bold"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -462,7 +462,7 @@ export default function GoalsPage() {
                 <span
                   className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     statusFilter === tab.id
-                      ? "bg-slate-100 text-slate-900 dark:bg-black/20 dark:text-[#0b0e11]"
+                      ? "bg-slate-100 text-slate-900 dark:bg-black/20 dark:text-slate-950"
                       : "bg-slate-200/70 text-slate-600 dark:bg-white/[0.08] dark:text-slate-400"
                   }`}
                 >
@@ -481,7 +481,7 @@ export default function GoalsPage() {
                 placeholder="Search goals..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8.5 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-[#bbf246] dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-100 shadow-2xs"
+                className="h-8.5 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-emerald-500 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-100 shadow-2xs"
               />
               {searchQuery && (
                 <button
@@ -496,7 +496,7 @@ export default function GoalsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="h-8.5 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-300 cursor-pointer shadow-2xs"
+              className="h-8.5 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-emerald-500 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-300 cursor-pointer shadow-2xs"
             >
               <option value="percent">Sort: % Progress</option>
               <option value="target">Sort: Target Amount</option>
@@ -516,7 +516,7 @@ export default function GoalsPage() {
         ) : filteredGoals.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300/80 bg-white p-12 text-center dark:border-white/[0.08] dark:bg-[#15181d]">
             <EmptyState
-              icon={<Target className="h-8 w-8 text-[#bbf246]" />}
+              icon={<Target className="h-8 w-8 text-emerald-500" />}
               title={goals.length === 0 ? "No savings goals created yet" : "No goals match your search"}
               message={
                 goals.length === 0
@@ -525,7 +525,7 @@ export default function GoalsPage() {
               }
               action={
                 goals.length === 0 ? (
-                  <Button onClick={openAdd} className="bg-[#bbf246] hover:bg-[#aae335] text-[#0b0e11] font-bold">
+                  <Button onClick={openAdd} className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold">
                     <Plus className="h-4 w-4 mr-1.5" /> Create First Goal
                   </Button>
                 ) : (
@@ -737,7 +737,7 @@ export default function GoalsPage() {
                                 e.stopPropagation();
                                 quickContribute(g, quick);
                               }}
-                              className="py-1 px-1.5 rounded-lg text-xs font-bold bg-slate-100/90 hover:bg-[#bbf246] hover:text-[#0b0e11] text-slate-700 dark:bg-white/[0.05] dark:hover:bg-[#bbf246] dark:hover:text-[#0b0e11] dark:text-slate-300 transition-all cursor-pointer tabular-nums text-center border border-slate-200/60 dark:border-white/[0.05]"
+                              className="py-1 px-1.5 rounded-lg text-xs font-bold bg-slate-100/90 hover:bg-emerald-500 hover:text-slate-950 text-slate-700 dark:bg-white/[0.05] dark:hover:bg-emerald-500 dark:hover:text-slate-950 dark:text-slate-300 transition-all cursor-pointer tabular-nums text-center border border-slate-200/60 dark:border-white/[0.05]"
                             >
                               +{formatCurrency(quick, currency)}
                             </button>
@@ -754,7 +754,7 @@ export default function GoalsPage() {
                         setMoney({ goal: g, action: "add" });
                         setAmt("");
                       }}
-                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#bbf246] hover:bg-[#aae335] text-[#0b0e11] py-2 px-3 text-xs font-black transition-all shadow-xs cursor-pointer"
+                      className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 py-2 px-3 text-xs font-black transition-all shadow-xs cursor-pointer"
                     >
                       <ArrowDownToLine className="h-3.5 w-3.5 stroke-[2.5]" />
                       <span>Deposit</span>
@@ -779,9 +779,9 @@ export default function GoalsPage() {
             {/* Add Goal Action Tile */}
             <button
               onClick={openAdd}
-              className="rounded-2xl border-2 border-dashed border-slate-200/90 hover:border-[#bbf246] bg-white/40 hover:bg-white p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[260px] dark:border-white/[0.12] dark:hover:border-[#bbf246]/60 dark:bg-white/[0.02] dark:hover:bg-[#15181d] transition-all duration-300 group cursor-pointer"
+              className="rounded-2xl border-2 border-dashed border-slate-200/90 hover:border-emerald-500 bg-white/40 hover:bg-white p-6 flex flex-col items-center justify-center text-center gap-3 min-h-[260px] dark:border-white/[0.12] dark:hover:border-emerald-500/30 dark:bg-white/[0.02] dark:hover:bg-[#15181d] transition-all duration-300 group cursor-pointer"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-white/[0.06] dark:text-[#bbf246] group-hover:bg-[#bbf246] group-hover:text-[#0b0e11] group-hover:scale-110 transition-all duration-300 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-white/[0.06] dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-950 group-hover:scale-110 transition-all duration-300 shadow-sm">
                 <Plus className="h-6 w-6 stroke-[2.5]" />
               </div>
               <div>
@@ -928,11 +928,11 @@ export default function GoalsPage() {
 
         {/* ── 3.5 Interactive Wealth Velocity & Timeline Simulator ────── */}
         <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-[#bbf246]/10 via-emerald-500/5 to-transparent rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-emerald-500/10 via-slate-500/5 to-transparent rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
 
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-[#bbf246]/15 text-[#6c9818] dark:text-[#bbf246] mb-2 border border-[#bbf246]/30">
+              <div className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/10 text-[#6c9818] dark:text-emerald-400 mb-2 border border-emerald-500/20">
                 <Flame className="h-3 w-3 stroke-[2.5]" />
                 <span>Wealth Velocity Simulator</span>
               </div>
@@ -949,7 +949,7 @@ export default function GoalsPage() {
                   <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                     Monthly Allocation
                   </span>
-                  <span className="text-base sm:text-lg font-black text-[#6c9818] dark:text-[#bbf246] tabular-nums">
+                  <span className="text-base sm:text-lg font-black text-[#6c9818] dark:text-emerald-400 tabular-nums">
                     {formatCurrency(simulatedMonthly, currency)}/mo
                   </span>
                 </div>
@@ -961,7 +961,7 @@ export default function GoalsPage() {
                   step="500"
                   value={simulatedMonthly}
                   onChange={(e) => setSimulatedMonthly(Number(e.target.value))}
-                  className="w-full accent-[#bbf246] cursor-pointer h-2 bg-slate-200 dark:bg-white/[0.08] rounded-lg appearance-none"
+                  className="w-full accent-slate-900 dark:accent-emerald-500 cursor-pointer h-2 bg-slate-200 dark:bg-white/[0.08] rounded-lg appearance-none"
                 />
 
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">
@@ -972,7 +972,7 @@ export default function GoalsPage() {
                       onClick={() => setSimulatedMonthly(presetVal)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer tabular-nums ${
                         simulatedMonthly === presetVal
-                          ? "bg-[#bbf246] text-[#0b0e11] shadow-xs"
+                          ? "bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs"
                           : "bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] dark:text-slate-300"
                       }`}
                     >
@@ -990,7 +990,7 @@ export default function GoalsPage() {
                 if (!targetGoal) {
                   return (
                     <div className="text-center py-4">
-                      <Sparkles className="h-6 w-6 text-[#bbf246] mx-auto mb-2" />
+                      <Sparkles className="h-6 w-6 text-emerald-500 mx-auto mb-2" />
                       <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Create a goal below to unlock real-time forecasts!
                       </p>
@@ -1051,7 +1051,7 @@ export default function GoalsPage() {
                       </div>
                       <div className="flex items-center justify-between text-[11px]">
                         <span className="text-slate-400">Pace Status</span>
-                        <span className="font-extrabold text-[#6c9818] dark:text-[#bbf246]">
+                        <span className="font-extrabold text-[#6c9818] dark:text-emerald-400">
                           {paceNote}
                         </span>
                       </div>
@@ -1063,7 +1063,7 @@ export default function GoalsPage() {
                         setMoney({ goal: targetGoal, action: "add" });
                         setAmt(String(simulatedMonthly));
                       }}
-                      className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#bbf246] hover:bg-[#aae335] text-[#0b0e11] transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <Sparkles className="h-4 w-4 stroke-[2.5]" />
                       <span>Deposit {formatCurrency(simulatedMonthly, currency)} to {targetGoal.name}</span>
@@ -1135,7 +1135,7 @@ export default function GoalsPage() {
               return (
                 <div
                   key={bp.name}
-                  className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 dark:border-white/[0.06] dark:bg-white/[0.02] hover:border-[#bbf246]/50 dark:hover:border-[#bbf246]/50 transition-all flex flex-col justify-between group"
+                  className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 dark:border-white/[0.06] dark:bg-white/[0.02] hover:border-slate-200 dark:border-white/10 dark:hover:border-slate-200 dark:border-white/10 transition-all flex flex-col justify-between group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-3">
@@ -1153,7 +1153,7 @@ export default function GoalsPage() {
                       </span>
                     </div>
 
-                    <h4 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-[#6c9818] dark:group-hover:text-[#bbf246] transition-colors">
+                    <h4 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-[#6c9818] dark:group-hover:text-emerald-500 transition-colors">
                       {bp.name}
                     </h4>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
@@ -1171,7 +1171,7 @@ export default function GoalsPage() {
                     <button
                       type="button"
                       onClick={() => applyPreset(bp as any)}
-                      className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold bg-white dark:bg-white/[0.08] hover:bg-[#bbf246] hover:text-[#0b0e11] dark:hover:bg-[#bbf246] dark:hover:text-[#0b0e11] text-slate-700 dark:text-slate-200 transition-all shadow-2xs border border-slate-200/80 dark:border-white/[0.06] cursor-pointer"
+                      className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold bg-white dark:bg-white/[0.08] hover:bg-emerald-500 hover:text-slate-950 dark:hover:bg-emerald-500 dark:hover:text-slate-950 text-slate-700 dark:text-slate-200 transition-all shadow-2xs border border-slate-200/80 dark:border-white/[0.06] cursor-pointer"
                     >
                       <span>Use</span>
                       <ArrowRight className="h-3 w-3" />

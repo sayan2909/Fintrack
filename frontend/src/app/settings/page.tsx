@@ -628,11 +628,11 @@ export default function SettingsPage() {
                 onClick={() => handleTabChange(t.id as "general" | "security" | "notifications" | "data")}
                 className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer whitespace-nowrap snap-center shrink-0 ${
                   isCurrent
-                    ? "bg-[#0b0e11] text-white shadow-xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black scale-[1.02]"
+                    ? "bg-[#0b0e11] text-white shadow-xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black scale-[1.02]"
                     : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#1b1f26]/80"
                 }`}
               >
-                <t.icon className={`h-4 w-4 shrink-0 transition-colors ${isCurrent ? "text-[#bbf246] dark:text-[#0b0e11]" : "text-slate-400"}`} />
+                <t.icon className={`h-4 w-4 shrink-0 transition-colors ${isCurrent ? "text-emerald-500 dark:text-slate-950" : "text-slate-400"}`} />
                 <span className="hidden sm:inline">{t.label}</span>
                 <span className="sm:hidden">{t.shortLabel}</span>
               </button>
@@ -660,7 +660,7 @@ export default function SettingsPage() {
                 <div
                   className={`h-1.5 w-full rounded-full transition-all duration-300 ${
                     isCurrent
-                      ? "bg-[#bbf246] shadow-xs shadow-[#bbf246]/50"
+                      ? "bg-emerald-500 shadow-xs shadow-xs"
                       : "bg-slate-200 dark:bg-white/[0.06] group-hover:bg-slate-300 dark:group-hover:bg-white/[0.12]"
                   }`}
                 />
@@ -677,7 +677,7 @@ export default function SettingsPage() {
             {/* Personal Information */}
             <Card>
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-white/[0.08]">
-                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20">
                   <User className="h-4 w-4" />
                 </div>
                 <div>
@@ -689,7 +689,7 @@ export default function SettingsPage() {
                 {/* Profile Picture Control */}
                 <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/60 border border-slate-200/70 dark:bg-[#1b1f26] dark:border-white/[0.06]">
                   <div className="relative group shrink-0">
-                    <div className="relative h-14 w-14 rounded-2xl overflow-hidden ring-2 ring-[#bbf246]/30 ring-offset-2 ring-offset-white dark:ring-offset-[#15181d] shadow-xs transition-transform group-hover:scale-105">
+                    <div className="relative h-14 w-14 rounded-2xl overflow-hidden ring-2 ring-emerald-500/30 ring-offset-2 ring-offset-white dark:ring-offset-[#15181d] shadow-xs transition-transform group-hover:scale-105">
                       {profile.avatarUrl ? (
                         <img
                           src={profile.avatarUrl}
@@ -697,7 +697,7 @@ export default function SettingsPage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-[#bbf246] text-xl font-black text-[#0b0e11]">
+                        <div className="flex h-full w-full items-center justify-center bg-emerald-500 text-xl font-black text-slate-950">
                           {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                         </div>
                       )}
@@ -732,7 +732,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setAvatarModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] shadow-xs transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 shadow-xs transition-all cursor-pointer"
                       >
                         <Sparkles className="h-3.5 w-3.5" />
                         Choose Avatar
@@ -788,7 +788,7 @@ export default function SettingsPage() {
             {/* Regional & Display */}
             <Card>
               <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-white/[0.08]">
-                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20">
                   <Palette className="h-4 w-4" />
                 </div>
                 <div>
@@ -827,8 +827,8 @@ export default function SettingsPage() {
 
                 {/* Currency Conversion Live Preview Info */}
                 {profile.currency !== (user?.currency || "INR") && (
-                  <div className="rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-3.5 text-xs text-slate-800 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/10 dark:text-[#bbf246]">
-                    <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-[#bbf246]">
+                  <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-slate-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
+                    <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-emerald-400">
                       <ArrowRightLeft className="h-4 w-4" />
                       <span>Automatic Balance & Amount Conversion</span>
                     </div>
@@ -859,11 +859,11 @@ export default function SettingsPage() {
                       onClick={() => setTheme("dark")}
                       className={`flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-bold transition-all cursor-pointer ${
                         theme === "dark"
-                          ? "bg-[#15181d] text-[#bbf246] border border-white/[0.08] shadow-xs font-black"
+                          ? "bg-[#15181d] text-emerald-500 border border-white/[0.08] shadow-xs font-black"
                           : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
-                      <Moon className="h-4 w-4 text-[#bbf246]" />
+                      <Moon className="h-4 w-4 text-emerald-500" />
                       Dark Mode
                     </button>
                   </div>
@@ -1174,7 +1174,7 @@ export default function SettingsPage() {
                     {/* Professional Sliding Toggle Switch */}
                     <div
                       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                        isChecked ? "bg-[#bbf246]" : "bg-slate-200 dark:bg-[#282f3a]"
+                        isChecked ? "bg-emerald-500" : "bg-slate-200 dark:bg-[#282f3a]"
                       }`}
                     >
                       <span
@@ -1207,10 +1207,10 @@ export default function SettingsPage() {
                   <img
                     src={profile.avatarUrl}
                     alt={profile.name}
-                    className="h-13 w-13 rounded-2xl object-cover border-2 border-[#bbf246]/30 shadow-xs"
+                    className="h-13 w-13 rounded-2xl object-cover border-2 border-emerald-500/20 shadow-xs"
                   />
                 ) : (
-                  <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-[#0b0e11] text-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] text-lg font-black shadow-xs">
+                  <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white dark:bg-white/[0.08] dark:border dark:border-white/10 dark:text-emerald-400 font-semibold text-lg shadow-xs">
                     {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                 )}
@@ -1219,8 +1219,8 @@ export default function SettingsPage() {
                     <h2 className="text-base font-bold text-slate-900 dark:text-white truncate">
                       {profile.name || "FinTrack User"}
                     </h2>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#bbf246]/15 px-2.5 py-0.5 text-[11px] font-black text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246]" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-black text-slate-950 dark:text-emerald-400 border border-emerald-500/20">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                       FinTrack Pro
                     </span>
                   </div>
@@ -1246,7 +1246,7 @@ export default function SettingsPage() {
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30 font-black">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20 font-black">
                     <Download className="h-5 w-5 stroke-[2.5]" />
                   </div>
                   <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
@@ -1558,7 +1558,7 @@ export default function SettingsPage() {
               variant="primary"
               onClick={executeImport}
               loading={importing}
-              className="bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] font-bold"
+              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 font-bold"
             >
               Restore & Ingest Data
             </Button>
@@ -1578,7 +1578,7 @@ export default function SettingsPage() {
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Select an avatar preset or upload a custom photo for your FinTrack profile.
             </p>
-            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8e030] cursor-pointer transition shadow-xs shrink-0">
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold hover:bg-slate-800 dark:hover:bg-emerald-400 cursor-pointer transition shadow-xs shrink-0">
               <Camera className="h-3.5 w-3.5 stroke-[2.5]" />
               <span>Upload Custom Photo</span>
               <input
@@ -1607,7 +1607,7 @@ export default function SettingsPage() {
                 onClick={() => setAvatarCategory(tab.id as any)}
                 className={`px-3 py-1.5 rounded-lg transition cursor-pointer font-bold ${
                   avatarCategory === tab.id
-                    ? "bg-white text-slate-900 shadow-xs dark:bg-[#181c22] dark:text-[#bbf246]"
+                    ? "bg-white text-slate-900 shadow-xs dark:bg-[#181c22] dark:text-emerald-400"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -1628,16 +1628,16 @@ export default function SettingsPage() {
                 }}
                 className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
                   !profile.avatarUrl
-                    ? "border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/10 ring-2 ring-[#bbf246]/30"
-                    : "border-slate-200/80 dark:border-slate-800 hover:border-[#bbf246]/50 bg-slate-50/50 dark:bg-slate-900/40"
+                    ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/10 ring-2 ring-emerald-500/30"
+                    : "border-slate-200/80 dark:border-slate-800 hover:border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-slate-900/40"
                 }`}
               >
                 <div className="relative mb-2.5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] text-xl font-black shadow-xs group-hover:scale-105 transition-transform">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-white dark:bg-white/[0.08] dark:border dark:border-white/10 dark:text-emerald-400 font-semibold text-xl shadow-xs group-hover:scale-105 transition-transform">
                     {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                   {!profile.avatarUrl && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#bbf246] text-[#0b0e11] font-black shadow-xs">
+                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
                       <Check className="h-3 w-3 stroke-[3]" />
                     </span>
                   )}
@@ -1662,8 +1662,8 @@ export default function SettingsPage() {
                   }}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
                     isSelected
-                      ? "border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/10 ring-2 ring-[#bbf246]/30 shadow-xs"
-                      : "border-slate-200/80 dark:border-slate-800 hover:border-[#bbf246]/50 bg-slate-50/50 dark:bg-slate-900/40"
+                      ? "border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/10 ring-2 ring-emerald-500/30 shadow-xs"
+                      : "border-slate-200/80 dark:border-slate-800 hover:border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-slate-900/40"
                   }`}
                 >
                   <div className="relative mb-2.5">
@@ -1673,7 +1673,7 @@ export default function SettingsPage() {
                       className="h-14 w-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 group-hover:scale-105 transition-transform"
                     />
                     {isSelected && (
-                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#bbf246] text-[#0b0e11] font-black shadow-xs">
+                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-xs">
                         <Check className="h-3 w-3 stroke-[3]" />
                       </span>
                     )}

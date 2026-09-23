@@ -17,7 +17,7 @@ export default function TermsOfServicePage() {
             <span>Back to FinTrack</span>
           </Link>
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] font-black">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold">
               <Wallet className="h-4 w-4 stroke-[2.5]" />
             </div>
             <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
@@ -45,7 +45,7 @@ export default function TermsOfServicePage() {
           {/* Card 1: Permitted Usage */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <CheckCircle2 className="h-4 w-4 text-[#bbf246]" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               1. Acceptance of Terms & Permitted Usage
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -67,7 +67,7 @@ export default function TermsOfServicePage() {
           {/* Card 3: Account Responsibilities */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <UserCheck className="h-4 w-4 text-[#bbf246]" />
+              <UserCheck className="h-4 w-4 text-emerald-500" />
               3. Account Security & User Credentials
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -78,7 +78,7 @@ export default function TermsOfServicePage() {
           {/* Card 4: Content Ownership */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <CheckCircle2 className="h-4 w-4 text-[#bbf246]" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               4. Proprietary Data Rights & User Content Ownership
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -93,7 +93,7 @@ export default function TermsOfServicePage() {
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               You may terminate your account and erase all associated records at any time via Settings. For questions regarding these Terms of Service or regulatory notices, contact our team at{" "}
-              <a href="mailto:support@fintrack.app" className="font-bold text-[#bbf246] hover:underline">
+              <a href="mailto:support@fintrack.app" className="font-bold text-emerald-500 hover:underline">
                 support@fintrack.app
               </a>.
             </p>
@@ -103,7 +103,7 @@ export default function TermsOfServicePage() {
         {/* Bottom Nav Links */}
         <div className="mt-10 pt-6 border-t border-slate-200/80 dark:border-white/[0.08] flex items-center justify-between text-xs text-slate-500">
           <p>© {new Date().getFullYear()} FinTrack. All rights reserved.</p>
-          <Link href="/privacy" className="font-semibold hover:text-slate-900 dark:hover:text-[#bbf246] transition">
+          <Link href="/privacy" className="font-semibold hover:text-slate-900 dark:hover:text-emerald-500 transition">
             View Privacy Policy →
           </Link>
         </div>

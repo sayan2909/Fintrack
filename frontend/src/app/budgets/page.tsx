@@ -90,7 +90,7 @@ const CATEGORY_COLORS_MAP: Record<string, string> = {
 };
 
 const CHART_PALETTE = [
-  "#bbf246", // Electric Lime
+  "#10b981", // Electric Lime
   "#ff6347", // Coral Orange
   "#8b5cf6", // Purple
   "#06b6d4", // Cyan

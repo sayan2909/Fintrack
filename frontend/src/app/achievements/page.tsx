@@ -45,7 +45,7 @@ const TIER_BADGES = {
   Bronze: "text-amber-700 bg-amber-50 border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40",
   Silver: "text-slate-700 bg-slate-100 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
   Gold: "text-amber-700 bg-amber-50 border-amber-300 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60",
-  Platinum: "text-[#bbf246] bg-[#bbf246]/10 border-[#bbf246]/30 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-[#bbf246]/30",
+  Platinum: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
 };
 
 const STAGES_CONFIG = [
@@ -169,7 +169,7 @@ export default function AchievementsPage() {
                 {stats?.unlockedCount || 0} / {stats?.totalCount || 0} Completed
               </span>
               <span className="text-slate-300 dark:text-slate-700">·</span>
-              <span className="text-slate-900 dark:text-[#bbf246] font-black">
+              <span className="text-slate-900 dark:text-emerald-400 font-black">
                 {totalXp} XP
               </span>
             </div>
@@ -180,12 +180,12 @@ export default function AchievementsPage() {
         <Card className="p-5 border-slate-200/80 dark:border-white/[0.08] dark:bg-[#15181d] rounded-3xl">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div className="flex items-center gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                 <Trophy className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
+                  <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-emerald-500/10 dark:text-emerald-400">
                     Stage {currentStage.stage} · {currentStage.title}
                   </span>
                   <span className="text-xs text-slate-400 font-medium">
@@ -206,7 +206,7 @@ export default function AchievementsPage() {
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                 <div
-                  className="h-full rounded-full bg-[#bbf246] transition-all duration-400"
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-400"
                   style={{ width: `${stageProgress}%` }}
                 />
               </div>

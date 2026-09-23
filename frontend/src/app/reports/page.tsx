@@ -94,7 +94,7 @@ export default function ReportsPage() {
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Reports & Statements
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-[#bbf246]/30 bg-[#bbf246]/10 px-2.5 py-0.5 text-[10px] font-bold text-slate-900 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-slate-900 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
               <PieChart className="h-3 w-3 stroke-[2.5]" />
               Tax & Audit Ready
             </span>
@@ -129,7 +129,7 @@ export default function ReportsPage() {
                 onClick={() => setPreset(v)}
                 className={`rounded-lg px-3 sm:px-3.5 py-1.5 transition cursor-pointer text-xs font-bold whitespace-nowrap ${
                   preset === v
-                    ? "bg-white text-slate-900 shadow-2xs ring-1 ring-black/5 dark:bg-[#bbf246] dark:text-[#0b0e11] dark:ring-0 font-black"
+                    ? "bg-white text-slate-900 shadow-2xs ring-1 ring-black/5 dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold dark:ring-0 font-black"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -161,7 +161,7 @@ export default function ReportsPage() {
 
           {data && (
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-              <Calendar className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
+              <Calendar className="h-3.5 w-3.5 text-slate-900 dark:text-emerald-400" />
               <span className="font-semibold text-slate-700 dark:text-slate-300">
                 {data.period.from} → {data.period.to}
               </span>
@@ -235,7 +235,7 @@ export default function ReportsPage() {
                 <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Net Surplus
                 </span>
-                <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-[#bbf246]/20 text-[#0b0e11] border border-[#bbf246]/40 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-0 font-black">
+                <span className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 border border-slate-200 dark:border-white/10 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-0 font-black">
                   <Wallet className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5 stroke-[2.5]" />
                 </span>
               </div>
@@ -300,7 +300,7 @@ export default function ReportsPage() {
               <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3.5">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#bbf246]/20 text-[#0b0e11] dark:bg-[#bbf246]/15 dark:text-[#bbf246] font-black">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/10 text-slate-950 dark:bg-emerald-500/10 dark:text-emerald-400 font-black">
                       <BarChart3 className="h-4 w-4 stroke-[2.5]" />
                     </div>
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -384,7 +384,7 @@ export default function ReportsPage() {
               {/* Payment Methods Breakdown */}
               <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                 <div className="flex items-center gap-2 mb-3">
-                  <CreditCard className="h-4 w-4 text-slate-900 dark:text-[#bbf246]" />
+                  <CreditCard className="h-4 w-4 text-slate-900 dark:text-emerald-400" />
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                     Payment Method Settlement
                   </h3>
@@ -401,7 +401,7 @@ export default function ReportsPage() {
                           key={m.name}
                           className="flex items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/80 p-3 dark:border-slate-800/80 dark:bg-slate-900/50"
                         >
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#bbf246]/20 text-[#0b0e11] dark:bg-[#bbf246]/15 dark:text-[#bbf246] font-black">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-slate-950 dark:bg-emerald-500/10 dark:text-emerald-400 font-black">
                             <Icon className="h-4 w-4 stroke-[2.5]" />
                           </div>
                           <div>
@@ -433,7 +433,7 @@ export default function ReportsPage() {
                   </div>
                   <Link
                     href="/budgets"
-                    className="text-xs font-bold text-slate-900 hover:text-slate-700 dark:text-[#bbf246] inline-flex items-center gap-0.5"
+                    className="text-xs font-bold text-slate-900 hover:text-slate-700 dark:text-emerald-400 inline-flex items-center gap-0.5"
                   >
                     <span>Manage</span> <ArrowRight className="h-3 w-3" />
                   </Link>
@@ -496,14 +496,14 @@ export default function ReportsPage() {
               <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 pb-3">
                   <div className="flex items-center gap-2">
-                    <Wallet className="h-4 w-4 text-slate-900 dark:text-[#bbf246]" />
+                    <Wallet className="h-4 w-4 text-slate-900 dark:text-emerald-400" />
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                       Savings Milestone Velocity
                     </h3>
                   </div>
                   <Link
                     href="/goals"
-                    className="text-xs font-bold text-slate-900 hover:text-slate-700 dark:text-[#bbf246] inline-flex items-center gap-0.5"
+                    className="text-xs font-bold text-slate-900 hover:text-slate-700 dark:text-emerald-400 inline-flex items-center gap-0.5"
                   >
                     <span>Goals</span> <ArrowRight className="h-3 w-3" />
                   </Link>
@@ -527,14 +527,14 @@ export default function ReportsPage() {
                             <span className="font-bold text-slate-900 dark:text-white">
                               {g.name}
                             </span>
-                            <span className="rounded-full bg-[#bbf246]/20 px-2 py-0.5 text-[10px] font-black text-slate-900 dark:text-[#bbf246]">
+                            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black text-slate-900 dark:text-emerald-400">
                               {pct}%
                             </span>
                           </div>
 
                           <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-slate-800">
                             <div
-                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-[#bbf246] transition-all duration-500"
+                              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500"
                               style={{ width: `${Math.max(3, pct)}%` }}
                             />
                           </div>

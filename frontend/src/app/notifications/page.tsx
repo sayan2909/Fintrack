@@ -180,7 +180,7 @@ export default function NotificationsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-xs animate-pulse" />
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Financial Intelligence & Alerts
               </span>
@@ -190,7 +190,7 @@ export default function NotificationsPage() {
                 Notification Center
               </h1>
               {unreadCount > 0 ? (
-                <span className="rounded-full bg-[#bbf246]/20 px-2.5 py-0.5 text-xs font-black text-slate-900 dark:bg-[#bbf246]/15 dark:text-[#bbf246] border border-[#bbf246]/30">
+                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-black text-slate-900 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-500/20">
                   {unreadCount} Action Needed
                 </span>
               ) : (
@@ -319,7 +319,7 @@ export default function NotificationsPage() {
                 onClick={() => setFilter(tab.id as any)}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   filter === tab.id
-                    ? "bg-white text-slate-900 shadow-xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                    ? "bg-white text-slate-900 shadow-xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -327,7 +327,7 @@ export default function NotificationsPage() {
                 <span
                   className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     filter === tab.id
-                      ? "bg-slate-100 text-slate-900 dark:bg-black/20 dark:text-[#0b0e11]"
+                      ? "bg-slate-100 text-slate-900 dark:bg-black/20 dark:text-slate-950"
                       : "bg-slate-200/70 text-slate-600 dark:bg-white/[0.08] dark:text-slate-400"
                   }`}
                 >
@@ -345,7 +345,7 @@ export default function NotificationsPage() {
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-8.5 w-full sm:w-64 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-[#bbf246] dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-100 shadow-2xs"
+              className="h-8.5 w-full sm:w-64 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-emerald-500 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-100 shadow-2xs"
             />
             {searchQuery && (
               <button
@@ -368,7 +368,7 @@ export default function NotificationsPage() {
         ) : filtered.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300/80 bg-white p-12 text-center dark:border-white/[0.08] dark:bg-[#15181d]">
             <EmptyState
-              icon={<Bell className="h-8 w-8 text-[#bbf246]" />}
+              icon={<Bell className="h-8 w-8 text-emerald-500" />}
               title={items.length === 0 ? "All caught up" : "No matching alerts"}
               message={
                 items.length === 0
@@ -378,7 +378,7 @@ export default function NotificationsPage() {
               action={
                 items.length === 0 ? (
                   <Link href="/dashboard">
-                    <Button className="bg-[#bbf246] hover:bg-[#aae335] text-[#0b0e11] font-bold">
+                    <Button className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold">
                       Return to Dashboard
                     </Button>
                   </Link>
@@ -407,7 +407,7 @@ export default function NotificationsPage() {
                   key={n.id}
                   className={`rounded-2xl border p-4 sm:p-5 shadow-sm transition-all duration-200 group relative overflow-hidden ${
                     !n.isRead
-                      ? "border-[#bbf246]/40 bg-white dark:border-[#bbf246]/30 dark:bg-[#15181d] border-l-4 border-l-[#bbf246]"
+                      ? "border-slate-200 dark:border-white/10 bg-white dark:border-emerald-500/20 dark:bg-[#15181d] border-l-4 border-l-emerald-500"
                       : "border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[#15181d] hover:border-slate-300 dark:hover:border-white/[0.16]"
                   }`}
                 >
@@ -425,8 +425,8 @@ export default function NotificationsPage() {
                         </h3>
                         <Badge tone={details.badgeColor}>{details.tagLabel}</Badge>
                         {!n.isRead && (
-                          <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#6c9818] dark:text-[#bbf246]">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] animate-pulse" />
+                          <span className="flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-[#6c9818] dark:text-emerald-400">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                             New
                           </span>
                         )}
@@ -451,7 +451,7 @@ export default function NotificationsPage() {
                           {details.actionLink && (
                             <Link
                               href={details.actionLink}
-                              className="inline-flex items-center gap-1 text-xs font-bold text-[#6c9818] hover:text-[#527511] dark:text-[#bbf246] dark:hover:underline transition"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-[#6c9818] hover:text-[#527511] dark:text-emerald-400 dark:hover:underline transition"
                             >
                               <span>{details.actionText}</span>
                               <ArrowRight className="h-3 w-3" />

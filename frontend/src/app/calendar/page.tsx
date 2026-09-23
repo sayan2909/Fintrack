@@ -624,7 +624,7 @@ export default function CalendarPage() {
                         }}
                         className={`rounded-xl py-2 text-xs font-semibold transition cursor-pointer ${
                           idx === month
-                            ? "bg-[#bbf246] text-[#0b0e11] font-black shadow-sm"
+                            ? "bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-sm"
                             : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
                         }`}
                       >
@@ -644,7 +644,7 @@ export default function CalendarPage() {
                   onClick={() => setViewMode(m)}
                   className={`rounded-lg px-3 py-1.5 transition cursor-pointer ${
                     viewMode === m
-                      ? "bg-white text-slate-900 shadow-2xs ring-1 ring-black/5 dark:bg-[#bbf246] dark:text-[#0b0e11] dark:ring-0 font-black"
+                      ? "bg-white text-slate-900 shadow-2xs ring-1 ring-black/5 dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold dark:ring-0 font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -769,7 +769,7 @@ export default function CalendarPage() {
                       onClick={() => setSelectedDate(cell.dateKey)}
                       className={`relative min-h-[72px] sm:min-h-[82px] rounded-2xl p-2 text-left transition-all flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? "border-2 border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/15 dark:border-[#bbf246] shadow-xs"
+                          ? "border-2 border-emerald-500 bg-emerald-500/10 dark:bg-emerald-500/10 dark:border-emerald-500 shadow-xs"
                           : "border border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80 dark:border-white/[0.08] dark:bg-[#15181d] dark:hover:border-white/[0.16] dark:hover:bg-slate-800/50"
                       }`}
                     >
@@ -778,7 +778,7 @@ export default function CalendarPage() {
                         <span
                           className={`text-xs font-semibold ${
                             isSelected
-                              ? "text-slate-900 dark:text-[#bbf246] font-black"
+                              ? "text-slate-900 dark:text-emerald-400 font-black"
                               : "text-slate-800 dark:text-slate-200"
                           }`}
                         >
@@ -788,7 +788,7 @@ export default function CalendarPage() {
                         {/* Status indicator dots */}
                         <div className="flex items-center gap-1">
                           {isSelected && (
-                            <span className="h-2 w-2 rounded-full bg-[#bbf246] ring-2 ring-[#bbf246]/30" />
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/30" />
                           )}
                           {!isSelected && hasRecurring && (
                             <span

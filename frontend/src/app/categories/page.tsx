@@ -117,7 +117,7 @@ const ICON_OPTIONS = [
 ];
 
 const CURATED_PALETTE = [
-  "#bbf246", // FinTrack Electric Lime
+  "#10b981", // FinTrack Electric Lime
   "#10b981", // Emerald
   "#06b6d4", // Cyan
   "#3b82f6", // Electric Blue
@@ -311,7 +311,7 @@ export default function CategoriesPage() {
         <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#bbf246]/30 bg-[#bbf246]/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#bbf246]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-500">
                 <Layers className="h-3 w-3" /> Ledger & Tax Classification
               </span>
             </div>
@@ -325,7 +325,7 @@ export default function CategoriesPage() {
           <div className="flex items-center gap-2.5">
             <Button
               onClick={openAdd}
-              className="h-9 px-4 text-xs font-black shadow-xs bg-[#bbf246] hover:bg-[#a8dc39] text-[#0b0e11] cursor-pointer rounded-xl flex items-center gap-1.5 transition"
+              className="h-9 px-4 text-xs font-semibold shadow-xs"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Category
@@ -341,7 +341,7 @@ export default function CategoriesPage() {
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Active Categories
               </span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-white/[0.06] dark:text-[#bbf246]">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-white/[0.06] dark:text-emerald-400">
                 <Layers className="h-3.5 w-3.5" />
               </span>
             </div>
@@ -360,7 +360,7 @@ export default function CategoriesPage() {
                   style={{ width: `${expenseRatio}%` }}
                 />
                 <div
-                  className="h-full bg-[#bbf246] transition-all duration-500"
+                  className="h-full bg-emerald-500 transition-all duration-500"
                   style={{ width: `${100 - expenseRatio}%` }}
                 />
               </div>
@@ -393,12 +393,12 @@ export default function CategoriesPage() {
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Inflow
               </span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-[#bbf246]/10 dark:text-[#bbf246]">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </span>
             </div>
             <div className="mt-2">
-              <p className="text-2xl font-black tracking-tight text-emerald-600 dark:text-[#bbf246] tabular-nums">
+              <p className="text-2xl font-black tracking-tight text-emerald-600 dark:text-emerald-400 tabular-nums">
                 {loading ? "..." : formatCurrency(summary.totalIncomeThisMonth, currency)}
               </p>
               <p className="mt-1 text-[11px] text-slate-400 truncate">
@@ -421,9 +421,9 @@ export default function CategoriesPage() {
                 <button
                   key={t.key}
                   onClick={() => setActiveTab(t.key as any)}
-                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
                     activeTab === t.key
-                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -431,7 +431,7 @@ export default function CategoriesPage() {
                   <span
                     className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                       activeTab === t.key
-                        ? "bg-black/15 text-slate-900 dark:text-[#0b0e11]"
+                        ? "bg-slate-200/80 text-slate-900 dark:bg-white/15 dark:text-white"
                         : "bg-slate-200/80 text-slate-600 dark:bg-white/[0.08] dark:text-slate-300"
                     }`}
                   >
@@ -446,12 +446,12 @@ export default function CategoriesPage() {
               onClick={() => setActiveOnly(!activeOnly)}
               className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                 activeOnly
-                  ? "border-[#bbf246] bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246]"
+                  ? "border-emerald-500 bg-emerald-500/10 text-slate-950 dark:text-emerald-400"
                   : "border-slate-200/90 bg-white text-slate-600 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-400 dark:hover:text-white"
               }`}
               title="Show only categories with transactions this month"
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${activeOnly ? "bg-[#bbf246]" : "bg-slate-400"}`} />
+              <span className={`h-1.5 w-1.5 rounded-full ${activeOnly ? "bg-emerald-500" : "bg-slate-400"}`} />
               <span>With Activity</span>
             </button>
           </div>
@@ -466,7 +466,7 @@ export default function CategoriesPage() {
                 placeholder="Search categories..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="h-8.5 w-full rounded-xl border border-slate-200/90 bg-white pl-8.5 pr-7 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs transition focus:border-[#bbf246] focus:outline-none focus:ring-1 focus:ring-[#bbf246] dark:border-white/[0.08] dark:bg-[#15181d] dark:text-white"
+                className="h-8.5 w-full rounded-xl border border-slate-200/90 bg-white pl-8.5 pr-7 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs transition focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-white"
               />
               {search && (
                 <button
@@ -508,7 +508,7 @@ export default function CategoriesPage() {
         ) : filteredAndSorted.length === 0 ? (
           <div className="rounded-2xl border border-slate-200/90 bg-white p-8 text-center shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <EmptyState
-              icon={<Tag className="h-8 w-8 text-[#bbf246]" />}
+              icon={<Tag className="h-8 w-8 text-emerald-500" />}
               title={search ? "No matching categories" : `No categories found`}
               message={
                 search
@@ -530,7 +530,7 @@ export default function CategoriesPage() {
                     Clear Filters
                   </Button>
                 ) : (
-                  <Button onClick={openAdd} className="h-8 px-3 text-xs font-bold bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39]">
+                  <Button onClick={openAdd} className="h-8 px-3 text-xs font-bold bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold hover:bg-[#a8dc39]">
                     <Plus className="mr-1 h-3 w-3" />
                     Add Category
                   </Button>
@@ -551,7 +551,7 @@ export default function CategoriesPage() {
               return (
                 <div
                   key={c.id}
-                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-[#bbf246]/40 hover:shadow-sm transition-all duration-150 dark:border-white/[0.08] dark:bg-[#15181d]"
+                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-slate-200 dark:border-white/10 hover:shadow-sm transition-all duration-150 dark:border-white/[0.08] dark:bg-[#15181d]"
                 >
                   {/* Top Row: Icon + Name/Badges + Edit/Delete */}
                   <div className="flex items-center justify-between gap-2.5">
@@ -621,7 +621,7 @@ export default function CategoriesPage() {
 
                     <Link
                       href={`/transactions?category=${encodeURIComponent(c.name)}`}
-                      className="inline-flex items-center gap-0.5 text-[11px] font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-[#bbf246] transition-colors"
+                      className="inline-flex items-center gap-0.5 text-[11px] font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-emerald-500 transition-colors"
                       title="View all transactions in this category"
                     >
                       <span>Ledger</span>
@@ -707,7 +707,7 @@ export default function CategoriesPage() {
                   onClick={() => setForm({ ...form, type: "income" })}
                   className={`flex items-center justify-center gap-2 rounded-xl border p-2.5 text-xs font-bold transition cursor-pointer ${
                     form.type === "income"
-                      ? "border-emerald-500/50 bg-emerald-50 text-emerald-600 dark:border-[#bbf246]/40 dark:bg-[#bbf246]/10 dark:text-[#bbf246] shadow-2xs"
+                      ? "border-emerald-500/50 bg-emerald-50 text-emerald-600 dark:border-slate-200 dark:border-white/10 dark:bg-emerald-500/10 dark:text-emerald-400 shadow-2xs"
                       : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-400"
                   } ${editing ? "opacity-60 cursor-not-allowed" : ""}`}
                 >
@@ -729,7 +729,7 @@ export default function CategoriesPage() {
                       onClick={() => setForm({ ...form, icon: item.key })}
                       className={`flex flex-col items-center justify-center gap-1 rounded-xl p-2 transition cursor-pointer ${
                         isSelected
-                          ? "bg-[#bbf246] text-[#0b0e11] font-bold shadow-xs scale-102"
+                          ? "bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold font-bold shadow-xs scale-102"
                           : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/[0.08] dark:hover:text-white"
                       }`}
                       title={item.label}
@@ -753,7 +753,7 @@ export default function CategoriesPage() {
                     type="button"
                     onClick={() => setForm({ ...form, color: c })}
                     className={`relative flex h-7 w-7 items-center justify-center rounded-full transition-transform hover:scale-110 cursor-pointer ${
-                      form.color === c ? "ring-2 ring-[#bbf246] ring-offset-2 dark:ring-offset-[#15181d]" : ""
+                      form.color === c ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-[#15181d]" : ""
                     }`}
                     style={{ backgroundColor: c }}
                   >
@@ -780,7 +780,7 @@ export default function CategoriesPage() {
               <Button
                 type="submit"
                 loading={saving}
-                className="h-9 px-5 text-xs font-black bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39] rounded-xl shadow-xs"
+                className="h-9 px-5 text-xs font-semibold"
               >
                 {editing ? "Update Category" : "Create Category"}
               </Button>

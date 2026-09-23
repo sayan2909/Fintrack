@@ -121,14 +121,14 @@ export default function FinBotAssistant() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="group relative flex h-13 w-13 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] shadow-lg shadow-[#bbf246]/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+            className="group relative flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white dark:bg-[#181c24] dark:text-white border border-slate-200 dark:border-white/15 shadow-xl hover:bg-slate-800 dark:hover:bg-[#20252e] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
             title="Ask FinBot Financial AI Copilot"
             aria-label="Open AI Assistant"
           >
-            <Sparkles className="h-6 w-6 stroke-[2.5] transition-transform group-hover:rotate-12" />
-            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#0b0e11] opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#0b0e11] ring-2 ring-[#bbf246]" />
+            <Sparkles className="h-5 w-5 stroke-[2.5] text-slate-200 dark:text-emerald-400 transition-transform group-hover:rotate-12" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#181c24]" />
             </span>
           </button>
         )}
@@ -140,18 +140,18 @@ export default function FinBotAssistant() {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-3 dark:border-white/[0.08] bg-slate-50/60 dark:bg-[#121519]/80">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] shadow-xs font-black">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/[0.08] dark:text-emerald-400 dark:border dark:border-white/10 shadow-xs font-bold">
                 <Bot className="h-4.5 w-4.5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-xs font-bold text-slate-900 dark:text-white">FinBot Copilot</h3>
-                  <span className="rounded-full bg-[#bbf246]/15 px-1.5 py-0.2 text-[9px] font-bold text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30">
+                  <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                     AI AGENT
                   </span>
                 </div>
-                <p className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-[#bbf246] font-medium">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] animate-pulse" />
+                <p className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live Context Engine
                 </p>
               </div>
@@ -185,7 +185,7 @@ export default function FinBotAssistant() {
                   className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   {!isUser && (
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] mt-0.5 font-black shadow-xs">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-white/[0.08] dark:border dark:border-white/10 dark:text-emerald-400 mt-0.5 font-bold shadow-xs">
                       <Sparkles className="h-3.5 w-3.5 stroke-[2.5]" />
                     </div>
                   )}
@@ -193,7 +193,7 @@ export default function FinBotAssistant() {
                   <div
                     className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 shadow-2xs leading-relaxed ${
                       isUser
-                        ? "bg-slate-900 text-white dark:bg-[#bbf246] dark:text-[#0b0e11] rounded-br-xs font-medium"
+                        ? "bg-slate-900 text-white dark:bg-white dark:text-slate-950 rounded-br-xs font-medium"
                         : "bg-slate-100/90 text-slate-800 dark:bg-slate-800/90 dark:text-slate-200 rounded-tl-xs border border-slate-200/60 dark:border-slate-700/60"
                     }`}
                   >
@@ -225,7 +225,7 @@ export default function FinBotAssistant() {
                           <button
                             key={act.href}
                             onClick={() => handleActionClick(act.href)}
-                            className="inline-flex items-center gap-1 rounded-lg bg-[#bbf246]/15 px-2 py-1 text-[11px] font-bold text-slate-900 dark:text-[#bbf246] border border-[#bbf246]/30 hover:bg-[#bbf246]/25 transition cursor-pointer"
+                            className="inline-flex items-center gap-1 rounded-lg bg-slate-200/70 dark:bg-white/[0.08] px-2 py-1 text-[11px] font-semibold text-slate-800 dark:text-slate-200 border border-slate-300/70 dark:border-white/10 hover:bg-slate-300/70 dark:hover:bg-white/15 transition cursor-pointer"
                           >
                             <span>{act.label}</span>
                             <ArrowRight className="h-2.5 w-2.5" />
@@ -236,7 +236,7 @@ export default function FinBotAssistant() {
 
                     <span
                       className={`block text-[9px] mt-1 ${
-                        isUser ? "text-slate-400 dark:text-[#0b0e11]/70 text-right" : "text-slate-400"
+                        isUser ? "text-slate-300 dark:text-emerald-100 text-right" : "text-slate-400"
                       }`}
                     >
                       {m.timestamp}
@@ -254,13 +254,13 @@ export default function FinBotAssistant() {
 
             {loading && (
               <div className="flex gap-2.5 items-center text-slate-400 text-xs">
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] font-black">
+                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-white/[0.08] dark:border dark:border-white/10 dark:text-emerald-400 font-bold">
                   <Sparkles className="h-3 w-3 animate-spin stroke-[2.5]" />
                 </div>
                 <div className="flex items-center gap-1 rounded-2xl bg-slate-100 px-3.5 py-2 dark:bg-slate-800">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] animate-bounce" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] animate-bounce [animation-delay:0.2s]" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] animate-bounce [animation-delay:0.4s]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-bounce" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.2s]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]" />
                 </div>
               </div>
             )}
@@ -276,7 +276,7 @@ export default function FinBotAssistant() {
                   key={sug}
                   onClick={() => sendMessage(sug)}
                   disabled={loading}
-                  className="shrink-0 rounded-full border border-slate-200/90 bg-white px-3 py-1 text-[11px] font-semibold text-slate-700 hover:border-[#bbf246] hover:text-[#0b0e11] dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-300 dark:hover:text-[#bbf246] dark:hover:border-[#bbf246]/40 transition cursor-pointer disabled:opacity-50"
+                  className="shrink-0 rounded-full border border-slate-200/90 bg-white px-3 py-1 text-[11px] font-semibold text-slate-700 hover:border-slate-400 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-300 dark:hover:text-white dark:hover:border-white/20 transition cursor-pointer disabled:opacity-50"
                 >
                   {sug}
                 </button>
@@ -304,7 +304,7 @@ export default function FinBotAssistant() {
             <button
               type="submit"
               disabled={!input.trim() || loading}
-              className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] shadow-xs hover:bg-[#a8e030] disabled:opacity-40 transition cursor-pointer font-black"
+              className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-xs hover:bg-slate-800 dark:hover:bg-slate-200 disabled:opacity-40 transition cursor-pointer font-bold"
               title="Send prompt"
             >
               <Send className="h-3.5 w-3.5 stroke-[2.5]" />

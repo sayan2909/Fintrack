@@ -49,13 +49,13 @@ export default function LoginPage() {
       {/* Left decorative panel (Desktop) */}
       <div className="relative hidden lg:flex lg:w-[52%] xl:w-[55%] flex-col justify-between overflow-hidden bg-[#111419] border-r border-slate-200 dark:border-white/[0.08] p-10 text-white">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#bbf246]/10 blur-3xl" />
+          <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-emerald-500/10 blur-3xl" />
           <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-emerald-500/10 blur-3xl" />
-          <div className="absolute top-1/2 left-1/3 h-[300px] w-[300px] -translate-y-1/2 rounded-full bg-[#bbf246]/5 blur-2xl" />
+          <div className="absolute top-1/2 left-1/3 h-[300px] w-[300px] -translate-y-1/2 rounded-full bg-slate-50 dark:bg-white/[0.04] blur-2xl" />
         </div>
 
         <Link href="/" className="relative flex items-center gap-2.5 w-fit">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] shadow-lg shadow-[#bbf246]/20">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-lg shadow-xs">
             <Wallet className="h-5 w-5" />
           </div>
           <span className="text-xl font-extrabold tracking-tight">FinTrack</span>
@@ -79,15 +79,15 @@ export default function LoginPage() {
 
         {/* Ambient Visual Atmosphere (Visible on mobile & desktop) */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-28 -right-28 h-[360px] w-[360px] sm:h-[460px] sm:w-[460px] rounded-full bg-gradient-to-br from-[#bbf246]/15 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "7s" }} />
-          <div className="absolute -bottom-28 -left-28 h-[320px] w-[320px] sm:h-[420px] sm:w-[420px] rounded-full bg-gradient-to-tr from-emerald-500/10 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "9s" }} />
+          <div className="absolute -top-28 -right-28 h-[360px] w-[360px] sm:h-[460px] sm:w-[460px] rounded-full bg-gradient-to-br from-emerald-500/10 via-slate-500/5 to-transparent blur-3xl" style={{ animationDuration: "7s" }} />
+          <div className="absolute -bottom-28 -left-28 h-[320px] w-[320px] sm:h-[420px] sm:w-[420px] rounded-full bg-gradient-to-tr from-emerald-500/10 via-slate-500/5 to-transparent blur-3xl" style={{ animationDuration: "9s" }} />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] dark:bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)]" />
         </div>
 
         {/* Mobile header */}
         <div className="relative z-10 flex items-center px-6 pt-7 pb-2 lg:hidden">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/25">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold shadow-md shadow-xs">
               <Wallet className="h-5 w-5 stroke-[2.5]" />
             </div>
             <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white">FinTrack</span>
@@ -100,7 +100,7 @@ export default function LoginPage() {
             {/* Main Auth Card with Neon Accent Trim & Glassmorphism */}
             <div className="relative rounded-3xl border border-slate-200/90 bg-white/95 p-7 shadow-2xl backdrop-blur-xl dark:border-white/[0.08] dark:bg-[#15181d]/90 sm:p-8">
               {/* Neon Lime Top Accent Line */}
-              <div className="absolute -top-[1px] left-10 right-10 h-[2px] bg-gradient-to-r from-transparent via-[#bbf246] to-transparent rounded-full opacity-90 shadow-[0_0_12px_rgba(187,242,70,0.6)]" />
+              <div className="absolute -top-[1px] left-10 right-10 h-[2px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent rounded-full opacity-80" />
 
               <div className="mb-6">
                 <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Sign in</h1>
@@ -156,14 +156,14 @@ export default function LoginPage() {
                   </div>
                 </Field>
                 <div className="flex justify-end">
-                  <Link href="/forgot-password" className="text-xs font-semibold text-slate-900 hover:underline dark:text-[#bbf246] transition">
+                  <Link href="/forgot-password" className="text-xs font-semibold text-slate-900 hover:underline dark:text-emerald-400 transition">
                     Forgot password?
                   </Link>
                 </div>
                 <Button
                   type="submit"
                   loading={loading}
-                  className="w-full py-3.5 text-sm font-black text-[#0b0e11] bg-[#bbf246] hover:bg-[#a8e030] shadow-lg shadow-[#bbf246]/25 rounded-2xl transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full py-3.5 text-sm font-black text-slate-950 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:text-slate-950 shadow-lg shadow-xs rounded-2xl transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   <span>Sign In</span>
                   <ArrowRight className="h-4 w-4 stroke-[2.5]" />
@@ -173,7 +173,7 @@ export default function LoginPage() {
 
             <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
               No account?{" "}
-              <Link href="/register" className="font-bold text-slate-900 hover:underline dark:text-[#bbf246] transition">
+              <Link href="/register" className="font-bold text-slate-900 hover:underline dark:text-emerald-400 transition">
                 Create one free
               </Link>
             </p>

@@ -81,7 +81,7 @@ const ACCOUNT_TYPES = [
 ];
 
 const COLOR_PRESETS = [
-  "#bbf246", // FinTrack Electric Lime
+  "#10b981", // FinTrack Electric Lime
   "#10b981", // Emerald
   "#06b6d4", // Cyan
   "#3b82f6", // Electric Blue
@@ -123,7 +123,7 @@ export default function AccountsPage() {
     type: "Bank Account",
     balance: "",
     accountNumber: "",
-    color: "#bbf246",
+    color: "#10b981",
     isDefault: false,
   });
 
@@ -370,7 +370,7 @@ export default function AccountsPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#bbf246]/30 bg-[#bbf246]/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#bbf246]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-500">
                 <Landmark className="h-3 w-3" /> Treasury & Liquidity Management
               </span>
             </div>
@@ -403,7 +403,7 @@ export default function AccountsPage() {
             </Button>
             <Button
               onClick={handleOpenAdd}
-              className="h-10 px-4 text-xs font-black shadow-xs bg-[#bbf246] hover:bg-[#a8dc39] text-[#0b0e11] cursor-pointer rounded-xl flex items-center gap-1.5 transition"
+              className="h-10 px-4 text-xs font-semibold shadow-xs"
             >
               <Plus className="h-4 w-4" />
               Add Account
@@ -419,7 +419,7 @@ export default function AccountsPage() {
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Consolidated Net Worth
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20">
                 <Landmark className="h-4 w-4" />
               </div>
             </div>
@@ -430,7 +430,7 @@ export default function AccountsPage() {
               {/* Proportional Asset vs Liability Track */}
               <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/10 flex">
                 <div
-                  className="h-full bg-[#bbf246] transition-all duration-500"
+                  className="h-full bg-emerald-500 transition-all duration-500"
                   style={{ width: `${stats.liquidRatio}%` }}
                 />
                 <div
@@ -439,7 +439,7 @@ export default function AccountsPage() {
                 />
               </div>
               <div className="mt-2 flex items-center justify-between text-[11px] font-bold">
-                <span className="text-emerald-500 dark:text-[#bbf246]">
+                <span className="text-emerald-500 dark:text-emerald-400">
                   {stats.liquidRatio}% Assets
                 </span>
                 <span className="text-rose-500">
@@ -516,9 +516,9 @@ export default function AccountsPage() {
               <button
                 key={t.key}
                 onClick={() => setActiveFilter(t.key)}
-                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition cursor-pointer whitespace-nowrap ${
                   activeFilter === t.key
-                    ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                    ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -526,7 +526,7 @@ export default function AccountsPage() {
                 <span
                   className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     activeFilter === t.key
-                      ? "bg-black/15 text-slate-900 dark:text-[#0b0e11]"
+                      ? "bg-slate-200/80 text-slate-900 dark:bg-white/15 dark:text-white"
                       : "bg-slate-200/80 text-slate-600 dark:bg-white/[0.08] dark:text-slate-300"
                   }`}
                 >
@@ -546,11 +546,11 @@ export default function AccountsPage() {
           ) : filteredAccounts.length === 0 ? (
             <div className="col-span-full rounded-3xl border border-slate-200/90 bg-white p-12 text-center shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
               <EmptyState
-                icon={<Landmark className="h-10 w-10 text-[#bbf246]" />}
+                icon={<Landmark className="h-10 w-10 text-emerald-500" />}
                 title="No accounts in this filter"
                 message="Add your bank accounts, credit cards, or digital wallets to track total liquidity."
                 action={
-                  <Button onClick={handleOpenAdd} className="h-9 px-4 text-xs font-bold bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39]">
+                  <Button onClick={handleOpenAdd} className="h-9 px-4 text-xs font-bold bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold hover:bg-[#a8dc39]">
                     <Plus className="mr-1.5 h-3.5 w-3.5" /> Link Account
                   </Button>
                 }
@@ -563,7 +563,7 @@ export default function AccountsPage() {
                 const balNum = Number(acc.balance) || 0;
                 const isNegative = balNum < 0;
                 const isCredit = acc.type === "Credit Card";
-                const accColor = acc.color || "#bbf246";
+                const accColor = acc.color || "#10b981";
                 const rawNumber = acc.accountNumber || "2489";
                 const maskedDisplay = `••••  ••••  ••••  ${rawNumber.slice(-4)}`;
 
@@ -596,7 +596,7 @@ export default function AccountsPage() {
                         {/* Top Right Badges & Actions */}
                         <div className="flex items-center gap-1.5">
                           {acc.isDefault ? (
-                            <span className="rounded-full bg-[#bbf246]/15 border border-[#bbf246]/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-slate-900 dark:text-[#bbf246]">
+                            <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-slate-900 dark:text-emerald-400">
                               Default
                             </span>
                           ) : (
@@ -631,7 +631,7 @@ export default function AccountsPage() {
                           >
                             <IconComp className="h-3.5 w-3.5" />
                           </div>
-                          <h3 className="font-black text-lg text-slate-900 dark:text-white tracking-tight truncate group-hover:text-[#bbf246] transition-colors">
+                          <h3 className="font-black text-lg text-slate-900 dark:text-white tracking-tight truncate group-hover:text-emerald-500 transition-colors">
                             {acc.name}
                           </h3>
                         </div>
@@ -647,7 +647,7 @@ export default function AccountsPage() {
                               navigator.clipboard.writeText(rawNumber);
                               toast(`Account number copied: ${rawNumber} 📋`);
                             }}
-                            className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-slate-900 dark:hover:text-[#bbf246] transition cursor-pointer"
+                            className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-slate-900 dark:hover:text-emerald-500 transition cursor-pointer"
                             title="Copy Account Number"
                           >
                             <Copy className="h-3 w-3" />
@@ -671,7 +671,7 @@ export default function AccountsPage() {
                           </p>
                           <button
                             onClick={() => handleOpenAdjust(acc)}
-                            className="text-[11px] font-bold text-slate-400 hover:text-slate-900 dark:hover:text-[#bbf246] transition cursor-pointer"
+                            className="text-[11px] font-bold text-slate-400 hover:text-slate-900 dark:hover:text-emerald-500 transition cursor-pointer"
                             title="Quick Adjust Starting Balance"
                           >
                             Adjust
@@ -691,7 +691,7 @@ export default function AccountsPage() {
                           }));
                           setShowTransferModal(true);
                         }}
-                        className="inline-flex items-center gap-1.5 font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-[#bbf246] transition cursor-pointer"
+                        className="inline-flex items-center gap-1.5 font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-emerald-500 transition cursor-pointer"
                       >
                         <ArrowRightLeft className="h-3.5 w-3.5" />
                         <span>Transfer</span>
@@ -699,7 +699,7 @@ export default function AccountsPage() {
 
                       <Link
                         href={`/transactions?accountId=${acc.id}`}
-                        className="inline-flex items-center gap-1 font-bold text-slate-400 hover:text-slate-900 dark:hover:text-[#bbf246] transition"
+                        className="inline-flex items-center gap-1 font-bold text-slate-400 hover:text-slate-900 dark:hover:text-emerald-500 transition"
                       >
                         <span>Ledger</span>
                         <ChevronRight className="h-3.5 w-3.5" />
@@ -712,16 +712,16 @@ export default function AccountsPage() {
               {/* Connect New Account Card */}
               <button
                 onClick={handleOpenAdd}
-                className="group flex min-h-[250px] flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-slate-300/80 bg-white/40 p-6 text-center shadow-xs transition-all hover:border-[#bbf246] hover:bg-[#bbf246]/5 dark:border-white/[0.1] dark:bg-[#15181d]/50 dark:hover:border-[#bbf246] cursor-pointer"
+                className="group flex min-h-[250px] flex-col items-center justify-center gap-3.5 rounded-3xl border-2 border-dashed border-slate-300/80 bg-slate-50/50 p-6 text-center shadow-xs transition-all hover:border-slate-400 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-[#15181d] dark:hover:border-white/20 dark:hover:bg-[#181c22] cursor-pointer"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition-transform group-hover:scale-110 group-hover:bg-[#bbf246] group-hover:text-[#0b0e11] dark:bg-white/[0.06] dark:text-slate-300">
-                  <Plus className="h-6 w-6 stroke-[3]" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-slate-700 shadow-2xs border border-slate-200/80 transition-transform group-hover:scale-105 dark:bg-[#1b1f26] dark:border-white/[0.08] dark:text-slate-200">
+                  <Plus className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-[#bbf246]">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">
                     Connect New Account
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                     Add bank, credit card, cash or digital wallet
                   </p>
                 </div>
@@ -734,7 +734,7 @@ export default function AccountsPage() {
         <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/[0.06] pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20">
                 <Clock className="h-4 w-4" />
               </div>
               <div>
@@ -749,7 +749,7 @@ export default function AccountsPage() {
 
             <Link
               href="/transactions"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-[#bbf246] transition"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-emerald-500 transition"
             >
               <span>View Full Ledger</span>
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -845,7 +845,7 @@ export default function AccountsPage() {
                   </span>
                 </div>
                 {form.isDefault && (
-                  <span className="rounded-full bg-[#bbf246]/15 border border-[#bbf246]/30 px-2 py-0.2 text-[9px] font-black uppercase text-[#bbf246]">
+                  <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.2 text-[9px] font-black uppercase text-emerald-500">
                     Primary
                   </span>
                 )}
@@ -929,7 +929,7 @@ export default function AccountsPage() {
                     key={c}
                     onClick={() => setForm({ ...form, color: c })}
                     className={`h-7 w-7 rounded-full transition-transform cursor-pointer ${
-                      form.color === c ? "scale-115 ring-2 ring-[#bbf246] ring-offset-2 dark:ring-offset-[#15181d]" : "hover:scale-105"
+                      form.color === c ? "scale-115 ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-[#15181d]" : "hover:scale-105"
                     }`}
                     style={{ backgroundColor: c }}
                   >
@@ -946,7 +946,7 @@ export default function AccountsPage() {
                 id="isDefault"
                 checked={form.isDefault}
                 onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
-                className="h-4 w-4 rounded border-slate-300 text-[#bbf246] focus:ring-[#bbf246] accent-[#bbf246] cursor-pointer"
+                className="h-4 w-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500 accent-slate-900 dark:accent-emerald-500 cursor-pointer"
               />
               <label htmlFor="isDefault" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
                 Designate as Primary Default Account
@@ -957,7 +957,7 @@ export default function AccountsPage() {
               <Button type="button" variant="secondary" onClick={() => setShowAddModal(false)} className="h-9 px-4 text-xs">
                 Cancel
               </Button>
-              <Button type="submit" loading={saving} className="h-9 px-5 text-xs font-black bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39] rounded-xl shadow-xs">
+              <Button type="submit" loading={saving} className="h-9 px-5 text-xs font-semibold">
                 {editingAccount ? "Save Changes" : "Create Account"}
               </Button>
             </div>
@@ -1038,7 +1038,7 @@ export default function AccountsPage() {
               <Button type="button" variant="secondary" onClick={() => setShowTransferModal(false)} className="h-9 px-4 text-xs">
                 Cancel
               </Button>
-              <Button type="submit" loading={transferring} className="h-9 px-5 text-xs font-black bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39] rounded-xl shadow-xs">
+              <Button type="submit" loading={transferring} className="h-9 px-5 text-xs font-semibold">
                 Execute Transfer
               </Button>
             </div>
@@ -1085,7 +1085,7 @@ export default function AccountsPage() {
               <Button type="button" variant="secondary" onClick={() => setAdjustingAccount(null)} className="h-9 px-4 text-xs">
                 Cancel
               </Button>
-              <Button type="submit" loading={adjustingSaving} className="h-9 px-5 text-xs font-black bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8dc39] rounded-xl shadow-xs">
+              <Button type="submit" loading={adjustingSaving} className="h-9 px-5 text-xs font-semibold">
                 Save Reconciled Balance
               </Button>
             </div>

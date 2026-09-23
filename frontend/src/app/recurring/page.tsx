@@ -43,7 +43,7 @@ function getBrand(name: string, type: string) {
   if (n.includes("sip") || n.includes("invest") || n.includes("mutual") || n.includes("zerodha") || n.includes("groww")) return { Icon: TrendingUp, color: "#8b5cf6", bg: "bg-violet-500/10 dark:bg-violet-500/15", text: "text-violet-500 dark:text-violet-400", border: "border-violet-500/20" };
   if (n.includes("bill") || n.includes("electric") || n.includes("gas") || n.includes("utility") || n.includes("water")) return { Icon: Zap, color: "#eab308", bg: "bg-yellow-500/10 dark:bg-yellow-500/15", text: "text-yellow-500 dark:text-yellow-400", border: "border-yellow-500/20" };
   if (n.includes("gym") || n.includes("fitness") || n.includes("cult")) return { Icon: Activity, color: "#f97316", bg: "bg-orange-500/10 dark:bg-orange-500/15", text: "text-orange-500 dark:text-orange-400", border: "border-orange-500/20" };
-  return { Icon: Repeat, color: "#bbf246", bg: "bg-[#bbf246]/10 dark:bg-[#bbf246]/15", text: "text-slate-900 dark:text-[#bbf246]", border: "border-[#bbf246]/30" };
+  return { Icon: Repeat, color: "#10b981", bg: "bg-emerald-500/10 dark:bg-emerald-500/10", text: "text-slate-900 dark:text-emerald-400", border: "border-emerald-500/20" };
 }
 
 export default function RecurringPage() {
@@ -248,7 +248,7 @@ export default function RecurringPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-xs shadow-xs animate-pulse" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Recurring Hub</span>
             </div>
             <h1 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
@@ -267,7 +267,7 @@ export default function RecurringPage() {
                   onClick={() => setViewMode(v)}
                   className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     viewMode === v
-                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11]"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold"
                       : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -481,14 +481,14 @@ export default function RecurringPage() {
                   onClick={() => setStatusFilter(tab.id as any)}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                     statusFilter === tab.id
-                      ? "bg-[#bbf246] text-[#0b0e11] font-bold shadow-xs"
+                      ? "bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold font-bold shadow-xs"
                       : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/60"
                   }`}
                 >
                   <span>{tab.label}</span>
                   <span className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     statusFilter === tab.id
-                      ? "bg-black/15 text-[#0b0e11]"
+                      ? "bg-black/15 text-slate-950"
                       : "bg-slate-200/70 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}>
                     {tab.count}
@@ -506,7 +506,7 @@ export default function RecurringPage() {
                   placeholder="Search subscriptions..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="h-9 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100"
+                  className="h-9 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100"
                 />
                 {searchQuery && (
                   <button
@@ -521,7 +521,7 @@ export default function RecurringPage() {
               <select
                 value={freqFilter}
                 onChange={e => setFreqFilter(e.target.value)}
-                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
+                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
               >
                 <option value="all">All Cycles</option>
                 {FREQUENCIES.map(f => <option key={f} value={f}>{f}</option>)}
@@ -530,7 +530,7 @@ export default function RecurringPage() {
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value as any)}
-                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
+                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
               >
                 <option value="nextDue">Sort: Next Due</option>
                 <option value="amount">Sort: Cost (High to Low)</option>
@@ -542,12 +542,12 @@ export default function RecurringPage() {
                 onClick={() => setShowInsights(prev => !prev)}
                 className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 h-9 text-xs font-semibold transition-all cursor-pointer ${
                   showInsights
-                    ? "border-[#bbf246] bg-[#bbf246]/15 text-slate-900 dark:text-[#bbf246]"
+                    ? "border-emerald-500 bg-emerald-500/10 text-slate-900 dark:text-emerald-400"
                     : "border-slate-200/80 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800/60"
                 }`}
                 title="Toggle spend distribution and projections"
               >
-                <PieChart className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
+                <PieChart className="h-3.5 w-3.5 text-slate-900 dark:text-emerald-400" />
                 <span className="hidden sm:inline">Analytics</span>
                 {showInsights ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
               </button>
@@ -562,7 +562,7 @@ export default function RecurringPage() {
                 <div className="rounded-xl border border-slate-200/80 bg-white p-4 dark:border-slate-800/80 dark:bg-[#111827]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Layers className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
+                      <Layers className="h-3.5 w-3.5 text-slate-900 dark:text-emerald-400" />
                       <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Spend by Category</span>
                     </div>
                     <span className="text-[11px] font-semibold text-slate-400">
@@ -612,19 +612,19 @@ export default function RecurringPage() {
                 </div>
 
                 {/* Annual Projections */}
-                <div className="rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 dark:bg-[#bbf246]/5 dark:border-[#bbf246]/20 p-4 flex flex-col justify-between">
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 dark:bg-slate-50 dark:bg-white/[0.04] dark:border-emerald-500/20 p-4 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-[#bbf246]">Annual Outlook</span>
+                        <Sparkles className="h-3.5 w-3.5 text-slate-900 dark:text-emerald-400" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-emerald-400">Annual Outlook</span>
                       </div>
-                      <span className="rounded-full bg-[#bbf246]/20 px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-[#bbf246]">
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-emerald-400">
                         Projections
                       </span>
                     </div>
 
-                    <p className="text-2xl font-black text-slate-900 dark:text-[#bbf246] tracking-tight tabular-nums">
+                    <p className="text-2xl font-black text-slate-900 dark:text-emerald-400 tracking-tight tabular-nums">
                       {formatCurrency(projectedAnnual, currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -632,7 +632,7 @@ export default function RecurringPage() {
                     </p>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-[#bbf246]/20 flex items-center justify-between text-xs">
+                  <div className="mt-3 pt-3 border-t border-emerald-500/20 flex items-center justify-between text-xs">
                     <span className="text-slate-500 dark:text-slate-400">Average per Service:</span>
                     <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                       {formatCurrency(activeCount ? Math.round(summary.monthlyOut / activeCount) : 0, currency)} / mo
@@ -653,7 +653,7 @@ export default function RecurringPage() {
           ) : filtered.length === 0 ? (
             <div className="p-12 text-center">
               <EmptyState
-                icon={<Repeat className="h-8 w-8 text-[#bbf246]" />}
+                icon={<Repeat className="h-8 w-8 text-emerald-500" />}
                 title={items.length === 0 ? "No subscriptions yet" : "No subscriptions match your filters"}
                 message={items.length === 0 ? "Track recurring expenses like Netflix, gym, rent, SIP investments, or salaries." : "Try clearing your search query or switching filter tabs."}
                 action={items.length === 0 ? (
@@ -705,7 +705,7 @@ export default function RecurringPage() {
                               <brand.Icon className="h-5 w-5" />
                             </div>
                             <div className="min-w-0">
-                              <p className="font-bold text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-[#bbf246] transition-colors truncate">
+                              <p className="font-bold text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-emerald-500 transition-colors truncate">
                                 {r.name}
                               </p>
                               <p className="text-[11px] text-slate-400 mt-0.5">
@@ -989,7 +989,7 @@ export default function RecurringPage() {
                             ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                             : r.daysUntil <= 3
                             ? "bg-amber-500/15 text-amber-500 dark:text-amber-400"
-                            : "bg-[#bbf246]/15 text-slate-900 dark:text-[#bbf246]"
+                            : "bg-emerald-500/10 text-slate-900 dark:text-emerald-400"
                         }`}>
                           {!r.isActive ? "Paused" : r.daysUntil === 0 ? "Due Today" : `in ${r.daysUntil}d`}
                         </span>
@@ -1047,7 +1047,7 @@ export default function RecurringPage() {
                         frequency: p.frequency,
                         paymentMethod: p.paymentMethod
                       })}
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:border-[#bbf246]/60 hover:text-[#bbf246] transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-lg border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:border-emerald-500/30 hover:text-emerald-500 transition-all cursor-pointer"
                     >
                       <b.Icon className={`h-3 w-3 ${b.text}`} />
                       {p.name}
@@ -1116,9 +1116,9 @@ export default function RecurringPage() {
             </Field>
 
             {formMonthly > 0 && (
-              <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 px-3.5 py-2.5 text-xs">
+              <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-2.5 text-xs">
                 <span className="text-slate-500 dark:text-slate-400">Effective monthly cost:</span>
-                <span className="font-extrabold text-slate-900 dark:text-[#bbf246] tabular-nums">
+                <span className="font-extrabold text-slate-900 dark:text-emerald-400 tabular-nums">
                   ~{formatCurrency(formMonthly, currency)} / mo
                 </span>
               </div>

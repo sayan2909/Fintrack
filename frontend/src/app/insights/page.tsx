@@ -219,7 +219,7 @@ export default function InsightsPage() {
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               AI Insights
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-indigo-200/80 bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-indigo-200/80 bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
               <Sparkles className="h-3 w-3" />
               Smart Analysis
             </span>
@@ -282,7 +282,7 @@ export default function InsightsPage() {
                       strokeLinecap="round"
                       className={`transition-all duration-1000 ease-out ${
                         isNewProfile || score >= 60
-                          ? "stroke-[#bbf246]"
+                          ? "stroke-emerald-500"
                           : score >= 45
                           ? "stroke-amber-500"
                           : "stroke-rose-500"
@@ -308,11 +308,11 @@ export default function InsightsPage() {
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                         isNewProfile
-                          ? "bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30"
+                          ? "bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20"
                           : score >= 75
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0"
                           : score >= 55
-                          ? "bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30"
+                          ? "bg-emerald-500/10 text-slate-950 dark:text-emerald-400 border border-emerald-500/20"
                           : "bg-amber-50 text-amber-700 border border-amber-200/70 dark:bg-amber-500/15 dark:text-amber-400 dark:border-0"
                       }`}
                     >
@@ -336,7 +336,7 @@ export default function InsightsPage() {
               {/* Monthly Score Boost Simulator */}
               <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <Sliders className="h-3.5 w-3.5 text-[#86bf12] dark:text-[#bbf246]" />
+                  <Sliders className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                   Simulate Monthly Savings Boost:
                 </span>
                 <div className="flex items-center gap-1.5">
@@ -350,7 +350,7 @@ export default function InsightsPage() {
                       onClick={() => setSimulationBoost(simulationBoost === btn.val ? 0 : btn.val)}
                       className={`rounded-xl px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         simulationBoost === btn.val
-                          ? "bg-slate-900 text-white dark:bg-[#bbf246] dark:text-[#0b0e11] font-black shadow-xs"
+                          ? "bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black shadow-xs"
                           : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#1b1f26] dark:text-slate-300"
                       }`}
                     >
@@ -358,7 +358,7 @@ export default function InsightsPage() {
                     </button>
                   ))}
                   {simulationBoost > 0 && (
-                    <span className="text-xs font-bold text-emerald-600 dark:text-[#bbf246] tabular-nums ml-1">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums ml-1">
                       → {simulatedScore} pts (+{simulatedScore - score})
                     </span>
                   )}
@@ -372,12 +372,12 @@ export default function InsightsPage() {
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Net Cashflow</span>
-                  <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-[#bbf246]" />
+                  <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <p
                   className={`mt-1 text-base font-black tabular-nums ${
                     (metrics?.netCashflow ?? 0) >= 0
-                      ? "text-emerald-600 dark:text-[#bbf246]"
+                      ? "text-emerald-600 dark:text-emerald-400"
                       : "text-rose-600 dark:text-rose-400"
                   }`}
                 >
@@ -390,7 +390,7 @@ export default function InsightsPage() {
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Savings Rate</span>
-                  <Target className="h-3.5 w-3.5 text-[#86bf12] dark:text-[#bbf246]" />
+                  <Target className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                 </div>
                 <div className="mt-1 flex items-baseline justify-between">
                   <p className="text-base font-black text-slate-900 dark:text-white tabular-nums">
@@ -400,7 +400,7 @@ export default function InsightsPage() {
                 </div>
                 <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/[0.08]">
                   <div
-                    className="h-full rounded-full bg-[#bbf246] transition-all duration-500"
+                    className="h-full rounded-full bg-emerald-500 transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(4, ((metrics?.savingsRate ?? 0) / 20) * 100))}%` }}
                   />
                 </div>
@@ -410,7 +410,7 @@ export default function InsightsPage() {
               <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Top Expense Category</span>
-                  <Crown className="h-3.5 w-3.5 text-amber-500 dark:text-[#bbf246]" />
+                  <Crown className="h-3.5 w-3.5 text-amber-500 dark:text-emerald-400" />
                 </div>
                 <p className="mt-1 text-base font-black text-slate-900 dark:text-white truncate">
                   {metrics?.topCategory ? metrics.topCategory.name : "No Expenses Yet"}
@@ -426,7 +426,7 @@ export default function InsightsPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-[#86bf12] dark:text-[#bbf246]" />
+                <Zap className="h-4 w-4 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                   Suggested Action Plan
                 </h3>
@@ -440,11 +440,11 @@ export default function InsightsPage() {
               {nextSteps.map((step) => (
                 <div
                   key={step.id}
-                  className="rounded-2xl border border-slate-200/90 bg-white p-4.5 shadow-2xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between transition hover:border-[#bbf246]/40"
+                  className="rounded-2xl border border-slate-200/90 bg-white p-4.5 shadow-2xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between transition hover:border-slate-200 dark:border-white/10"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="rounded-full bg-[#bbf246]/15 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-[#699c04] dark:text-[#bbf246]">
+                      <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 dark:text-emerald-400">
                         {step.tag}
                       </span>
                     </div>
@@ -459,7 +459,7 @@ export default function InsightsPage() {
                   <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-end">
                     <Link
                       href={step.actionUrl}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-[#699c04] hover:text-[#86bf12] dark:text-[#bbf246] dark:hover:text-[#d4ff70] transition"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-600 dark:text-emerald-400 dark:text-emerald-400 dark:hover:text-[#d4ff70] transition"
                     >
                       <span>{step.actionText}</span>
                       <ArrowRight className="h-3 w-3" />
@@ -474,7 +474,7 @@ export default function InsightsPage() {
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#86bf12] dark:text-[#bbf246]" />
+                <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                   Active Observations
                 </h3>
@@ -487,7 +487,7 @@ export default function InsightsPage() {
                   onClick={() => setFilter("all")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "all"
-                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -495,7 +495,7 @@ export default function InsightsPage() {
                   <span
                     className={`rounded-full px-1.5 py-0.5 text-[10px] font-black transition-colors ${
                       filter === "all"
-                        ? "bg-slate-200 text-slate-800 dark:bg-black/20 dark:text-[#0b0e11]"
+                        ? "bg-slate-200 text-slate-800 dark:bg-black/20 dark:text-slate-950"
                         : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                     }`}
                   >
@@ -525,13 +525,13 @@ export default function InsightsPage() {
                   onClick={() => setFilter("growth")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "growth"
-                      ? "bg-white text-emerald-600 shadow-2xs dark:bg-[#bbf246]/20 dark:text-[#bbf246] font-black border border-emerald-200/50 dark:border-[#bbf246]/30"
+                      ? "bg-white text-emerald-600 shadow-2xs dark:bg-emerald-500/10 dark:text-emerald-400 font-black border border-emerald-200/50 dark:border-emerald-500/20"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   <span>Wins & Growth</span>
                   {counts.growth > 0 && (
-                    <span className="rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[10px] dark:bg-[#bbf246]/30 dark:text-[#bbf246] font-black">
+                    <span className="rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[10px] dark:bg-emerald-500/30 dark:text-emerald-400 font-black">
                       {counts.growth}
                     </span>
                   )}
@@ -542,7 +542,7 @@ export default function InsightsPage() {
             {/* Proportional Grid of Insight Cards */}
             {filteredInsights.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-slate-300/80 bg-white p-12 text-center dark:border-white/[0.08] dark:bg-[#15181d]">
-                <CheckCircle2 className="mx-auto h-8 w-8 text-[#86bf12] dark:text-[#bbf246]" />
+                <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                 <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white">
                   No matching observations
                 </h3>
@@ -564,7 +564,7 @@ export default function InsightsPage() {
                     : isWarning
                     ? "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400"
                     : isPositive
-                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#bbf246]/15 dark:text-[#bbf246]"
+                    ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400"
                     : "bg-slate-100 text-slate-700 dark:bg-white/[0.08] dark:text-slate-200";
 
                   const tagStyle = isDanger
@@ -572,7 +572,7 @@ export default function InsightsPage() {
                     : isWarning
                     ? "bg-amber-50 text-amber-700 border border-amber-200/70 dark:border-0 dark:bg-amber-500/15 dark:text-amber-400"
                     : isPositive
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:border-0 dark:bg-[#bbf246]/15 dark:text-[#bbf246]"
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:border-0 dark:bg-emerald-500/10 dark:text-emerald-400"
                     : "bg-slate-100 text-slate-700 border border-slate-200 dark:border-0 dark:bg-white/[0.08] dark:text-slate-300";
 
                   const tagLabel = isDanger
@@ -588,7 +588,7 @@ export default function InsightsPage() {
                   return (
                     <div
                       key={ins.id}
-                      className={`rounded-3xl border border-slate-200/90 bg-white p-5 shadow-2xs transition hover:border-[#bbf246]/40 dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between ${
+                      className={`rounded-3xl border border-slate-200/90 bg-white p-5 shadow-2xs transition hover:border-slate-200 dark:border-white/10 dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between ${
                         isSingleNotice ? "md:col-span-2" : ""
                       }`}
                     >
@@ -629,7 +629,7 @@ export default function InsightsPage() {
                         <div className="flex items-center gap-2 ml-auto">
                           <Link
                             href={ins.actionUrl || "/transactions"}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#699c04] hover:text-[#86bf12] dark:text-[#bbf246] dark:hover:text-[#d4ff70] transition"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-600 dark:text-emerald-400 dark:text-emerald-400 dark:hover:text-[#d4ff70] transition"
                           >
                             <span>{ins.actionText || "Add Transaction"}</span>
                             <ArrowUpRight className="h-3.5 w-3.5" />

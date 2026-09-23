@@ -38,7 +38,7 @@ import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 
 const COLORS = [
-  "#bbf246", // Electric Lime
+  "#10b981", // Electric Lime
   "#ff6347", // Coral Orange
   "#8b5cf6", // Purple
   "#06b6d4", // Cyan
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
                   onClick={() => setRange(v)}
                   className={`rounded-full px-2.5 sm:px-3 py-1 text-xs font-bold transition cursor-pointer shrink-0 ${
                     range === v
-                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -464,7 +464,7 @@ export default function AnalyticsPage() {
                         onClick={() => setViewGrouping("daily")}
                         className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "daily"
-                            ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                            ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                             : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
@@ -474,7 +474,7 @@ export default function AnalyticsPage() {
                         onClick={() => setViewGrouping("weekly")}
                         className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "weekly"
-                            ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                            ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                             : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
@@ -489,7 +489,7 @@ export default function AnalyticsPage() {
                       onClick={() => setChartType("bar")}
                       className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "bar"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
@@ -499,7 +499,7 @@ export default function AnalyticsPage() {
                       onClick={() => setChartType("area")}
                       className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "area"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
@@ -509,7 +509,7 @@ export default function AnalyticsPage() {
                       onClick={() => setChartType("net")}
                       className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "net"
-                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-semibold font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >

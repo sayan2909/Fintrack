@@ -293,7 +293,7 @@ export function ReceiptScannerModal({
         {/* Modal Header */}
         <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800/80">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bbf246]/15 text-[#86bf12] dark:text-[#bbf246]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400">
               <Scan className="h-5 w-5" />
             </div>
             <div>
@@ -301,7 +301,7 @@ export function ReceiptScannerModal({
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   Smart Receipt Auto-Scan
                 </h3>
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#bbf246]/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#699c04] dark:text-[#bbf246]">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 dark:text-emerald-400">
                   <Sparkles className="h-3 w-3" /> Client-Side AI
                 </span>
               </div>
@@ -336,8 +336,8 @@ export function ReceiptScannerModal({
               onClick={() => fileInputRef.current?.click()}
               className={`group relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 text-center transition-all cursor-pointer ${
                 dragActive
-                  ? "border-[#bbf246] bg-[#bbf246]/5 scale-[0.99]"
-                  : "border-slate-300 hover:border-[#bbf246]/70 hover:bg-slate-50/50 dark:border-white/[0.12] dark:hover:border-[#bbf246]/50 dark:hover:bg-[#1a1e24]/50"
+                  ? "border-emerald-500 bg-slate-50 dark:bg-white/[0.04] scale-[0.99]"
+                  : "border-slate-300 hover:border-emerald-500/70 hover:bg-slate-50/50 dark:border-white/[0.12] dark:hover:border-slate-200 dark:border-white/10 dark:hover:bg-[#1a1e24]/50"
               }`}
             >
               <input
@@ -348,12 +348,12 @@ export function ReceiptScannerModal({
                 onChange={handleFileInput}
               />
 
-              <div className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition-transform group-hover:scale-110 dark:bg-[#1f242d] dark:text-[#bbf246]">
+              <div className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition-transform group-hover:scale-110 dark:bg-[#1f242d] dark:text-emerald-400">
                 <UploadCloud className="h-7 w-7" />
               </div>
               <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                 Drop your receipt here, or{" "}
-                <span className="text-[#86bf12] dark:text-[#bbf246]">browse file</span>
+                <span className="text-emerald-600 dark:text-emerald-400 dark:text-emerald-400">browse file</span>
               </h4>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Supports JPG, PNG, WEBP (Thermal & Retail receipts)
@@ -375,9 +375,9 @@ export function ReceiptScannerModal({
                     e.stopPropagation();
                     cameraInputRef.current?.click();
                   }}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-800 shadow-sm transition hover:border-[#bbf246] hover:bg-slate-50 dark:border-white/[0.1] dark:bg-[#1e232b] dark:text-slate-200 dark:hover:border-[#bbf246]/50"
+                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-800 shadow-sm transition hover:border-emerald-500 hover:bg-slate-50 dark:border-white/[0.1] dark:bg-[#1e232b] dark:text-slate-200 dark:hover:border-slate-200 dark:border-white/10"
                 >
-                  <Camera className="h-4 w-4 text-[#86bf12] dark:text-[#bbf246]" />
+                  <Camera className="h-4 w-4 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                   Snap Photo with Camera
                 </button>
 
@@ -387,7 +387,7 @@ export function ReceiptScannerModal({
                     e.stopPropagation();
                     handleDemoReceipt();
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-[#bbf246]/50 bg-[#bbf246]/10 px-3.5 py-2 text-xs font-bold text-[#699c04] hover:bg-[#bbf246]/20 dark:text-[#bbf246] transition"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-slate-200 dark:border-white/10 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 dark:text-emerald-400 transition"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   Try Sample Receipt
@@ -397,7 +397,7 @@ export function ReceiptScannerModal({
 
             {/* Privacy Guarantee Banner */}
             <div className="flex items-center gap-3 rounded-2xl border border-slate-200/70 bg-slate-50/70 p-3.5 text-xs text-slate-600 dark:border-white/[0.06] dark:bg-[#111417] dark:text-slate-400">
-              <ShieldCheck className="h-5 w-5 shrink-0 text-[#86bf12] dark:text-[#bbf246]" />
+              <ShieldCheck className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
               <p>
                 <strong className="text-slate-900 dark:text-white">100% Private Client-Side OCR:</strong>{" "}
                 Your receipt image is parsed entirely inside your browser using WebAssembly. No photos or banking details are ever transmitted to any external servers.
@@ -420,7 +420,7 @@ export function ReceiptScannerModal({
 
                 {/* Laser scan line overlay */}
                 <div
-                  className="absolute left-0 right-0 h-1 bg-[#bbf246] shadow-[0_0_14px_4px_#bbf246] animate-bounce"
+                  className="absolute left-0 right-0 h-1 bg-emerald-500 shadow-[0_0_10px_2px_rgba(16,185,129,0.4)] animate-bounce"
                   style={{ animationDuration: "1.8s" }}
                 />
 
@@ -430,14 +430,14 @@ export function ReceiptScannerModal({
 
             <div className="space-y-2">
               <div className="flex items-center justify-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
-                <Loader2 className="h-4 w-4 animate-spin text-[#86bf12] dark:text-[#bbf246]" />
+                <Loader2 className="h-4 w-4 animate-spin text-emerald-600 dark:text-emerald-400 dark:text-emerald-400" />
                 <span>{progressMsg}</span>
               </div>
 
               {/* Progress bar */}
               <div className="mx-auto h-2 w-full max-w-xs overflow-hidden rounded-full bg-slate-100 dark:bg-white/[0.08]">
                 <div
-                  className="h-full rounded-full bg-[#bbf246] transition-all duration-300"
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-300"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -451,8 +451,8 @@ export function ReceiptScannerModal({
         {/* STEP 3: VERIFY & CONFIRM RESULTS */}
         {step === "verify" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between rounded-2xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#699c04] dark:text-[#bbf246]">
+            <div className="flex items-center justify-between rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 dark:text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Receipt Scanned Successfully!</span>
               </div>

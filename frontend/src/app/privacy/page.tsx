@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
             <span>Back to FinTrack</span>
           </Link>
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] font-black">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-white/10 dark:text-white dark:border dark:border-white/10 font-bold">
               <Wallet className="h-4 w-4 stroke-[2.5]" />
             </div>
             <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">
@@ -45,7 +45,7 @@ export default function PrivacyPolicyPage() {
           {/* Card 1: Non-Sale Commitment */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <CheckCircle2 className="h-4 w-4 text-[#bbf246]" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
               1. Data Ownership & Non-Sale Commitment
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -56,7 +56,7 @@ export default function PrivacyPolicyPage() {
           {/* Card 2: What We Collect */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <Shield className="h-4 w-4 text-[#bbf246]" />
+              <Shield className="h-4 w-4 text-emerald-500" />
               2. Information Collected & Processing Grounds
             </h2>
             <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-2 list-disc pl-4">
@@ -75,7 +75,7 @@ export default function PrivacyPolicyPage() {
           {/* Card 3: Scanned Receipts */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <Lock className="h-4 w-4 text-[#bbf246]" />
+              <Lock className="h-4 w-4 text-emerald-500" />
               3. Client-Side Document Processing & Security
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
           {/* Card 4: Data Control & Deletion */}
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-white/[0.08] dark:bg-[#15181d]">
             <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
-              <Trash2 className="h-4 w-4 text-[#bbf246]" />
+              <Trash2 className="h-4 w-4 text-emerald-500" />
               4. User Rights, Data Portability & Erasure
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -101,7 +101,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               For questions concerning this Privacy Policy, data governance practices, or to exercise statutory privacy rights, please direct inquiries to{" "}
-              <a href="mailto:privacy@fintrack.app" className="font-bold text-[#bbf246] hover:underline">
+              <a href="mailto:privacy@fintrack.app" className="font-bold text-emerald-500 hover:underline">
                 privacy@fintrack.app
               </a>.
             </p>
@@ -111,7 +111,7 @@ export default function PrivacyPolicyPage() {
         {/* Bottom Nav Links */}
         <div className="mt-10 pt-6 border-t border-slate-200/80 dark:border-white/[0.08] flex items-center justify-between text-xs text-slate-500">
           <p>© {new Date().getFullYear()} FinTrack. All rights reserved.</p>
-          <Link href="/terms" className="font-semibold hover:text-slate-900 dark:hover:text-[#bbf246] transition">
+          <Link href="/terms" className="font-semibold hover:text-slate-900 dark:hover:text-emerald-500 transition">
             View Terms of Service →
           </Link>
         </div>
