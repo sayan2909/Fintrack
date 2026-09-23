@@ -339,9 +339,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 mx-1" />
 
               <Link href="/settings" className="flex items-center gap-2.5 rounded-xl border border-slate-200/90 bg-slate-50/90 p-1 pr-2.5 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800 transition shadow-2xs">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-xs">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="h-8 w-8 rounded-full object-cover shadow-xs border border-indigo-200 dark:border-indigo-900 shrink-0"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-xs shrink-0">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div className="hidden sm:block text-left">
                   <p className="max-w-32 truncate text-xs font-bold text-slate-900 dark:text-white leading-tight">{user.name}</p>
                   <p className="max-w-32 truncate text-[11px] text-slate-500 leading-tight">{user.email}</p>

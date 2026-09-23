@@ -23,6 +23,8 @@ import {
   Lock,
   XCircle,
   Download,
+  Upload,
+  Check,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Field, inputCls, toast, Modal } from "@/components/ui";
@@ -52,6 +54,54 @@ function formatLastActive(dateStr: string | Date | undefined) {
     hour12: true,
   });
 }
+
+export const PRESET_AVATARS = [
+  {
+    id: "alex",
+    name: "Alex — Modern Professional",
+    url: "https://api.dicebear.com/7.x/notionists/svg?seed=Alex&backgroundColor=b6e3f4",
+  },
+  {
+    id: "maya",
+    name: "Maya — Creative Lead",
+    url: "https://api.dicebear.com/7.x/notionists/svg?seed=Maya&backgroundColor=ffd5dc",
+  },
+  {
+    id: "felix",
+    name: "Felix — Tech Executive",
+    url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=c0aede",
+  },
+  {
+    id: "sophia",
+    name: "Sophia — Financial Analyst",
+    url: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia&backgroundColor=d1d4f9",
+  },
+  {
+    id: "finbot",
+    name: "FinBot — AI Assistant",
+    url: "https://api.dicebear.com/7.x/bottts/svg?seed=FinTrack&backgroundColor=b6e3f4",
+  },
+  {
+    id: "leo",
+    name: "Leo — Strategic Investor",
+    url: "https://api.dicebear.com/7.x/lorelei/svg?seed=Leo&backgroundColor=ffdfbf",
+  },
+  {
+    id: "priya",
+    name: "Priya — Founder",
+    url: "https://api.dicebear.com/7.x/lorelei/svg?seed=Priya&backgroundColor=ffd5dc",
+  },
+  {
+    id: "sparkle",
+    name: "Sparkle — Playful Emoji",
+    url: "https://api.dicebear.com/7.x/fun-emoji/svg?seed=Lucky&backgroundColor=ffdfbf",
+  },
+  {
+    id: "geo",
+    name: "Geometric — Minimalist",
+    url: "https://api.dicebear.com/7.x/shapes/svg?seed=FinWealth&backgroundColor=d1d4f9",
+  },
+];
 
 export default function SettingsPage() {
   const { user, setUser, logout } = useAuth();
@@ -271,6 +321,56 @@ export default function SettingsPage() {
     }
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast("Please select an image file (PNG, JPG, SVG, WebP)", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast("Image size should be less than 5MB", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const maxDim = 256;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+          setProfile((prev) => ({ ...prev, avatarUrl: dataUrl }));
+          toast("Photo selected! Click 'Save Changes' to update profile.");
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -388,14 +488,135 @@ export default function SettingsPage() {
                     onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                   />
                 </Field>
-                <Field label="Profile Image URL (Optional)">
-                  <input
-                    className={inputCls}
-                    value={profile.avatarUrl}
-                    onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
-                    placeholder="https://…"
-                  />
-                </Field>
+                <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Profile Avatar / Picture
+                    </label>
+                    {profile.avatarUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setProfile({ ...profile, avatarUrl: "" })}
+                        className="text-[11px] font-medium text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 cursor-pointer"
+                      >
+                        Reset to Initials
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Active Preview & Selection Dropdown */}
+                  <div className="flex items-center gap-3.5">
+                    <div className="relative shrink-0">
+                      {profile.avatarUrl ? (
+                        <img
+                          src={profile.avatarUrl}
+                          alt="Avatar preview"
+                          className="h-14 w-14 rounded-2xl object-cover border-2 border-indigo-500/40 shadow-xs dark:border-indigo-400/40"
+                        />
+                      ) : (
+                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-black text-white shadow-xs">
+                          {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 space-y-1.5">
+                      <select
+                        className={inputCls}
+                        value={
+                          PRESET_AVATARS.some((a) => a.url === profile.avatarUrl)
+                            ? profile.avatarUrl
+                            : profile.avatarUrl
+                            ? "custom"
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === "custom") return;
+                          setProfile({ ...profile, avatarUrl: val });
+                        }}
+                      >
+                        <option value="">Default (Initials Badge)</option>
+                        <optgroup label="Preset Personas">
+                          {PRESET_AVATARS.map((a) => (
+                            <option key={a.id} value={a.url}>
+                              {a.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        {profile.avatarUrl &&
+                          !PRESET_AVATARS.some((a) => a.url === profile.avatarUrl) && (
+                            <option value="custom">Custom Uploaded Photo</option>
+                          )}
+                      </select>
+
+                      <div className="flex items-center gap-2">
+                        <label className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 rounded-lg cursor-pointer transition">
+                          <Upload className="h-3.5 w-3.5" />
+                          <span>Choose File from Device</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleFileUpload}
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Preset Avatar Grid */}
+                  <div className="pt-1.5">
+                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+                      Or select directly from presets:
+                    </p>
+                    <div className="grid grid-cols-5 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setProfile({ ...profile, avatarUrl: "" })}
+                        className={`group relative flex h-11 w-11 items-center justify-center rounded-xl border transition cursor-pointer ${
+                          !profile.avatarUrl
+                            ? "border-indigo-600 ring-2 ring-indigo-500/30 bg-indigo-50 dark:bg-indigo-950/40"
+                            : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-slate-300"
+                        }`}
+                        title="Default Initials Badge"
+                      >
+                        <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">
+                          {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+                        </span>
+                        {!profile.avatarUrl && (
+                          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
+                            <Check className="h-2.5 w-2.5" />
+                          </span>
+                        )}
+                      </button>
+
+                      {PRESET_AVATARS.map((a) => {
+                        const isSelected = profile.avatarUrl === a.url;
+                        return (
+                          <button
+                            key={a.id}
+                            type="button"
+                            onClick={() => setProfile({ ...profile, avatarUrl: a.url })}
+                            className={`group relative flex h-11 w-11 items-center justify-center rounded-xl border p-0.5 transition cursor-pointer overflow-hidden ${
+                              isSelected
+                                ? "border-indigo-600 ring-2 ring-indigo-500/30 shadow-xs"
+                                : "border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-700"
+                            }`}
+                            title={a.name}
+                          >
+                            <img src={a.url} alt={a.name} className="h-full w-full rounded-lg object-cover" />
+                            {isSelected && (
+                              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
+                                <Check className="h-2.5 w-2.5" />
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
 

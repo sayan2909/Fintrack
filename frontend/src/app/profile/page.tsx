@@ -39,9 +39,17 @@ export default function ProfilePage() {
         {/* User Identity Card */}
         <div className="flex flex-col items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
           <div className="flex flex-col items-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 text-3xl font-black text-white shadow-md shadow-indigo-500/20">
-              {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
-            </div>
+            {user?.avatarUrl ? (
+              <img
+                src={user.avatarUrl}
+                alt={user?.name || "User"}
+                className="h-20 w-20 rounded-3xl object-cover shadow-md shadow-indigo-500/20 border-2 border-indigo-300 dark:border-indigo-700"
+              />
+            ) : (
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 text-3xl font-black text-white shadow-md shadow-indigo-500/20">
+                {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </div>
+            )}
             <h2 className="mt-3.5 text-lg font-black text-slate-900 dark:text-white">{user?.name}</h2>
             <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-500">
               <Mail className="h-3.5 w-3.5" />
