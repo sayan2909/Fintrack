@@ -591,12 +591,12 @@ export default function SettingsPage() {
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow-indigo-500/20 transition-all cursor-pointer"
                       >
                         <Sparkles className="h-3.5 w-3.5" />
-                        Choose Persona
+                        Choose Avatar
                       </button>
 
                       <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs transition-all cursor-pointer">
                         <Upload className="h-3.5 w-3.5" />
-                        Upload File
+                        Upload Photo
                         <input
                           type="file"
                           accept="image/*"
@@ -1238,17 +1238,17 @@ export default function SettingsPage() {
         </div>
       </Modal>
 
-      {/* Avatar Studio Modal */}
+      {/* Avatar Gallery Modal */}
       <Modal
         open={avatarModalOpen}
         onClose={() => setAvatarModalOpen(false)}
-        title="Avatar Studio"
+        title="Select Profile Avatar"
         wide
       >
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Select an official persona or upload your own photo to personalize your FinTrack workspace.
+              Select an avatar preset or upload a custom photo for your FinTrack profile.
             </p>
             <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition shadow-xs shrink-0">
               <Camera className="h-3.5 w-3.5" />
@@ -1269,8 +1269,8 @@ export default function SettingsPage() {
           <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 w-fit text-xs font-medium">
             {[
               { id: "all", label: "All (16)" },
-              { id: "personas", label: "Personas" },
-              { id: "bots", label: "AI & Bots" },
+              { id: "personas", label: "Portraits" },
+              { id: "bots", label: "AI & Tech" },
               { id: "shapes", label: "Creative" },
             ].map((tab) => (
               <button
