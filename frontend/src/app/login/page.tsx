@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Wallet, Eye, EyeOff, Clock } from "lucide-react";
+import { Wallet, Eye, EyeOff, Clock, ArrowRight, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button, Field, inputCls } from "@/components/ui";
 
@@ -18,19 +18,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isTimeout, setIsTimeout] = useState(false);
 
-  // Clear inputs on mount and detect timeout notice
   useEffect(() => {
     setEmail("");
     setPassword("");
-    if (formRef.current) {
-      formRef.current.reset();
-    }
+    if (formRef.current) formRef.current.reset();
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const reason = params.get("reason");
-      if (reason === "timeout" || reason === "exit_timeout") {
-        setIsTimeout(true);
-      }
+      if (reason === "timeout" || reason === "exit_timeout") setIsTimeout(true);
     }
   }, []);
 
@@ -49,71 +44,142 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <div className="hidden flex-1 flex-col justify-between bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 p-10 text-white lg:flex">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15"><Wallet className="h-5 w-5" /></div>
-          <span className="text-xl font-extrabold">FinTrack</span>
-        </Link>
-        <div>
-          <h2 className="text-4xl font-extrabold leading-tight">Welcome back.<br />Your money missed you.</h2>
-          <p className="mt-3 max-w-md text-indigo-100">Pick up where you left off — budgets, goals and insights are waiting.</p>
+    <div className="flex min-h-screen bg-white dark:bg-[#0b0e11] overflow-hidden">
+
+      {/* Left decorative panel (Desktop) */}
+      <div className="relative hidden lg:flex lg:w-[52%] xl:w-[55%] flex-col justify-between overflow-hidden bg-[#111419] border-r border-slate-200 dark:border-white/[0.08] p-10 text-white">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#bbf246]/10 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="absolute top-1/2 left-1/3 h-[300px] w-[300px] -translate-y-1/2 rounded-full bg-[#bbf246]/5 blur-2xl" />
         </div>
-        <p className="text-sm text-indigo-200">Take Control of Your Money.</p>
-      </div>
-      <div className="flex flex-1 items-center justify-center px-4 py-10">
-        <form
-          ref={formRef}
-          onSubmit={submit}
-          autoComplete="off"
-          className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-slate-900"
-        >
-          <h1 className="text-2xl font-extrabold tracking-tight">Sign in</h1>
-          <p className="mt-1 text-sm text-slate-500">Welcome back to FinTrack.</p>
-          {isTimeout && (
-            <div className="mt-4 flex items-center gap-2.5 rounded-2xl border border-amber-200 bg-amber-50/90 p-3.5 text-xs font-semibold text-amber-800 dark:border-amber-500/20 dark:bg-amber-950/40 dark:text-amber-300">
-              <Clock className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <span>You have been logged out, please login again.</span>
-            </div>
-          )}
-          {err && <div className="mt-4 rounded-xl bg-rose-50 px-3.5 py-2.5 text-sm font-medium text-rose-700 dark:bg-rose-500/10 dark:text-rose-400">{err}</div>}
-          <div className="mt-5 space-y-4">
-            <Field label="Email">
-              <input
-                className={inputCls}
-                type="email"
-                name="fintrack_login_email"
-                autoComplete="off"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-              />
-            </Field>
-            <Field label="Password">
-              <div className="relative">
-                <input
-                  className={`${inputCls} pr-11`}
-                  type={show ? "text" : "password"}
-                  name="fintrack_login_password"
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-                <button type="button" onClick={() => setShow(!show)} className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700">
-                  {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </Field>
-            <div className="flex justify-end">
-              <Link href="/forgot-password" className="text-sm font-semibold text-indigo-600 hover:underline">Forgot password?</Link>
-            </div>
-            <Button type="submit" loading={loading} className="w-full py-3">Sign In</Button>
-            <p className="text-center text-sm text-slate-500">No account? <Link href="/register" className="font-bold text-indigo-600 hover:underline">Create one</Link></p>
+
+        <Link href="/" className="relative flex items-center gap-2.5 w-fit">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] shadow-lg shadow-[#bbf246]/20">
+            <Wallet className="h-5 w-5" />
           </div>
-        </form>
+          <span className="text-xl font-extrabold tracking-tight">FinTrack</span>
+        </Link>
+
+        <div className="relative">
+          <h2 className="text-4xl xl:text-5xl font-black leading-[1.08] tracking-tight">
+            Welcome back.<br />
+            <span className="text-white/80">Your money missed you.</span>
+          </h2>
+          <p className="mt-4 max-w-sm text-slate-400 leading-relaxed text-base">
+            Pick up where you left off — budgets, goals and insights are waiting.
+          </p>
+        </div>
+
+        <p className="relative text-sm text-slate-500">© 2026 FinTrack · Take Control of Your Money.</p>
+      </div>
+
+      {/* Right panel (Mobile & Desktop Form) */}
+      <div className="relative flex flex-1 flex-col overflow-hidden bg-white dark:bg-[#0b0e11]">
+
+        {/* Ambient Visual Atmosphere (Visible on mobile & desktop) */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-28 -right-28 h-[360px] w-[360px] sm:h-[460px] sm:w-[460px] rounded-full bg-gradient-to-br from-[#bbf246]/15 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "7s" }} />
+          <div className="absolute -bottom-28 -left-28 h-[320px] w-[320px] sm:h-[420px] sm:w-[420px] rounded-full bg-gradient-to-tr from-emerald-500/10 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "9s" }} />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] dark:bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)]" />
+        </div>
+
+        {/* Mobile header */}
+        <div className="relative z-10 flex items-center px-6 pt-7 pb-2 lg:hidden">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/25">
+              <Wallet className="h-5 w-5 stroke-[2.5]" />
+            </div>
+            <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white">FinTrack</span>
+          </Link>
+        </div>
+
+        <div className="relative z-10 flex flex-1 items-center justify-center px-5 py-8 sm:px-8">
+          <div className="w-full max-w-md">
+
+            {/* Main Auth Card with Neon Accent Trim & Glassmorphism */}
+            <div className="relative rounded-3xl border border-slate-200/90 bg-white/95 p-7 shadow-2xl backdrop-blur-xl dark:border-white/[0.08] dark:bg-[#15181d]/90 sm:p-8">
+              {/* Neon Lime Top Accent Line */}
+              <div className="absolute -top-[1px] left-10 right-10 h-[2px] bg-gradient-to-r from-transparent via-[#bbf246] to-transparent rounded-full opacity-90 shadow-[0_0_12px_rgba(187,242,70,0.6)]" />
+
+              <div className="mb-6">
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Sign in</h1>
+                <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">Welcome back to FinTrack</p>
+              </div>
+
+              {isTimeout && (
+                <div className="mb-4 flex items-center gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 p-3.5 text-xs font-semibold text-amber-800 dark:border-amber-500/20 dark:bg-amber-950/40 dark:text-amber-300">
+                  <Clock className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <span>Session expired. Please sign in again.</span>
+                </div>
+              )}
+              {err && (
+                <div className="mb-4 rounded-xl bg-rose-50 px-3.5 py-3 text-sm font-medium text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20">{err}</div>
+              )}
+
+              <form ref={formRef} onSubmit={submit} autoComplete="off" className="space-y-4">
+                <Field label="Email">
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                      className={`${inputCls} pl-10`}
+                      type="email"
+                      name="fintrack_login_email"
+                      autoComplete="off"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                </Field>
+                <Field label="Password">
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                      className={`${inputCls} pl-10 pr-11`}
+                      type={show ? "text" : "password"}
+                      name="fintrack_login_password"
+                      autoComplete="new-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShow(!show)}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 transition cursor-pointer"
+                    >
+                      {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </Field>
+                <div className="flex justify-end">
+                  <Link href="/forgot-password" className="text-xs font-semibold text-slate-900 hover:underline dark:text-[#bbf246] transition">
+                    Forgot password?
+                  </Link>
+                </div>
+                <Button
+                  type="submit"
+                  loading={loading}
+                  className="w-full py-3.5 text-sm font-black text-[#0b0e11] bg-[#bbf246] hover:bg-[#a8e030] shadow-lg shadow-[#bbf246]/25 rounded-2xl transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                  <span>Sign In</span>
+                  <ArrowRight className="h-4 w-4 stroke-[2.5]" />
+                </Button>
+              </form>
+            </div>
+
+            <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+              No account?{" "}
+              <Link href="/register" className="font-bold text-slate-900 hover:underline dark:text-[#bbf246] transition">
+                Create one free
+              </Link>
+            </p>
+
+          </div>
+        </div>
       </div>
     </div>
   );

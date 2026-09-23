@@ -45,7 +45,7 @@ const TIER_BADGES = {
   Bronze: "text-amber-700 bg-amber-50 border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40",
   Silver: "text-slate-700 bg-slate-100 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
   Gold: "text-amber-700 bg-amber-50 border-amber-300 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800/60",
-  Platinum: "text-indigo-700 bg-indigo-50 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800/40",
+  Platinum: "text-[#bbf246] bg-[#bbf246]/10 border-[#bbf246]/30 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-[#bbf246]/30",
 };
 
 const STAGES_CONFIG = [
@@ -163,13 +163,13 @@ export default function AchievementsPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs font-semibold shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+            <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs font-semibold shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
               <Trophy className="h-4 w-4 text-amber-500" />
               <span className="text-slate-800 dark:text-slate-200">
                 {stats?.unlockedCount || 0} / {stats?.totalCount || 0} Completed
               </span>
               <span className="text-slate-300 dark:text-slate-700">·</span>
-              <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+              <span className="text-slate-900 dark:text-[#bbf246] font-black">
                 {totalXp} XP
               </span>
             </div>
@@ -177,15 +177,15 @@ export default function AchievementsPage() {
         </div>
 
         {/* 2. Unified Stage & XP Summary Card (One single proportional banner) */}
-        <Card className="p-5 border-slate-200/80 dark:border-slate-800/80">
+        <Card className="p-5 border-slate-200/80 dark:border-white/[0.08] dark:bg-[#15181d] rounded-3xl">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div className="flex items-center gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
                 <Trophy className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300">
+                  <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
                     Stage {currentStage.stage} · {currentStage.title}
                   </span>
                   <span className="text-xs text-slate-400 font-medium">
@@ -206,7 +206,7 @@ export default function AchievementsPage() {
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                 <div
-                  className="h-full rounded-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-400"
+                  className="h-full rounded-full bg-[#bbf246] transition-all duration-400"
                   style={{ width: `${stageProgress}%` }}
                 />
               </div>

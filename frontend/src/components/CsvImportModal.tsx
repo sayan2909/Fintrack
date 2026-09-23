@@ -280,8 +280,8 @@ export function CsvImportModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200/80 px-6 py-5 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400 ring-1 ring-indigo-500/20">
-              <FileSpreadsheet className="h-5 w-5" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-sm">
+              <FileSpreadsheet className="h-5 w-5 stroke-[2.5]" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -302,18 +302,18 @@ export function CsvImportModal({
 
         {/* Stepper indicator */}
         <div className="flex items-center justify-center gap-3 border-b border-slate-200/50 bg-slate-50/50 px-6 py-3 dark:border-slate-800/60 dark:bg-slate-950/40 text-xs font-semibold">
-          <span className={`flex items-center gap-1.5 ${step >= 1 ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400"}`}>
-            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 1 ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>1</span>
+          <span className={`flex items-center gap-1.5 ${step >= 1 ? "text-slate-900 dark:text-[#bbf246]" : "text-slate-400"}`}>
+            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 1 ? "bg-[#bbf246] text-[#0b0e11]" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>1</span>
             Upload File
           </span>
           <ArrowRight className="h-3 w-3 text-slate-400" />
-          <span className={`flex items-center gap-1.5 ${step >= 2 ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400"}`}>
-            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 2 ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>2</span>
+          <span className={`flex items-center gap-1.5 ${step >= 2 ? "text-slate-900 dark:text-[#bbf246]" : "text-slate-400"}`}>
+            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 2 ? "bg-[#bbf246] text-[#0b0e11]" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>2</span>
             Map Columns
           </span>
           <ArrowRight className="h-3 w-3 text-slate-400" />
-          <span className={`flex items-center gap-1.5 ${step >= 3 ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400"}`}>
-            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 3 ? "bg-indigo-600 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>3</span>
+          <span className={`flex items-center gap-1.5 ${step >= 3 ? "text-slate-900 dark:text-[#bbf246]" : "text-slate-400"}`}>
+            <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${step >= 3 ? "bg-[#bbf246] text-[#0b0e11]" : "bg-slate-200 dark:bg-slate-800 text-slate-500"}`}>3</span>
             Verify & Import
           </span>
         </div>
@@ -324,13 +324,13 @@ export function CsvImportModal({
             <div className="space-y-6">
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 p-10 text-center transition-all hover:border-indigo-500 hover:bg-indigo-50/20 dark:border-slate-700 dark:hover:border-indigo-500/60 dark:hover:bg-indigo-500/5 cursor-pointer"
+                className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 p-10 text-center transition-all hover:border-[#bbf246] hover:bg-[#bbf246]/5 dark:border-slate-700 dark:hover:border-[#bbf246]/60 dark:hover:bg-[#bbf246]/5 cursor-pointer"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 shadow-sm transition-transform group-hover:scale-110 dark:bg-indigo-500/10 dark:text-indigo-400">
-                  <Upload className="h-8 w-8" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#bbf246]/20 text-[#0b0e11] shadow-sm transition-transform group-hover:scale-110 dark:bg-[#bbf246]/15 dark:text-[#bbf246] font-black">
+                  <Upload className="h-8 w-8 stroke-[2.5]" />
                 </div>
                 <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
-                  Drop your CSV file here or <span className="text-indigo-600 dark:text-indigo-400 underline">browse</span>
+                  Drop your CSV file here or <span className="text-slate-900 dark:text-[#bbf246] underline font-bold">browse</span>
                 </h3>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md">
                   Supports CSV bank statement exports with headers like Date, Merchant/Description, and Amount.
@@ -371,12 +371,12 @@ export function CsvImportModal({
 
           {step === 2 && (
             <div className="space-y-6">
-              <div className="rounded-2xl border border-indigo-200/80 bg-indigo-50/50 p-4 dark:border-indigo-900/40 dark:bg-indigo-950/20">
-                <div className="flex items-center gap-2 text-xs font-bold text-indigo-800 dark:text-indigo-300">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <div className="rounded-2xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-4 dark:border-[#bbf246]/20 dark:bg-[#bbf246]/10">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-[#bbf246]">
+                  <CheckCircle2 className="h-4 w-4 stroke-[2.5]" />
                   Detected {rawRows.length} rows from <span className="underline font-mono">{fileName || "Statement"}</span>
                 </div>
-                <p className="mt-1 text-[11px] text-indigo-700/80 dark:text-indigo-300/70">
+                <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-300">
                   Match each column from your CSV below. FinTrack has automatically pre-selected best matches.
                 </p>
               </div>
@@ -391,7 +391,7 @@ export function CsvImportModal({
                     id={dateColId}
                     value={mapping.dateCol}
                     onChange={(e) => setMapping({ ...mapping, dateCol: e.target.value })}
-                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#bbf246] focus:border-[#bbf246]"
                   >
                     <option value="">Select column...</option>
                     {headers.map((h) => (
@@ -409,7 +409,7 @@ export function CsvImportModal({
                     id={descColId}
                     value={mapping.descCol}
                     onChange={(e) => setMapping({ ...mapping, descCol: e.target.value })}
-                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#bbf246] focus:border-[#bbf246]"
                   >
                     <option value="">Select column...</option>
                     {headers.map((h) => (
@@ -427,7 +427,7 @@ export function CsvImportModal({
                     id={amtColId}
                     value={mapping.amountCol}
                     onChange={(e) => setMapping({ ...mapping, amountCol: e.target.value })}
-                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#bbf246] focus:border-[#bbf246]"
                   >
                     <option value="">Select column...</option>
                     {headers.map((h) => (
@@ -440,7 +440,7 @@ export function CsvImportModal({
                 <div>
                   <label htmlFor={catColId} className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
                     <span>Category Column (Optional)</span>
-                    <span className="text-[10px] text-indigo-500 font-semibold flex items-center gap-1">
+                    <span className="text-[10px] text-slate-900 dark:text-[#bbf246] font-bold flex items-center gap-1">
                       <Sparkles className="h-2.5 w-2.5" /> Auto-categorize enabled
                     </span>
                   </label>
@@ -448,7 +448,7 @@ export function CsvImportModal({
                     id={catColId}
                     value={mapping.categoryCol}
                     onChange={(e) => setMapping({ ...mapping, categoryCol: e.target.value })}
-                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#bbf246] focus:border-[#bbf246]"
                   >
                     <option value="">None (Auto-predict with AI rules)</option>
                     {headers.map((h) => (
@@ -466,7 +466,7 @@ export function CsvImportModal({
                     id={targetAccId}
                     value={mapping.selectedAccountId}
                     onChange={(e) => setMapping({ ...mapping, selectedAccountId: e.target.value })}
-                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full h-10 rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#bbf246] focus:border-[#bbf246]"
                   >
                     {accounts.map((a) => (
                       <option key={a.id} value={a.id}>
@@ -516,8 +516,8 @@ export function CsvImportModal({
                           {row.description}
                         </td>
                         <td className="px-4 py-2.5">
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300">
-                            <Sparkles className="h-2.5 w-2.5" />
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-[#bbf246]/15 px-2 py-0.5 text-[11px] font-bold text-[#0b0e11] dark:text-[#bbf246]">
+                            <Sparkles className="h-2.5 w-2.5 stroke-[2.5]" />
                             {row.category}
                           </span>
                         </td>
@@ -574,7 +574,7 @@ export function CsvImportModal({
                 variant="primary"
                 onClick={handleExecuteImport}
                 loading={importing}
-                className="h-9 px-6 text-xs font-semibold cursor-pointer bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-md shadow-indigo-500/20"
+                className="h-9 px-6 text-xs font-bold cursor-pointer bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8e030] shadow-md shadow-[#bbf246]/20 font-black"
               >
                 Import {parsedPreview.filter((p) => p.isValid).length} Transactions
               </Button>

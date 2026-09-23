@@ -211,65 +211,65 @@ export default function CategoriesPage() {
         </div>
 
         {/* Executive KPI Metric Cards */}
-        <div className="grid gap-3.5 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3.5">
           {/* Total Categories */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-2.5 sm:p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Categories</span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
-                <Layers className="h-3.5 w-3.5" />
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">Total</span>
+              <span className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                <Layers className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               </span>
             </div>
-            <p className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            <p className="mt-1 sm:mt-2 text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {loading ? "..." : cats.length}
             </p>
-            <div className="mt-2 flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+            <div className="mt-1 sm:mt-2 hidden sm:flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
               <span className="inline-flex items-center font-bold text-rose-500">
-                <ArrowDownLeft className="mr-0.5 h-3 w-3" /> {expenseCount} Expenses
+                <ArrowDownLeft className="mr-0.5 h-3 w-3" /> {expenseCount} Exp
               </span>
               <span>•</span>
               <span className="inline-flex items-center font-bold text-emerald-500">
-                <ArrowUpRight className="mr-0.5 h-3 w-3" /> {incomeCount} Income
+                <ArrowUpRight className="mr-0.5 h-3 w-3" /> {incomeCount} Inc
               </span>
             </div>
           </div>
 
           {/* Expense Categories */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-2.5 sm:p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Expense Classifications</span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
-                <ArrowDownLeft className="h-3.5 w-3.5" />
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">Expenses</span>
+              <span className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
+                <ArrowDownLeft className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               </span>
             </div>
-            <p className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            <p className="mt-1 sm:mt-2 text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {loading ? "..." : expenseCount}
             </p>
-            <p className="mt-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-              Applied to outflows, monthly budgets & bills
+            <p className="mt-1 sm:mt-2 hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+              Applied to outflows & bills
             </p>
           </div>
 
           {/* Income Categories */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-2.5 sm:p-4 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Income Streams</span>
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
-                <ArrowUpRight className="h-3.5 w-3.5" />
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">Income</span>
+              <span className="flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
+                <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               </span>
             </div>
-            <p className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+            <p className="mt-1 sm:mt-2 text-lg sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
               {loading ? "..." : incomeCount}
             </p>
-            <p className="mt-2 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-              Salary, investments, business & freelancing
+            <p className="mt-1 sm:mt-2 hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate">
+              Salary, investments & biz
             </p>
           </div>
         </div>
 
         {/* Controls: Tabs and Live Search Filter */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="inline-flex rounded-xl bg-slate-100 p-1 dark:bg-slate-800/80">
+          <div className="inline-flex rounded-full border border-slate-200/80 bg-slate-100 p-0.5 dark:border-white/[0.08] dark:bg-[#1b1f26] overflow-x-auto no-scrollbar max-w-full">
             {[
               { key: "all", label: "All Categories", count: cats.length },
               { key: "expense", label: "Expenses", count: expenseCount },
@@ -278,9 +278,9 @@ export default function CategoriesPage() {
               <button
                 key={t.key}
                 onClick={() => setActiveTab(t.key as any)}
-                className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                   activeTab === t.key
-                    ? "bg-indigo-600 text-white shadow-xs"
+                    ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -288,8 +288,8 @@ export default function CategoriesPage() {
                 <span
                   className={`rounded-full px-1.5 py-0.2 text-[10px] ${
                     activeTab === t.key
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-200/80 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                      ? "bg-black/15 text-slate-900 dark:text-[#0b0e11]"
+                      : "bg-slate-200/80 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
                   }`}
                 >
                   {t.count}

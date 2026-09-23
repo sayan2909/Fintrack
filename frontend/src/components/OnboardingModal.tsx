@@ -92,12 +92,12 @@ export function OnboardingModal() {
       title: "Welcome to FinTrack!",
       subtitle: "Take full control of your personal finances with effortless tracking, automated calculations, and smart money habits.",
       icon: Wallet,
-      color: "from-indigo-600 to-violet-600",
+      color: "from-slate-900 to-black dark:from-[#181c22] dark:to-[#121519]",
       content: (
         <div className="space-y-3.5 pt-2">
-          <div className="flex items-start gap-3 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-3.5 dark:border-indigo-900/40 dark:bg-indigo-950/30">
-            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
-              <CheckCircle2 className="h-4 w-4" />
+          <div className="flex items-start gap-3 rounded-2xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-3.5 dark:border-[#bbf246]/20 dark:bg-[#bbf246]/5">
+            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-sm">
+              <CheckCircle2 className="h-4 w-4 stroke-[2.5]" />
             </div>
             <div>
               <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Effortless Expense & Income Logging</p>
@@ -105,7 +105,7 @@ export function OnboardingModal() {
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm">
+            <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-[#bbf246] font-black shadow-sm">
               <BarChart3 className="h-4 w-4" />
             </div>
             <div>
@@ -135,10 +135,10 @@ export function OnboardingModal() {
           <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm dark:border-slate-800 dark:bg-slate-800/70">
             <div className="flex items-center justify-between text-xs font-bold">
               <span>Emergency Fund Goal</span>
-              <span className="text-indigo-600">₹45,000 / ₹1,00,000 (45%)</span>
+              <span className="text-slate-900 dark:text-[#bbf246]">₹45,000 / ₹1,00,000 (45%)</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
-              <div className="h-full w-[45%] rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" />
+              <div className="h-full w-[45%] rounded-full bg-gradient-to-r from-emerald-500 to-[#bbf246]" />
             </div>
           </div>
         </div>
@@ -153,19 +153,19 @@ export function OnboardingModal() {
         <div className="grid gap-3 pt-2 sm:grid-cols-2">
           <button
             onClick={() => handleFinish("/transactions")}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-indigo-300/80 bg-indigo-50/50 p-4 text-center transition hover:border-indigo-500 hover:bg-indigo-50 dark:border-indigo-800 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40"
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#bbf246]/50 bg-[#bbf246]/10 p-4 text-center transition hover:border-[#bbf246] hover:bg-[#bbf246]/15 dark:border-[#bbf246]/30 dark:bg-[#bbf246]/10 dark:hover:bg-[#bbf246]/20 cursor-pointer"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md">
-              <PlusCircle className="h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md">
+              <PlusCircle className="h-5 w-5 stroke-[2.5]" />
             </div>
-            <p className="text-xs font-bold text-indigo-900 dark:text-indigo-200">Log First Transaction</p>
+            <p className="text-xs font-bold text-slate-900 dark:text-[#bbf246]">Log First Transaction</p>
             <p className="text-[10px] text-slate-500 dark:text-slate-400">Add an expense or income right now</p>
           </button>
           <button
             onClick={() => handleFinish("/dashboard")}
-            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800"
+            className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800 cursor-pointer"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-purple-600 text-white shadow-md">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-md dark:bg-white dark:text-slate-900 font-black">
               <BarChart3 className="h-5 w-5" />
             </div>
             <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Explore Dashboard</p>
@@ -200,7 +200,7 @@ export function OnboardingModal() {
             <div
               key={idx}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                idx === step ? "w-8 bg-indigo-600" : "w-2 bg-slate-200 dark:bg-slate-700"
+                idx === step ? "w-8 bg-[#bbf246]" : "w-2 bg-slate-200 dark:bg-slate-700"
               }`}
             />
           ))}
@@ -208,7 +208,7 @@ export function OnboardingModal() {
 
         {/* Header Icon with Glow */}
         <div className="relative mb-4 flex h-14 w-14 items-center justify-center">
-          <div className="absolute inset-0 animate-pulse rounded-2xl bg-indigo-500/20 blur-lg" />
+          <div className="absolute inset-0 animate-pulse rounded-2xl bg-[#bbf246]/20 blur-lg" />
           <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${current.color} text-white shadow-lg`}>
             <Icon className="h-7 w-7" />
           </div>

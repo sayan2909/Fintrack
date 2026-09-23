@@ -271,7 +271,7 @@ export default function GoalsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50 animate-pulse" />
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Wealth & Milestones
               </span>
@@ -284,16 +284,16 @@ export default function GoalsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
             {/* View Switcher: Cards vs Ledger */}
-            <div className="flex items-center rounded-xl border border-slate-200/80 bg-slate-100/90 p-0.5 shadow-2xs dark:border-slate-800/80 dark:bg-[#111827]">
+            <div className="flex items-center rounded-full border border-slate-200/80 bg-slate-100/90 p-0.5 shadow-2xs dark:border-white/[0.08] dark:bg-[#1b1f26]">
               {(["cards", "ledger"] as const).map((v) => (
                 <button
                   key={v}
                   onClick={() => setViewMode(v)}
-                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     viewMode === v
-                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0 font-bold"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11]"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -303,34 +303,34 @@ export default function GoalsPage() {
               ))}
             </div>
 
-            <Button onClick={openAdd} className="h-9 px-4 text-xs font-bold shadow-xs">
-              <Plus className="h-4 w-4 mr-1.5" /> Create Goal
+            <Button onClick={openAdd} className="h-9 px-3.5 sm:px-4 text-xs font-bold shadow-xs">
+              <Plus className="h-4 w-4 mr-1 sm:mr-1.5" /> Create Goal
             </Button>
           </div>
         </div>
 
         {/* ── 2. Executive KPI Stat Cards (4 Columns) ───────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Card 1: Total Accumulated Savings */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-4.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80 relative overflow-hidden">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80 relative overflow-hidden">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total Saved
               </span>
-              <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/10 dark:text-emerald-500 dark:border-0">
-                <PiggyBank className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/10 dark:text-emerald-500 dark:border-0">
+                <PiggyBank className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
               {formatCurrency(totalSaved, currency)}
             </p>
-            <div className="mt-2.5 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>Funded status</span>
+            <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span>Funded</span>
               <span className="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">
-                {portfolioPct}% of target
+                {portfolioPct}%
               </span>
             </div>
-            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
               <div
                 className="h-full rounded-full bg-emerald-500 transition-all duration-700"
                 style={{ width: `${portfolioPct}%` }}
@@ -339,25 +339,25 @@ export default function GoalsPage() {
           </div>
 
           {/* Card 2: Target Portfolio */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-4.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Target Milestone
               </span>
-              <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-500 dark:border-0">
-                <Target className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-500 dark:border-0">
+                <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(totalTarget, currency)}
             </p>
-            <div className="mt-2.5 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>Remaining gap</span>
+            <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span>Gap</span>
               <span className="font-bold text-slate-700 dark:text-slate-300 tabular-nums">
-                {formatCurrency(totalRemaining, currency)} to go
+                {formatCurrency(totalRemaining, currency)}
               </span>
             </div>
-            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
               <div
                 className="h-full rounded-full bg-indigo-500 transition-all duration-700"
                 style={{ width: `${portfolioPct}%` }}
@@ -366,53 +366,53 @@ export default function GoalsPage() {
           </div>
 
           {/* Card 3: Monthly Required Pace */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-4.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Pace
               </span>
-              <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-200/60 dark:bg-sky-500/10 dark:text-sky-500 dark:border-0">
-                <TrendingUp className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-sky-50 text-sky-600 border border-sky-200/60 dark:bg-sky-500/10 dark:text-sky-500 dark:border-0">
+                <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(totalMonthlyNeeded, currency)}
-              <span className="text-xs font-semibold text-slate-400 font-normal">/mo</span>
+              <span className="text-[10px] sm:text-xs font-normal text-slate-400">/mo</span>
             </p>
-            <div className="mt-2.5 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>Active targets</span>
+            <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span>Active</span>
               <span className="font-bold text-sky-600 dark:text-sky-400">
                 {inProgressCount} in progress
               </span>
             </div>
-            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
               <div className="h-full rounded-full bg-sky-500 transition-all duration-700 w-full opacity-60" />
             </div>
           </div>
 
           {/* Card 4: Milestones Achieved */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-4.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none dark:hover:border-slate-700/80">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Milestones Done
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Achieved
               </span>
-              <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 dark:bg-amber-500/10 dark:text-amber-500 dark:border-0">
-                <Trophy className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 dark:bg-amber-500/10 dark:text-amber-500 dark:border-0">
+                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-1.5">
-              <p className="text-2xl sm:text-3xl font-black tracking-tight text-amber-600 dark:text-amber-400 tabular-nums">
+              <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-amber-600 dark:text-amber-400 tabular-nums">
                 {achievedCount}
               </p>
-              <span className="text-sm font-semibold text-slate-400">/ {goals.length} goals</span>
+              <span className="text-xs sm:text-sm font-semibold text-slate-400">/ {goals.length}</span>
             </div>
-            <div className="mt-2.5 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>Nearest deadline</span>
-              <span className="font-bold text-slate-700 dark:text-slate-300">
+            <div className="mt-2 flex items-center justify-between text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">
+              <span>Deadline</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
                 {nearestGoal?.daysRemaining ? `${nearestGoal.daysRemaining}d left` : "None"}
               </span>
             </div>
-            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+            <div className="mt-1.5 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-700"
                 style={{ width: `${goals.length ? (achievedCount / goals.length) * 100 : 0}%` }}
@@ -424,7 +424,7 @@ export default function GoalsPage() {
         {/* ── 3. Filter & Search Toolbar ────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           {/* Status Tabs */}
-          <div className="inline-flex items-center gap-1 p-0.5 rounded-xl bg-slate-100/90 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80">
+          <div className="inline-flex items-center gap-1 p-0.5 rounded-xl bg-slate-100/90 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 overflow-x-auto no-scrollbar max-w-full">
             {[
               { id: "all", label: "All Goals", count: goals.length },
               { id: "in_progress", label: "In Progress", count: inProgressCount },

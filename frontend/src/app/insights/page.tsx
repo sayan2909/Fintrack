@@ -206,7 +206,7 @@ export default function InsightsPage() {
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               AI Insights
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-indigo-200/80 bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+            <span className="inline-flex items-center gap-1 rounded-full border border-indigo-200/80 bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
               <Sparkles className="h-3 w-3" />
               Smart Analysis
             </span>
@@ -244,7 +244,7 @@ export default function InsightsPage() {
       ) : (
         <div className="mt-5 space-y-5">
           {/* Executive Health Overview Hero Card */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none">
             {/* Top row: Score + Diagnostics + Simulator */}
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-4.5">
@@ -269,9 +269,9 @@ export default function InsightsPage() {
                       strokeLinecap="round"
                       className={`transition-all duration-1000 ease-out ${
                         score >= 75
-                          ? "stroke-emerald-500"
+                          ? "stroke-[#bbf246]"
                           : score >= 55
-                          ? "stroke-indigo-500"
+                          ? "stroke-[#bbf246]"
                           : "stroke-amber-500"
                       }`}
                       fill="transparent"
@@ -333,8 +333,8 @@ export default function InsightsPage() {
                       onClick={() => setSimulationBoost(simulationBoost === btn.val ? 0 : btn.val)}
                       className={`rounded-xl px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         simulationBoost === btn.val
-                          ? "bg-indigo-600 text-white shadow-xs"
-                          : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+                          ? "bg-slate-900 text-white dark:bg-[#bbf246] dark:text-[#0b0e11] font-black shadow-xs"
+                          : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-300"
                       }`}
                     >
                       {btn.label}
@@ -469,7 +469,7 @@ export default function InsightsPage() {
                   onClick={() => setFilter("all")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "all"
-                      ? "bg-white text-indigo-700 shadow-2xs border border-slate-200/90 dark:border-slate-700 dark:bg-[#111827] dark:text-indigo-400"
+                      ? "bg-white text-slate-900 shadow-2xs border border-slate-200/90 dark:border-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >

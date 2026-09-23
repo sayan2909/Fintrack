@@ -53,7 +53,7 @@ export default function NotificationsPage() {
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">Notifications</h1>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-indigo-500/10 px-2.5 py-0.5 text-xs font-bold text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+              <span className="rounded-full bg-[#bbf246]/20 px-2.5 py-0.5 text-xs font-bold text-slate-900 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
                 {unreadCount} unread
               </span>
             )}
@@ -68,7 +68,7 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="mt-5 inline-flex flex-wrap items-center rounded-xl bg-slate-100 p-0.5 dark:bg-slate-800/80 text-xs font-semibold">
+      <div className="mt-5 inline-flex items-center rounded-xl bg-slate-100 p-0.5 border border-slate-200/60 dark:border-white/[0.08] dark:bg-[#0b0e11] text-xs font-semibold overflow-x-auto no-scrollbar max-w-full">
         {[
           { label: "All", val: "all" },
           { label: "Unread", val: "unread" },
@@ -81,7 +81,7 @@ export default function NotificationsPage() {
             onClick={() => setFilter(t.val)}
             className={`rounded-lg px-3 py-1.5 transition cursor-pointer text-xs font-bold ${
               filter === t.val
-                ? "bg-indigo-600 text-white shadow-xs"
+                ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                 : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -109,12 +109,12 @@ export default function NotificationsPage() {
               key={n.id}
               className={`rounded-2xl border p-4 shadow-xs transition ${
                 !n.isRead
-                  ? "border-indigo-200/80 bg-indigo-50/20 dark:border-indigo-500/30 dark:bg-indigo-500/5"
-                  : "border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-[#111827]"
+                  ? "border-[#bbf246]/30 bg-[#bbf246]/5 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/5"
+                  : "border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[#15181d]"
               }`}
             >
               <div className="flex items-start gap-3.5">
-                <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.isRead ? "bg-indigo-600 dark:bg-indigo-400 ring-4 ring-indigo-500/20" : "bg-slate-300 dark:bg-slate-700"}`} />
+                <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${!n.isRead ? "bg-[#bbf246] ring-4 ring-[#bbf246]/20" : "bg-slate-300 dark:bg-slate-700"}`} />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-bold text-slate-900 dark:text-white text-sm">{n.title}</h3>

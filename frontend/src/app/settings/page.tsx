@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   User,
   Bell,
@@ -27,6 +27,9 @@ import {
   Check,
   Sparkles,
   Camera,
+  Sun,
+  Moon,
+  ChevronRight,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Field, inputCls, toast, Modal } from "@/components/ui";
@@ -494,6 +497,17 @@ export default function SettingsPage() {
   const otherSessionsCount = sessions.filter((s) => !s.isCurrent).length;
 
   const [activeTab, setActiveTab] = useState<"general" | "security" | "notifications" | "data">("general");
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+
+  const handleTabChange = (tabId: "general" | "security" | "notifications" | "data") => {
+    setActiveTab(tabId);
+    if (typeof window !== "undefined") {
+      const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (targetBtn && tabsScrollRef.current) {
+        targetBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      }
+    }
+  };
 
   return (
     <AppShell>
@@ -502,28 +516,73 @@ export default function SettingsPage() {
         <p className="text-xs text-slate-500 mt-0.5">Manage your profile, security credentials, active sessions, and account data.</p>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="mt-5 inline-flex items-center gap-1 rounded-2xl bg-slate-100/90 p-1 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-900/60 overflow-x-auto max-w-full">
-        {[
-          { id: "general", label: "Profile & Preferences", icon: User },
-          { id: "security", label: "Security & Sessions", icon: Shield },
-          { id: "notifications", label: "Notifications", icon: Bell },
-          { id: "data", label: "Account & Data Controls", icon: ShieldAlert },
-        ].map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setActiveTab(t.id as "general" | "security" | "notifications" | "data")}
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
-              activeTab === t.id
-                ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0 font-bold"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
-            }`}
-          >
-            <t.icon className="h-4 w-4 shrink-0" />
-            {t.label}
-          </button>
-        ))}
+      {/* ── Professional Mobile & Desktop Sliding Tabs Bar ── */}
+      <div className="mt-4 relative w-full">
+        {/* Mobile Edge Gradient / Swipe Hint */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#f4f6f8] dark:from-[#0b0e11] to-transparent z-10 sm:hidden flex items-center justify-end pr-1 text-slate-400">
+          <ChevronRight className="h-3.5 w-3.5 opacity-60 animate-pulse" />
+        </div>
+
+        {/* Sliding Pill Bar Track */}
+        <div
+          ref={tabsScrollRef}
+          className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-white dark:bg-[#15181d] border border-slate-200/80 dark:border-white/[0.08] shadow-xs overflow-x-auto no-scrollbar scroll-smooth snap-x"
+        >
+          {[
+            { id: "general", label: "Profile & Preferences", shortLabel: "Profile", icon: User },
+            { id: "security", label: "Security & Sessions", shortLabel: "Security", icon: Shield },
+            { id: "notifications", label: "Notifications", shortLabel: "Alerts", icon: Bell },
+            { id: "data", label: "Account & Data Controls", shortLabel: "Data & Privacy", icon: ShieldAlert },
+          ].map((t) => {
+            const isCurrent = activeTab === t.id;
+            return (
+              <button
+                id={`tab-btn-${t.id}`}
+                key={t.id}
+                type="button"
+                onClick={() => handleTabChange(t.id as "general" | "security" | "notifications" | "data")}
+                className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer whitespace-nowrap snap-center shrink-0 ${
+                  isCurrent
+                    ? "bg-[#0b0e11] text-white shadow-xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black scale-[1.02]"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white dark:hover:bg-[#1b1f26]/80"
+                }`}
+              >
+                <t.icon className={`h-4 w-4 shrink-0 transition-colors ${isCurrent ? "text-[#bbf246] dark:text-[#0b0e11]" : "text-slate-400"}`} />
+                <span className="hidden sm:inline">{t.label}</span>
+                <span className="sm:hidden">{t.shortLabel}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Interactive Segmented Progress Slider Bar */}
+        <div className="mt-2 flex items-center gap-1.5 px-1">
+          {[
+            { id: "general", label: "Profile" },
+            { id: "security", label: "Security" },
+            { id: "notifications", label: "Alerts" },
+            { id: "data", label: "Data" },
+          ].map((step) => {
+            const isCurrent = activeTab === step.id;
+            return (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => handleTabChange(step.id as "general" | "security" | "notifications" | "data")}
+                className="group flex-1 py-1 cursor-pointer focus:outline-none"
+                title={step.label}
+              >
+                <div
+                  className={`h-1.5 w-full rounded-full transition-all duration-300 ${
+                    isCurrent
+                      ? "bg-[#bbf246] shadow-xs shadow-[#bbf246]/50"
+                      : "bg-slate-200 dark:bg-white/[0.06] group-hover:bg-slate-300 dark:group-hover:bg-white/[0.12]"
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* TAB 1: Profile & Preferences */}
@@ -532,8 +591,8 @@ export default function SettingsPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             {/* Personal Information */}
             <Card>
-              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-slate-800">
-                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-0">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-white/[0.08]">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
                   <User className="h-4 w-4" />
                 </div>
                 <div>
@@ -543,9 +602,9 @@ export default function SettingsPage() {
               </div>
               <div className="mt-4 space-y-4">
                 {/* Profile Picture Control */}
-                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/60 border border-slate-200/70 dark:bg-slate-800/30 dark:border-slate-800/60">
+                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50/60 border border-slate-200/70 dark:bg-[#1b1f26] dark:border-white/[0.06]">
                   <div className="relative group shrink-0">
-                    <div className="relative h-14 w-14 rounded-2xl overflow-hidden ring-2 ring-indigo-500/20 ring-offset-2 ring-offset-white dark:ring-offset-[#111827] shadow-xs transition-transform group-hover:scale-105">
+                    <div className="relative h-14 w-14 rounded-2xl overflow-hidden ring-2 ring-[#bbf246]/30 ring-offset-2 ring-offset-white dark:ring-offset-[#15181d] shadow-xs transition-transform group-hover:scale-105">
                       {profile.avatarUrl ? (
                         <img
                           src={profile.avatarUrl}
@@ -553,7 +612,7 @@ export default function SettingsPage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-xl font-black text-white">
+                        <div className="flex h-full w-full items-center justify-center bg-[#bbf246] text-xl font-black text-[#0b0e11]">
                           {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                         </div>
                       )}
@@ -588,13 +647,13 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setAvatarModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs hover:shadow-indigo-500/20 transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] shadow-xs transition-all cursor-pointer"
                       >
                         <Sparkles className="h-3.5 w-3.5" />
                         Choose Avatar
                       </button>
 
-                      <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-2xs transition-all cursor-pointer">
+                      <label className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 dark:bg-[#1f242d] dark:hover:bg-[#262c37] dark:text-slate-200 border border-slate-200 dark:border-white/[0.08] shadow-2xs transition-all cursor-pointer">
                         <Upload className="h-3.5 w-3.5" />
                         Upload Photo
                         <input
@@ -643,8 +702,8 @@ export default function SettingsPage() {
 
             {/* Regional & Display */}
             <Card>
-              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-slate-800">
-                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-200/60 dark:bg-violet-500/10 dark:text-violet-400 dark:border-0">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5 dark:border-white/[0.08]">
+                <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
                   <Palette className="h-4 w-4" />
                 </div>
                 <div>
@@ -683,9 +742,9 @@ export default function SettingsPage() {
 
                 {/* Currency Conversion Live Preview Info */}
                 {profile.currency !== (user?.currency || "INR") && (
-                  <div className="rounded-xl border border-indigo-200/90 bg-indigo-50/70 p-3.5 text-xs text-indigo-900 dark:border-indigo-500/25 dark:bg-indigo-500/10 dark:text-indigo-300">
-                    <div className="flex items-center gap-2 font-bold">
-                      <ArrowRightLeft className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                  <div className="rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-3.5 text-xs text-slate-800 dark:border-[#bbf246]/25 dark:bg-[#bbf246]/10 dark:text-[#bbf246]">
+                    <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-[#bbf246]">
+                      <ArrowRightLeft className="h-4 w-4" />
                       <span>Automatic Balance & Amount Conversion</span>
                     </div>
                     <p className="mt-1.5 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -693,16 +752,37 @@ export default function SettingsPage() {
                     </p>
                   </div>
                 )}
-                <Field label="Theme Mode">
-                  <select
-                    className={inputCls}
-                    value={theme}
-                    onChange={(e) => setTheme(e.target.value as "light" | "dark")}
-                  >
-                    <option value="light">Light Mode</option>
-                    <option value="dark">Dark Mode</option>
-                  </select>
-                </Field>
+                <div>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Theme Mode
+                  </label>
+                  <div className="grid grid-cols-2 gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-1.5 dark:border-white/[0.08] dark:bg-[#1b1f26]">
+                    <button
+                      type="button"
+                      onClick={() => setTheme("light")}
+                      className={`flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-bold transition-all cursor-pointer ${
+                        theme === "light"
+                          ? "bg-white text-slate-900 shadow-xs font-black"
+                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      }`}
+                    >
+                      <Sun className="h-4 w-4 text-amber-500" />
+                      Light Mode
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTheme("dark")}
+                      className={`flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-bold transition-all cursor-pointer ${
+                        theme === "dark"
+                          ? "bg-[#15181d] text-[#bbf246] border border-white/[0.08] shadow-xs font-black"
+                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      }`}
+                    >
+                      <Moon className="h-4 w-4 text-[#bbf246]" />
+                      Dark Mode
+                    </button>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
@@ -994,23 +1074,33 @@ export default function SettingsPage() {
                 ["notifyRecurring", "Upcoming Bill Reminders", "Alerts for scheduled recurring subscriptions and bills due within 7 days"],
                 ["notifyGoals", "Savings Milestones", "Celebrate when you reach 25%, 50%, 75% or 100% of a savings goal"],
                 ["notifySummary", "Monthly Financial Summary", "Periodic financial recaps analyzing your income, expenses, and savings"],
-              ].map(([k, label, desc]) => (
-                <label
-                  key={k}
-                  className="flex items-center justify-between rounded-xl border border-slate-200/80 p-3.5 hover:bg-slate-50/50 dark:border-slate-800 dark:bg-slate-800/30 dark:hover:bg-slate-800/60 transition cursor-pointer"
-                >
-                  <div className="pr-4">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white">{label}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>
+              ].map(([k, label, desc]) => {
+                const isChecked = Boolean(prefs[k as keyof typeof prefs]);
+                return (
+                  <div
+                    key={k}
+                    onClick={() => setPrefs({ ...prefs, [k]: !isChecked })}
+                    className="flex items-center justify-between rounded-2xl border border-slate-200/80 p-3.5 hover:bg-slate-50/50 dark:border-white/[0.08] dark:bg-[#1b1f26] dark:hover:bg-[#20252e] transition cursor-pointer"
+                  >
+                    <div className="pr-4 min-w-0">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white">{label}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{desc}</p>
+                    </div>
+                    {/* Professional Sliding Toggle Switch */}
+                    <div
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                        isChecked ? "bg-[#bbf246]" : "bg-slate-200 dark:bg-[#282f3a]"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          isChecked ? "translate-x-5 !bg-[#0b0e11]" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={prefs[k as keyof typeof prefs]}
-                    onChange={(e) => setPrefs({ ...prefs, [k]: e.target.checked })}
-                    className="h-4 w-4 accent-indigo-600 rounded cursor-pointer shrink-0"
-                  />
-                </label>
-              ))}
+                );
+              })}
             </div>
             <div className="mt-4 flex justify-end">
               <Button type="submit" loading={saving}>
@@ -1052,8 +1142,8 @@ export default function SettingsPage() {
           <Card>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3.5">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-0">
-                  <Download className="h-5 w-5" />
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#bbf246]/20 text-[#0b0e11] border border-[#bbf246]/40 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-0 font-black">
+                  <Download className="h-5 w-5 stroke-[2.5]" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -1250,8 +1340,8 @@ export default function SettingsPage() {
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Select an avatar preset or upload a custom photo for your FinTrack profile.
             </p>
-            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition shadow-xs shrink-0">
-              <Camera className="h-3.5 w-3.5" />
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#bbf246] text-[#0b0e11] hover:bg-[#a8e030] cursor-pointer transition shadow-xs shrink-0">
+              <Camera className="h-3.5 w-3.5 stroke-[2.5]" />
               <span>Upload Custom Photo</span>
               <input
                 type="file"
@@ -1277,9 +1367,9 @@ export default function SettingsPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setAvatarCategory(tab.id as any)}
-                className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg transition cursor-pointer font-bold ${
                   avatarCategory === tab.id
-                    ? "bg-white text-indigo-600 shadow-xs font-semibold dark:bg-slate-900 dark:text-white"
+                    ? "bg-white text-slate-900 shadow-xs dark:bg-[#181c22] dark:text-[#bbf246]"
                     : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
               >
@@ -1300,17 +1390,17 @@ export default function SettingsPage() {
                 }}
                 className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
                   !profile.avatarUrl
-                    ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20"
-                    : "border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 bg-slate-50/50 dark:bg-slate-900/40"
+                    ? "border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/10 ring-2 ring-[#bbf246]/30"
+                    : "border-slate-200/80 dark:border-slate-800 hover:border-[#bbf246]/50 bg-slate-50/50 dark:bg-slate-900/40"
                 }`}
               >
                 <div className="relative mb-2.5">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-xl font-black text-white shadow-xs group-hover:scale-105 transition-transform">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900 text-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] text-xl font-black shadow-xs group-hover:scale-105 transition-transform">
                     {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
                   </div>
                   {!profile.avatarUrl && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
-                      <Check className="h-3 w-3" />
+                    <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#bbf246] text-[#0b0e11] font-black shadow-xs">
+                      <Check className="h-3 w-3 stroke-[3]" />
                     </span>
                   )}
                 </div>
@@ -1334,8 +1424,8 @@ export default function SettingsPage() {
                   }}
                   className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border-2 transition-all cursor-pointer text-center group ${
                     isSelected
-                      ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/40 ring-2 ring-indigo-500/20 shadow-xs"
-                      : "border-slate-200/80 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700 bg-slate-50/50 dark:bg-slate-900/40"
+                      ? "border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/10 ring-2 ring-[#bbf246]/30 shadow-xs"
+                      : "border-slate-200/80 dark:border-slate-800 hover:border-[#bbf246]/50 bg-slate-50/50 dark:bg-slate-900/40"
                   }`}
                 >
                   <div className="relative mb-2.5">
@@ -1345,8 +1435,8 @@ export default function SettingsPage() {
                       className="h-14 w-14 rounded-2xl object-cover border border-slate-200 dark:border-slate-700 group-hover:scale-105 transition-transform"
                     />
                     {isSelected && (
-                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xs">
-                        <Check className="h-3 w-3" />
+                      <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[#bbf246] text-[#0b0e11] font-black shadow-xs">
+                        <Check className="h-3 w-3 stroke-[3]" />
                       </span>
                     )}
                   </div>

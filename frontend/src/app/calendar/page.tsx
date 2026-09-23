@@ -624,7 +624,7 @@ export default function CalendarPage() {
                         }}
                         className={`rounded-xl py-2 text-xs font-semibold transition cursor-pointer ${
                           idx === month
-                            ? "bg-emerald-800 text-white font-bold shadow-sm"
+                            ? "bg-[#bbf246] text-[#0b0e11] font-black shadow-sm"
                             : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
                         }`}
                       >
@@ -637,14 +637,14 @@ export default function CalendarPage() {
             </div>
 
             {/* View Mode Pills (Month / Year / List) */}
-            <div className="flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs font-semibold">
+            <div className="flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-white/[0.08] dark:bg-[#0b0e11] text-xs font-semibold">
               {(["Month", "Year", "List"] as const).map((m) => (
                 <button
                   key={m}
                   onClick={() => setViewMode(m)}
                   className={`rounded-lg px-3 py-1.5 transition cursor-pointer ${
                     viewMode === m
-                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0 font-bold"
+                      ? "bg-white text-slate-900 shadow-2xs ring-1 ring-black/5 dark:bg-[#bbf246] dark:text-[#0b0e11] dark:ring-0 font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -655,48 +655,48 @@ export default function CalendarPage() {
           </div>
 
           {/* Monthly / Period KPI Summary Cards (3 cards) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {/* Total Income */}
-            <Card className="p-4 flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0">
-                <ArrowDown className="h-4.5 w-4.5" />
+            <Card className="p-2.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5">
+              <div className="flex h-7 w-7 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0">
+                <ArrowDown className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
               </div>
-              <div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {viewMode === "Year" ? `Annual Income (${year})` : "Total Income"}
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
+                  {viewMode === "Year" ? `Income (${year})` : "Income"}
                 </p>
-                <p className="text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums">
+                <p className="text-xs sm:text-lg font-black text-emerald-600 dark:text-emerald-400 tabular-nums truncate">
                   {formatCurrency(monthMetrics.totalInc, currency)}
                 </p>
               </div>
             </Card>
 
             {/* Total Expenses */}
-            <Card className="p-4 flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-0">
-                <ArrowUp className="h-4.5 w-4.5" />
+            <Card className="p-2.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5">
+              <div className="flex h-7 w-7 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-0">
+                <ArrowUp className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
               </div>
-              <div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {viewMode === "Year" ? `Annual Expenses (${year})` : "Total Expenses"}
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
+                  {viewMode === "Year" ? `Expenses (${year})` : "Expenses"}
                 </p>
-                <p className="text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums">
+                <p className="text-xs sm:text-lg font-black text-rose-600 dark:text-rose-400 tabular-nums truncate">
                   {formatCurrency(monthMetrics.totalExp, currency)}
                 </p>
               </div>
             </Card>
 
             {/* Net Savings */}
-            <Card className="p-4 flex items-center gap-3.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-0">
-                <Wallet className="h-4.5 w-4.5" />
+            <Card className="p-2.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5">
+              <div className="flex h-7 w-7 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-0">
+                <Wallet className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
               </div>
-              <div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {viewMode === "Year" ? `Annual Net (${year})` : "Net Savings"}
+              <div className="min-w-0">
+                <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">
+                  {viewMode === "Year" ? `Net (${year})` : "Net"}
                 </p>
                 <p
-                  className={`text-lg font-black tabular-nums ${
+                  className={`text-xs sm:text-lg font-black tabular-nums truncate ${
                     monthMetrics.net >= 0
                       ? "text-slate-900 dark:text-white"
                       : "text-rose-600 dark:text-rose-400"
@@ -769,8 +769,8 @@ export default function CalendarPage() {
                       onClick={() => setSelectedDate(cell.dateKey)}
                       className={`relative min-h-[72px] sm:min-h-[82px] rounded-2xl p-2 text-left transition-all flex flex-col justify-between cursor-pointer ${
                         isSelected
-                          ? "border-2 border-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 shadow-xs"
-                          : "border border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80 dark:border-slate-800/80 dark:bg-slate-900/60 dark:hover:border-slate-700 dark:hover:bg-slate-800/50"
+                          ? "border-2 border-[#bbf246] bg-[#bbf246]/10 dark:bg-[#bbf246]/15 dark:border-[#bbf246] shadow-xs"
+                          : "border border-slate-200/80 bg-white hover:border-slate-300 hover:bg-slate-50/80 dark:border-white/[0.08] dark:bg-[#15181d] dark:hover:border-white/[0.16] dark:hover:bg-slate-800/50"
                       }`}
                     >
                       {/* Top Row: Day Number & Dots */}
@@ -778,7 +778,7 @@ export default function CalendarPage() {
                         <span
                           className={`text-xs font-semibold ${
                             isSelected
-                              ? "text-indigo-900 dark:text-indigo-300 font-bold"
+                              ? "text-slate-900 dark:text-[#bbf246] font-black"
                               : "text-slate-800 dark:text-slate-200"
                           }`}
                         >
@@ -788,7 +788,7 @@ export default function CalendarPage() {
                         {/* Status indicator dots */}
                         <div className="flex items-center gap-1">
                           {isSelected && (
-                            <span className="h-2 w-2 rounded-full bg-indigo-600 dark:bg-indigo-400 ring-2 ring-indigo-200 dark:ring-indigo-900" />
+                            <span className="h-2 w-2 rounded-full bg-[#bbf246] ring-2 ring-[#bbf246]/30" />
                           )}
                           {!isSelected && hasRecurring && (
                             <span

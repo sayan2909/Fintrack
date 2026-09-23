@@ -43,7 +43,7 @@ function getBrand(name: string, type: string) {
   if (n.includes("sip") || n.includes("invest") || n.includes("mutual") || n.includes("zerodha") || n.includes("groww")) return { Icon: TrendingUp, color: "#8b5cf6", bg: "bg-violet-500/10 dark:bg-violet-500/15", text: "text-violet-500 dark:text-violet-400", border: "border-violet-500/20" };
   if (n.includes("bill") || n.includes("electric") || n.includes("gas") || n.includes("utility") || n.includes("water")) return { Icon: Zap, color: "#eab308", bg: "bg-yellow-500/10 dark:bg-yellow-500/15", text: "text-yellow-500 dark:text-yellow-400", border: "border-yellow-500/20" };
   if (n.includes("gym") || n.includes("fitness") || n.includes("cult")) return { Icon: Activity, color: "#f97316", bg: "bg-orange-500/10 dark:bg-orange-500/15", text: "text-orange-500 dark:text-orange-400", border: "border-orange-500/20" };
-  return { Icon: Repeat, color: "#6366f1", bg: "bg-indigo-500/10 dark:bg-indigo-500/15", text: "text-indigo-500 dark:text-indigo-400", border: "border-indigo-500/20" };
+  return { Icon: Repeat, color: "#bbf246", bg: "bg-[#bbf246]/10 dark:bg-[#bbf246]/15", text: "text-slate-900 dark:text-[#bbf246]", border: "border-[#bbf246]/30" };
 }
 
 export default function RecurringPage() {
@@ -248,7 +248,7 @@ export default function RecurringPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50 animate-pulse" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Recurring Hub</span>
             </div>
             <h1 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
@@ -259,15 +259,15 @@ export default function RecurringPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="flex items-center rounded-xl border border-slate-200/80 bg-white p-1 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+            <div className="flex items-center rounded-full border border-slate-200/80 bg-white p-1 shadow-xs dark:border-white/[0.08] dark:bg-[#1b1f26]">
               {(["table", "grid"] as const).map(v => (
                 <button
                   key={v}
                   onClick={() => setViewMode(v)}
-                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 rounded-full px-2.5 sm:px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
                     viewMode === v
-                      ? "bg-indigo-600 text-white shadow-xs"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11]"
                       : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -277,8 +277,8 @@ export default function RecurringPage() {
               ))}
             </div>
 
-            <Button onClick={openAdd} className="h-9 px-4 text-xs font-bold shadow-xs">
-              <Plus className="h-4 w-4 mr-1.5" /> Add Subscription
+            <Button onClick={openAdd} className="h-9 px-3.5 sm:px-4 text-xs font-bold shadow-xs">
+              <Plus className="h-4 w-4 mr-1 sm:mr-1.5" /> Add Subscription
             </Button>
           </div>
         </div>
@@ -377,19 +377,19 @@ export default function RecurringPage() {
         )}
 
         {/* ── 3. Clean Dashboard-Style KPI Cards ──────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Card 1: Monthly Outflow */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monthly Outflow</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
-                <ArrowUpRight className="h-4 w-4" />
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monthly Outflow</span>
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
+                <ArrowUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(summary.monthlyOut, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
               <span className="font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
                 {formatCurrency(projectedAnnual, currency)}/yr
               </span> projected
@@ -397,39 +397,39 @@ export default function RecurringPage() {
           </div>
 
           {/* Card 2: Recurring Inflow */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Recurring Inflow</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
-                <ArrowDownLeft className="h-4 w-4" />
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Recurring Inflow</span>
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
+                <ArrowDownLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(summary.monthlyIn, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
               Salaries & regular receivables
             </p>
           </div>
 
           {/* Card 3: Net Cash Delta */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Net Delta</span>
-              <div className={`flex h-8 w-8 items-center justify-center rounded-xl ring-1 ${
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Net Delta</span>
+              <div className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl ring-1 ${
                 netMonthly >= 0
                   ? "bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:bg-emerald-500/10 dark:text-emerald-400 ring-emerald-500/20"
                   : "bg-amber-50 text-amber-600 border border-amber-100/80 dark:bg-amber-500/10 dark:text-amber-400 ring-amber-500/20"
               }`}>
-                <Activity className="h-4 w-4" />
+                <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className={`mt-2.5 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+            <p className={`mt-2 text-lg sm:text-2xl lg:text-3xl font-black tracking-tight tabular-nums ${
               netMonthly >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-slate-900 dark:text-white"
             }`}>
               {formatCurrency(netMonthly, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
               {netMonthly >= 0 ? (
                 <span className="font-semibold text-emerald-600 dark:text-emerald-400">Surplus after bills</span>
               ) : (
@@ -439,20 +439,20 @@ export default function RecurringPage() {
           </div>
 
           {/* Card 4: Active Commitments */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Commitments</span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
-                <Repeat className="h-4 w-4" />
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Commitments</span>
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
+                <Repeat className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <div className="mt-2.5 flex items-baseline gap-1.5">
-              <p className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white tabular-nums">
+            <div className="mt-2 flex items-baseline gap-1.5">
+              <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 dark:text-white tabular-nums">
                 {activeCount}
               </p>
-              <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">/ {items.length} total</span>
+              <span className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">/ {items.length} total</span>
             </div>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
               {dueSoon.length > 0 ? (
                 <span className="font-semibold text-amber-600 dark:text-amber-400">{dueSoon.length} due within 7 days</span>
               ) : (
@@ -469,7 +469,7 @@ export default function RecurringPage() {
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/70">
             
             {/* Status Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 lg:pb-0 w-full lg:w-auto">
               {[
                 { id: "all", label: "All", count: items.length },
                 { id: "active", label: "Active", count: activeCount },
@@ -481,14 +481,14 @@ export default function RecurringPage() {
                   onClick={() => setStatusFilter(tab.id as any)}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                     statusFilter === tab.id
-                      ? "bg-indigo-600 text-white shadow-xs"
+                      ? "bg-[#bbf246] text-[#0b0e11] font-bold shadow-xs"
                       : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800/60"
                   }`}
                 >
                   <span>{tab.label}</span>
                   <span className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                     statusFilter === tab.id
-                      ? "bg-white/20 text-white"
+                      ? "bg-black/15 text-[#0b0e11]"
                       : "bg-slate-200/70 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}>
                     {tab.count}
@@ -506,7 +506,7 @@ export default function RecurringPage() {
                   placeholder="Search subscriptions..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="h-9 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100"
+                  className="h-9 w-44 sm:w-52 rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 text-xs placeholder:text-slate-400 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100"
                 />
                 {searchQuery && (
                   <button
@@ -521,7 +521,7 @@ export default function RecurringPage() {
               <select
                 value={freqFilter}
                 onChange={e => setFreqFilter(e.target.value)}
-                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
+                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
               >
                 <option value="all">All Cycles</option>
                 {FREQUENCIES.map(f => <option key={f} value={f}>{f}</option>)}
@@ -530,7 +530,7 @@ export default function RecurringPage() {
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value as any)}
-                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
+                className="h-9 rounded-xl border border-slate-200/80 bg-white px-2.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 cursor-pointer"
               >
                 <option value="nextDue">Sort: Next Due</option>
                 <option value="amount">Sort: Cost (High to Low)</option>
@@ -542,12 +542,12 @@ export default function RecurringPage() {
                 onClick={() => setShowInsights(prev => !prev)}
                 className={`flex items-center gap-1.5 rounded-xl border px-3 py-1.5 h-9 text-xs font-semibold transition-all cursor-pointer ${
                   showInsights
-                    ? "border-indigo-500 bg-indigo-50 text-indigo-600 dark:border-indigo-500/40 dark:bg-indigo-950/40 dark:text-indigo-300"
+                    ? "border-[#bbf246] bg-[#bbf246]/15 text-slate-900 dark:text-[#bbf246]"
                     : "border-slate-200/80 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800/60"
                 }`}
                 title="Toggle spend distribution and projections"
               >
-                <PieChart className="h-3.5 w-3.5 text-indigo-500" />
+                <PieChart className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
                 <span className="hidden sm:inline">Analytics</span>
                 {showInsights ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
               </button>
@@ -562,7 +562,7 @@ export default function RecurringPage() {
                 <div className="rounded-xl border border-slate-200/80 bg-white p-4 dark:border-slate-800/80 dark:bg-[#111827]">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <Layers className="h-3.5 w-3.5 text-indigo-500" />
+                      <Layers className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
                       <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Spend by Category</span>
                     </div>
                     <span className="text-[11px] font-semibold text-slate-400">
@@ -612,19 +612,19 @@ export default function RecurringPage() {
                 </div>
 
                 {/* Annual Projections */}
-                <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 dark:bg-indigo-500/5 dark:border-indigo-500/20 p-4 flex flex-col justify-between">
+                <div className="rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 dark:bg-[#bbf246]/5 dark:border-[#bbf246]/20 p-4 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">Annual Outlook</span>
+                        <Sparkles className="h-3.5 w-3.5 text-slate-900 dark:text-[#bbf246]" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-[#bbf246]">Annual Outlook</span>
                       </div>
-                      <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-bold text-indigo-500 dark:text-indigo-400">
+                      <span className="rounded-full bg-[#bbf246]/20 px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-[#bbf246]">
                         Projections
                       </span>
                     </div>
 
-                    <p className="text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight tabular-nums">
+                    <p className="text-2xl font-black text-slate-900 dark:text-[#bbf246] tracking-tight tabular-nums">
                       {formatCurrency(projectedAnnual, currency)}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -632,7 +632,7 @@ export default function RecurringPage() {
                     </p>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-indigo-500/15 flex items-center justify-between text-xs">
+                  <div className="mt-3 pt-3 border-t border-[#bbf246]/20 flex items-center justify-between text-xs">
                     <span className="text-slate-500 dark:text-slate-400">Average per Service:</span>
                     <span className="font-bold text-slate-900 dark:text-white tabular-nums">
                       {formatCurrency(activeCount ? Math.round(summary.monthlyOut / activeCount) : 0, currency)} / mo
@@ -653,7 +653,7 @@ export default function RecurringPage() {
           ) : filtered.length === 0 ? (
             <div className="p-12 text-center">
               <EmptyState
-                icon={<Repeat className="h-8 w-8 text-indigo-400" />}
+                icon={<Repeat className="h-8 w-8 text-[#bbf246]" />}
                 title={items.length === 0 ? "No subscriptions yet" : "No subscriptions match your filters"}
                 message={items.length === 0 ? "Track recurring expenses like Netflix, gym, rent, SIP investments, or salaries." : "Try clearing your search query or switching filter tabs."}
                 action={items.length === 0 ? (
@@ -669,7 +669,9 @@ export default function RecurringPage() {
             </div>
           ) : viewMode === "table" ? (
             /* ── Table / Ledger View ──────────────────────────── */
-            <div className="overflow-x-auto">
+            <div>
+              {/* Desktop / Tablet Full Table */}
+              <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80 dark:border-slate-800/70 dark:bg-slate-900/60">
@@ -703,7 +705,7 @@ export default function RecurringPage() {
                               <brand.Icon className="h-5 w-5" />
                             </div>
                             <div className="min-w-0">
-                              <p className="font-bold text-slate-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors truncate">
+                              <p className="font-bold text-slate-900 dark:text-white group-hover:text-slate-700 dark:group-hover:text-[#bbf246] transition-colors truncate">
                                 {r.name}
                               </p>
                               <p className="text-[11px] text-slate-400 mt-0.5">
@@ -818,6 +820,97 @@ export default function RecurringPage() {
                   })}
                 </tbody>
               </table>
+              </div>
+
+              {/* Mobile Native Card View (md:hidden) */}
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 md:hidden">
+                {filtered.map(r => {
+                  const brand = getBrand(r.name, r.type);
+                  const amt = parseFloat(r.amount);
+                  const isToggling = togglingId === r.id;
+                  const freqLower = r.frequency.toLowerCase();
+                  const monthly = freqLower === "yearly" ? amt / 12 : freqLower === "weekly" ? amt * 4.33 : freqLower === "daily" ? amt * 30 : amt;
+
+                  return (
+                    <div key={r.id} className={`p-4 transition ${!r.isActive ? "opacity-60" : ""}`}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-xs ${brand.bg} ${brand.text} ${brand.border}`}>
+                            <brand.Icon className="h-5 w-5" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-slate-900 dark:text-white text-sm truncate">
+                              {r.name}
+                            </p>
+                            <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                              {r.categoryName || "General"} · via {r.paymentMethod}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <p className={`text-base font-black tabular-nums ${r.type === "income" ? "text-emerald-500" : "text-slate-900 dark:text-white"}`}>
+                            {r.type === "income" ? "+" : "−"}{formatCurrency(amt, currency)}
+                          </p>
+                          <p className="text-[10px] text-slate-400 font-medium">/{r.frequency.slice(0, 2).toLowerCase()} (~{formatCurrency(monthly, currency)}/mo)</p>
+                        </div>
+                      </div>
+
+                      {/* Renewal Badge & Actions Strip */}
+                      <div className="mt-3 flex items-center justify-between pt-2.5 border-t border-slate-100/80 dark:border-slate-800/50">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Next:</span>
+                          <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 tabular-nums">
+                            {formatDate(r.nextDue, "DD MMM")}
+                          </span>
+                          {r.isActive && (
+                            <span className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold ${
+                              r.daysUntil === 0
+                                ? "bg-rose-500/15 text-rose-500 dark:text-rose-400"
+                                : r.daysUntil <= 3
+                                ? "bg-amber-500/15 text-amber-500 dark:text-amber-400"
+                                : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                            }`}>
+                              {r.daysUntil === 0 ? "Today" : r.daysUntil === 1 ? "1d" : `${r.daysUntil}d`}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => markAsPaid(r)}
+                            disabled={payingId === r.id || !r.isActive}
+                            className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 disabled:opacity-40"
+                          >
+                            <CheckCircle2 className="h-3 w-3" />
+                            <span>{payingId === r.id ? "..." : "Pay"}</span>
+                          </button>
+                          <button
+                            onClick={() => toggleActive(r)}
+                            disabled={isToggling}
+                            className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1 text-slate-500 dark:text-slate-400"
+                            title={r.isActive ? "Pause" : "Resume"}
+                          >
+                            <Power className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => openEdit(r)}
+                            className="rounded-lg p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDel(r)}
+                            className="rounded-lg p-1 text-slate-400 hover:text-rose-500"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ) : (
             /* ── Cards / Grid View ───────────────────────────── */
@@ -896,7 +989,7 @@ export default function RecurringPage() {
                             ? "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                             : r.daysUntil <= 3
                             ? "bg-amber-500/15 text-amber-500 dark:text-amber-400"
-                            : "bg-indigo-500/10 text-indigo-500 dark:text-indigo-400"
+                            : "bg-[#bbf246]/15 text-slate-900 dark:text-[#bbf246]"
                         }`}>
                           {!r.isActive ? "Paused" : r.daysUntil === 0 ? "Due Today" : `in ${r.daysUntil}d`}
                         </span>
@@ -954,7 +1047,7 @@ export default function RecurringPage() {
                         frequency: p.frequency,
                         paymentMethod: p.paymentMethod
                       })}
-                      className="flex items-center gap-1.5 rounded-lg border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:border-indigo-500/60 hover:text-white transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 rounded-lg border border-slate-700/60 bg-slate-800/40 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:border-[#bbf246]/60 hover:text-[#bbf246] transition-all cursor-pointer"
                     >
                       <b.Icon className={`h-3 w-3 ${b.text}`} />
                       {p.name}
@@ -1023,9 +1116,9 @@ export default function RecurringPage() {
             </Field>
 
             {formMonthly > 0 && (
-              <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-3.5 py-2.5 text-xs">
-                <span className="text-slate-400">Effective monthly cost:</span>
-                <span className="font-extrabold text-indigo-400 tabular-nums">
+              <div className="sm:col-span-2 flex items-center justify-between rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 px-3.5 py-2.5 text-xs">
+                <span className="text-slate-500 dark:text-slate-400">Effective monthly cost:</span>
+                <span className="font-extrabold text-slate-900 dark:text-[#bbf246] tabular-nums">
                   ~{formatCurrency(formMonthly, currency)} / mo
                 </span>
               </div>

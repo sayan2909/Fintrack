@@ -118,6 +118,7 @@ router.post("/", async (req, res) => {
       date,
       paymentMethod,
       notes,
+      splits,
     } = req.body ?? {};
 
     if (!["income", "expense"].includes(type)) return fail(res, "Type must be income or expense.", 400);
@@ -177,6 +178,56 @@ router.post("/", async (req, res) => {
           })
           .where(eq(accounts.id, a[0].id));
       }
+    }
+
+    // ── Handle Split Transaction Allocation ────────────────────────
+    if (Array.isArray(splits) && splits.length > 0) {
+      let splitSum = 0;
+      for (const s of splits) {
+        const sa = parseAmount(s.amount);
+        if (!sa || sa <= 0) return fail(res, "All split amounts must be positive numbers.", 400);
+        splitSum += sa;
+      }
+
+      if (Math.abs(splitSum - amt) > 0.05) {
+        return fail(
+          res,
+          `Sum of split categories (${splitSum.toFixed(2)}) must equal total transaction amount (${amt.toFixed(2)}).`,
+          400
+        );
+      }
+
+      const insertedSplits: (typeof transactions.$inferSelect)[] = [];
+      for (let i = 0; i < splits.length; i++) {
+        const s = splits[i];
+        const sAmt = parseAmount(s.amount)!;
+        const sCatName = s.categoryName || catName;
+        const sDesc = s.description?.trim()
+          ? `${description.trim()} — ${s.description.trim()}`
+          : description.trim();
+
+        const [txRow] = await db
+          .insert(transactions)
+          .values({
+            userId: user.id,
+            categoryId: s.categoryId || catId,
+            accountId: accId,
+            categoryName: sCatName,
+            type,
+            amount: String(sAmt),
+            description: sDesc,
+            date: parsedDateStr,
+            paymentMethod: paymentMethod || "Cash",
+            notes: notes
+              ? `${notes} (Split ${i + 1}/${splits.length})`
+              : `Split item ${i + 1} of ${splits.length}`,
+          })
+          .returning();
+
+        insertedSplits.push(txRow);
+      }
+
+      return ok(res, { transactions: insertedSplits, transaction: insertedSplits[0], isSplit: true }, 201);
     }
 
     const rows = await db

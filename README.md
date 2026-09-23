@@ -18,7 +18,7 @@ Fintrack/
 │   ├── src/server.ts   # Express server entry point
 │   └── .env            # PORT=5000, USE_PGLITE=true (or DATABASE_URL)
 │
-├── frontend/           # Pure React SPA with Vite (Port 3000)
+├── frontend/           # Pure React SPA with Vite (Port 5173)
 │   ├── src/app/        # React Pages (Dashboard, Analytics, Budgets, etc.)
 │   ├── src/components/ # Design system, Charts, AppShell navigation
 │   ├── src/App.tsx     # React Router configuration
@@ -47,7 +47,7 @@ From the project root:
 npm run dev
 ```
 
-*(This runs Express on `http://localhost:5000` and Vite on `http://localhost:3000` concurrently with unified logs).*
+*(This runs Express on `http://localhost:5000` and Vite on `http://localhost:5173` concurrently with unified logs).*
 
 ### Or Use Windows One-Click Launcher
 
@@ -72,7 +72,7 @@ Double-click `dev.bat` in File Explorer.
 
 | Service | Port / URL | Description |
 | :--- | :--- | :--- |
-| **Frontend UI** | [http://localhost:3000](http://localhost:3000) | Pure React SPA (Vite with hot module reload) |
+| **Frontend UI** | [http://localhost:5173](http://localhost:5173) | Pure React SPA (Vite with hot module reload) |
 | **Backend API** | [http://localhost:5000/api](http://localhost:5000/api) | Express REST API |
 | **API Health** | [http://localhost:5000/api/health](http://localhost:5000/api/health) | System health & DB connection status |
 

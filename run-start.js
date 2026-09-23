@@ -8,7 +8,7 @@ const npmCmd = isWindows ? 'npm.cmd' : 'npm';
 console.log('====================================================');
 console.log('⚡ Starting FinTrack Production Servers...');
 console.log('   Backend API:  http://localhost:5000');
-console.log('   Frontend App: http://localhost:3000');
+console.log('   Frontend App: http://localhost:5173');
 console.log('====================================================\n');
 
 function startProcess(name, dir, port) {
@@ -35,7 +35,7 @@ function startProcess(name, dir, port) {
 }
 
 const backend = startProcess('backend', 'backend', 5000);
-const frontend = startProcess('frontend', 'frontend', 3000);
+const frontend = startProcess('frontend', 'frontend', 5173);
 
 function cleanup() {
   console.log('\nStopping servers...');

@@ -38,16 +38,16 @@ import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 
 const COLORS = [
-  "#4f46e5", // Executive Indigo
-  "#0284c7", // Cerulean
-  "#059669", // Jewel Emerald
-  "#d97706", // Amber Bronze
-  "#e11d48", // Crimson Rose
-  "#7c3aed", // Royal Violet
-  "#0891b2", // Teal
-  "#db2777", // Berry
+  "#bbf246", // Electric Lime
+  "#ff6347", // Coral Orange
+  "#8b5cf6", // Purple
+  "#06b6d4", // Cyan
+  "#ec4899", // Pink
+  "#eab308", // Amber
+  "#3b82f6", // Blue
+  "#10b981", // Emerald
   "#f97316", // Tangerine
-  "#475569", // Slate
+  "#64748b", // Slate
 ];
 
 interface Overview {
@@ -239,7 +239,7 @@ export default function AnalyticsPage() {
 
           {/* Time Range Selector */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80">
+            <div className="inline-flex items-center rounded-full bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-white/[0.08] dark:bg-[#1b1f26] overflow-x-auto max-w-full no-scrollbar">
               {[
                 ["7d", "7D"],
                 ["30d", "30D"],
@@ -250,9 +250,9 @@ export default function AnalyticsPage() {
                 <button
                   key={v}
                   onClick={() => setRange(v)}
-                  className={`rounded-lg px-3 py-1 text-xs font-bold transition cursor-pointer ${
+                  className={`rounded-full px-2.5 sm:px-3 py-1 text-xs font-bold transition cursor-pointer shrink-0 ${
                     range === v
-                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -267,14 +267,14 @@ export default function AnalyticsPage() {
                   type="date"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
-                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2.5 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
                 <span className="text-xs font-medium text-slate-500 dark:text-slate-400">to</span>
                 <input
                   type="date"
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
-                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2.5 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-2 text-xs font-medium text-slate-900 outline-none shadow-2xs dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
                 <Button onClick={() => load("custom", from, to)} className="h-8.5 px-3 text-xs font-bold shadow-2xs">
                   Apply
@@ -285,49 +285,45 @@ export default function AnalyticsPage() {
         </div>
 
         {loading || !data ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 animate-pulse rounded-2xl bg-slate-100 dark:bg-slate-800/60" />
+              <div key={i} className="h-28 sm:h-32 animate-pulse rounded-2xl bg-slate-100 dark:bg-slate-800/60" />
             ))}
           </div>
         ) : (
           <>
             {/* 4 Interactive Spotlight Metric Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
               {/* Income Card */}
               <button
                 type="button"
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "income" ? "all" : "income")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
+                className={`group relative text-left rounded-2xl border bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none flex flex-col justify-between ${
                   spotlightMetric === "income"
                     ? "border-emerald-500 ring-2 ring-emerald-500/20"
                     : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                     Total Income
                   </span>
-                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20 group-hover:scale-105 transition">
-                    <ArrowDownLeft className="h-4 w-4" />
+                  <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20 group-hover:scale-105 transition shrink-0">
+                    <ArrowDownLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                <p className="mt-1.5 sm:mt-2 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
                   {formatCurrency(data.totals.income, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Credits in period</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">Credits in period</span>
                   {spotlightMetric === "income" ? (
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                      Spotlight On
+                    <span className="shrink-0 rounded-full bg-emerald-500/15 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                      Active
                     </span>
-                  ) : (
-                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
-                      Click to spotlight
-                    </span>
-                  )}
+                  ) : null}
                 </div>
               </button>
 
@@ -337,34 +333,30 @@ export default function AnalyticsPage() {
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "expenses" ? "all" : "expenses")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
+                className={`group relative text-left rounded-2xl border bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none flex flex-col justify-between ${
                   spotlightMetric === "expenses"
                     ? "border-rose-500 ring-2 ring-rose-500/20"
                     : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                     Total Expenses
                   </span>
-                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/20 group-hover:scale-105 transition">
-                    <ArrowUpRight className="h-4 w-4" />
+                  <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/20 group-hover:scale-105 transition shrink-0">
+                    <ArrowUpRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                <p className="mt-1.5 sm:mt-2 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
                   {formatCurrency(data.totals.expenses, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Debits in period</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">Debits in period</span>
                   {spotlightMetric === "expenses" ? (
-                    <span className="rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400">
-                      Spotlight On
+                    <span className="shrink-0 rounded-full bg-rose-500/15 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400">
+                      Active
                     </span>
-                  ) : (
-                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
-                      Click to spotlight
-                    </span>
-                  )}
+                  ) : null}
                 </div>
               </button>
 
@@ -374,57 +366,53 @@ export default function AnalyticsPage() {
                 onClick={() =>
                   setSpotlightMetric(spotlightMetric === "net" ? "all" : "net")
                 }
-                className={`group relative text-left rounded-2xl border bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none ${
+                className={`group relative text-left rounded-2xl border bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:bg-[#111827] dark:shadow-none flex flex-col justify-between ${
                   spotlightMetric === "net"
                     ? "border-indigo-500 ring-2 ring-indigo-500/20"
                     : "border-slate-200/90 dark:border-slate-800/80"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                     Net Cash Flow
                   </span>
-                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20 group-hover:scale-105 transition">
-                    <Wallet className="h-4 w-4" />
+                  <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20 group-hover:scale-105 transition shrink-0">
+                    <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                 </div>
                 <p
-                  className={`mt-2 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+                  className={`mt-1.5 sm:mt-2 text-base sm:text-2xl lg:text-3xl font-black tracking-tight tabular-nums truncate ${
                     data.totals.net >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                   }`}
                 >
                   {formatCurrency(data.totals.net, currency)}
                 </p>
                 <div className="mt-1 flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Net balance delta</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">Net balance</span>
                   {spotlightMetric === "net" ? (
-                    <span className="rounded-full bg-indigo-500/15 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
-                      Spotlight On
+                    <span className="shrink-0 rounded-full bg-indigo-500/15 px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+                      Active
                     </span>
-                  ) : (
-                    <span className="text-[10px] text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400">
-                      Click to spotlight
-                    </span>
-                  )}
+                  ) : null}
                 </div>
               </button>
 
               {/* Savings Rate Card */}
-              <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+              <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                     Savings Rate
                   </span>
-                  <div className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-200/60 dark:bg-violet-500/15 dark:text-violet-400 dark:border-violet-500/20">
-                    <Percent className="h-4 w-4" />
+                  <div className="flex h-7 w-7 sm:h-8.5 sm:w-8.5 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-200/60 dark:bg-violet-500/15 dark:text-violet-400 dark:border-violet-500/20 shrink-0">
+                    <Percent className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+                <p className="mt-1.5 sm:mt-2 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
                   {data.totals.savingsRate}%
                 </p>
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex items-center gap-1.5">
                   <span
-                    className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold ${
+                    className={`rounded-md px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-extrabold ${
                       data.totals.savingsRate >= 20
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0"
                         : data.totals.savingsRate >= 0
@@ -438,7 +426,7 @@ export default function AnalyticsPage() {
                       ? "Moderate"
                       : "Overspending"}
                   </span>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">of income retained</span>
+                  <span className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 truncate">of income retained</span>
                 </div>
               </div>
             </div>
@@ -474,9 +462,9 @@ export default function AnalyticsPage() {
                     <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs">
                       <button
                         onClick={() => setViewGrouping("daily")}
-                        className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "daily"
-                            ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                            ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                             : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
@@ -484,9 +472,9 @@ export default function AnalyticsPage() {
                       </button>
                       <button
                         onClick={() => setViewGrouping("weekly")}
-                        className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                           viewGrouping === "weekly"
-                            ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                            ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                             : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                         }`}
                       >
@@ -496,12 +484,12 @@ export default function AnalyticsPage() {
                   )}
 
                   {/* Chart Style Switcher */}
-                  <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs">
+                  <div className="inline-flex items-center rounded-full bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-white/[0.08] dark:bg-[#1b1f26] text-xs">
                     <button
                       onClick={() => setChartType("bar")}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "bar"
-                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
@@ -509,9 +497,9 @@ export default function AnalyticsPage() {
                     </button>
                     <button
                       onClick={() => setChartType("area")}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "area"
-                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >
@@ -519,9 +507,9 @@ export default function AnalyticsPage() {
                     </button>
                     <button
                       onClick={() => setChartType("net")}
-                      className={`rounded-lg px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         chartType === "net"
-                          ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-slate-700 dark:text-white dark:ring-0"
+                          ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                           : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       }`}
                     >

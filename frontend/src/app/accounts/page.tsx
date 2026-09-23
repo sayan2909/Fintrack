@@ -293,7 +293,7 @@ export default function AccountsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center">
             <Button
               variant="outline"
               onClick={() => {
@@ -308,69 +308,69 @@ export default function AccountsPage() {
                 }));
                 setShowTransferModal(true);
               }}
-              className="h-9 px-3 text-xs"
+              className="h-9 px-3 text-xs w-full justify-center"
             >
-              <ArrowRightLeft className="h-4 w-4" /> Transfer
+              <ArrowRightLeft className="h-4 w-4 mr-1.5" /> Transfer
             </Button>
-            <Button onClick={handleOpenAdd} className="h-9 px-3 text-xs">
-              <Plus className="h-4 w-4" /> Add Account
+            <Button onClick={handleOpenAdd} className="h-9 px-3 text-xs w-full justify-center">
+              <Plus className="h-4 w-4 mr-1.5" /> Add Account
             </Button>
           </div>
         </div>
 
         {/* Net Worth & Assets 3-Card KPI Strip */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
           {/* Card 1: Net Worth */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+          <div className="col-span-2 sm:col-span-1 rounded-3xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total Net Worth
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400 shadow-2xs">
-                <Landmark className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20 shadow-2xs">
+                <Landmark className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-2 text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
               {formatCurrency(stats.netWorth, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
               {stats.accountCount} {stats.accountCount === 1 ? "active account" : "active accounts"} connected
             </p>
           </div>
 
           {/* Card 2: Liquid Assets */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+          <div className="col-span-1 rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Liquid Capital
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 shadow-2xs">
-                <TrendingUp className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 shadow-2xs">
+                <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
               {formatCurrency(stats.totalAssets, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Cash, checking & liquid reserves
+            <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+              Cash & liquid
             </p>
           </div>
 
           {/* Card 3: Total Liabilities */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
+          <div className="col-span-1 rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800/80 dark:bg-[#0f172a] dark:shadow-none">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Total Liabilities
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400 shadow-2xs">
-                <CreditCard className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400 shadow-2xs">
+                <CreditCard className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400 tracking-tight tabular-nums">
+            <p className="mt-2 text-lg sm:text-2xl lg:text-3xl font-black text-rose-600 dark:text-rose-400 tracking-tight tabular-nums">
               {formatCurrency(stats.totalLiabilities, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              Credit card dues & obligations
+            <p className="mt-1 sm:mt-2 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+              Credit card dues
             </p>
           </div>
         </div>

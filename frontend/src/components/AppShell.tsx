@@ -114,8 +114,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         searchInputRef.current?.focus();
       }
     };
+    const handleOpenQuick = () => setQuickAddOpen(true);
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("fintrack-open-quick-add", handleOpenQuick);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("fintrack-open-quick-add", handleOpenQuick);
+    };
   }, []);
 
   const handleQuickAdd = async (e: React.FormEvent) => {
@@ -172,8 +177,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#0b0f19]">
         <div className="flex flex-col items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20">
-            <Wallet className="h-6 w-6" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-lg shadow-[#bbf246]/20">
+            <Wallet className="h-6 w-6 stroke-[2.5]" />
           </div>
           <div className="h-6 w-32 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
         </div>
@@ -185,8 +190,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#0b0f19]">
         <div className="flex flex-col items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 animate-pulse">
-            <Wallet className="h-6 w-6" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-lg shadow-[#bbf246]/20 animate-pulse">
+            <Wallet className="h-6 w-6 stroke-[2.5]" />
           </div>
           <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Redirecting to login...</p>
         </div>
@@ -198,8 +203,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
     return `group relative flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3 py-2"} rounded-xl text-sm transition-all duration-150 ${
       isActive
-        ? "bg-indigo-50/90 text-indigo-700 font-semibold border border-indigo-200/70 shadow-xs dark:bg-indigo-500/15 dark:text-indigo-300 dark:border-indigo-500/25 dark:shadow-indigo-950/40"
-        : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white"
+        ? "bg-[#bbf246]/15 text-slate-900 font-bold border border-[#bbf246]/30 shadow-xs dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-[#bbf246]/30"
+        : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#181c22] dark:hover:text-white"
     }`;
   };
 
@@ -207,14 +212,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-full flex-col">
       <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between"} px-1 py-1`}>
         <Link href="/dashboard" className="flex items-center gap-2.5 group" title="FinTrack Dashboard">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-white shadow-sm shadow-indigo-500/30 group-hover:scale-105 transition-transform">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] shadow-sm shadow-[#bbf246]/25 group-hover:scale-105 transition-transform font-black">
             <Wallet className="h-5 w-5" />
           </div>
           {!isSidebarCollapsed && (
             <div>
               <div className="flex items-center gap-1.5">
                 <p className="text-base font-black tracking-tight text-slate-900 dark:text-white">FinTrack</p>
-                <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-bold text-indigo-600 border border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20">
+                <span className="rounded-md bg-[#bbf246]/15 px-1.5 py-0.5 text-[9px] font-bold text-slate-900 dark:text-[#bbf246] border border-[#bbf246]/30">
                   PRO
                 </span>
               </div>
@@ -235,10 +240,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               onClick={() => setMobileOpen(false)}
               title={isSidebarCollapsed ? n.label : undefined}
             >
-              <n.icon className={`h-[18px] w-[18px] shrink-0 transition-colors ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"}`} />
+              <n.icon className={`h-[18px] w-[18px] shrink-0 transition-colors ${isActive ? "text-[#bbf246]" : "text-slate-500 dark:text-slate-400"}`} />
               {!isSidebarCollapsed && <span className="flex-1 truncate">{n.label}</span>}
               {!isSidebarCollapsed && isActive && (
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-xs shadow-indigo-500/50" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246] shadow-xs shadow-[#bbf246]/50" />
               )}
             </Link>
           );
@@ -255,7 +260,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               title={isSidebarCollapsed ? n.label : undefined}
             >
               <div className="relative shrink-0">
-                <n.icon className={`h-[18px] w-[18px] transition-colors ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"}`} />
+                <n.icon className={`h-[18px] w-[18px] transition-colors ${isActive ? "text-slate-900 dark:text-[#bbf246]" : "text-slate-500 dark:text-slate-400"}`} />
                 {n.href === "/notifications" && unread > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
                     {unread > 9 ? "9+" : unread}
@@ -264,7 +269,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </div>
               {!isSidebarCollapsed && <span className="flex-1 truncate">{n.label}</span>}
               {!isSidebarCollapsed && isActive && (
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-xs shadow-indigo-500/50" />
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-[#bbf246] shadow-xs shadow-[#bbf246]/50" />
               )}
             </Link>
           );
@@ -301,7 +306,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen text-slate-900 dark:text-slate-100 transition-colors">
       {/* Desktop sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white/95 p-4 lg:block dark:border-slate-800/80 dark:bg-[#0c121e]/95 backdrop-blur-md z-40 shadow-xs ${
+        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white/95 p-4 lg:block dark:border-white/[0.08] dark:bg-[#121519]/95 backdrop-blur-md z-40 shadow-xs ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
@@ -312,7 +317,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[280px] bg-white p-4 dark:bg-[#0c121e] shadow-2xl">
+          <div className="absolute inset-y-0 left-0 w-[280px] bg-white p-4 dark:bg-[#15181d] dark:border-r dark:border-white/[0.08] shadow-2xl">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute right-3 top-3 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
@@ -326,17 +331,26 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className={`transition-all duration-300 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[260px]"}`}>
         {/* Top navbar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 dark:border-slate-800/80 dark:bg-[#0c121e]/80 backdrop-blur-md shadow-2xs">
-          <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 dark:border-white/[0.08] dark:bg-[#121519]/80 backdrop-blur-md shadow-2xs">
+          <div className="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-6 sm:py-2.5">
             <button
               onClick={() => setMobileOpen(true)}
               className="rounded-xl p-2 text-slate-600 hover:bg-slate-100 lg:hidden dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
+              aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" />
             </button>
 
+            {/* Mobile Brand */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black text-xs shadow-xs">
+                F
+              </div>
+              <span className="font-extrabold text-sm tracking-tight text-slate-900 dark:text-white">FinTrack</span>
+            </div>
+
             {/* Quick Search with shortcut */}
-            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/90 bg-slate-100/70 px-3 py-1.5 text-sm text-slate-600 md:flex dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400 focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:ring-2 focus-within:ring-indigo-500/15 transition shadow-2xs">
+            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/90 bg-slate-100/70 px-3 py-1.5 text-sm text-slate-600 md:flex dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-400 focus-within:border-[#bbf246] focus-within:bg-white dark:focus-within:bg-[#1a1e24] focus-within:ring-2 focus-within:ring-[#bbf246]/20 transition shadow-2xs">
               <Search className="h-4 w-4 shrink-0 text-slate-400" />
               <input
                 ref={searchInputRef}
@@ -351,33 +365,33 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </kbd>
             </div>
 
-            <div className="ml-auto flex items-center gap-2">
-              {/* Quick Add Button with N shortcut */}
+            <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+              {/* Quick Add Button with N shortcut (hidden on mobile, bottom bar has center +) */}
               <button
                 onClick={() => setQuickAddOpen(true)}
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 shadow-sm shadow-indigo-600/30 transition cursor-pointer"
+                className="hidden sm:flex items-center gap-1 rounded-full bg-[#bbf246] px-3.5 py-1.5 text-xs font-black text-[#0b0e11] hover:bg-[#a8e030] shadow-sm shadow-[#bbf246]/25 transition cursor-pointer"
                 title="Quick Add Transaction (Press N)"
               >
-                <Plus className="h-3.5 w-3.5" />
-                <span>New</span>
-                <kbd className="hidden md:inline rounded bg-indigo-700/80 px-1 py-0.2 text-[9px] font-bold text-indigo-100">N</kbd>
+                <Plus className="h-3.5 w-3.5 stroke-[3]" />
+                <span className="hidden sm:inline">New</span>
+                <kbd className="hidden md:inline rounded bg-black/15 px-1 py-0.2 text-[9px] font-bold text-black">N</kbd>
               </button>
 
               {/* Quick Currency Selector */}
               <div className="relative" ref={currencyMenuRef}>
                 <button
                   onClick={() => setCurrencyMenuOpen(!currencyMenuOpen)}
-                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-slate-50/90 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800 transition cursor-pointer shadow-2xs"
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200/90 bg-slate-50/90 px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-200 dark:hover:bg-[#20252e] transition cursor-pointer shadow-2xs"
                   title="Active Currency (Click to switch)"
                 >
-                  <span className="text-indigo-600 dark:text-indigo-400 font-black">{CURRENCY_SYMBOLS[user.currency || "INR"] || "₹"}</span>
+                  <span className="text-slate-900 dark:text-[#bbf246] font-black">{CURRENCY_SYMBOLS[user.currency || "INR"] || "₹"}</span>
                   <span>{user.currency || "INR"}</span>
                   <ChevronDown className="h-3 w-3 text-slate-400" />
                 </button>
 
                 {currencyMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-xl dark:border-slate-800 dark:bg-[#111827] z-50 animate-in fade-in zoom-in-95">
-                    <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                  <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-xl dark:border-white/[0.08] dark:bg-[#15181d] z-50 animate-in fade-in zoom-in-95">
+                    <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-white/[0.08]">
                       Switch Currency
                     </div>
                     <div className="mt-1 space-y-0.5">
@@ -392,12 +406,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             }}
                             className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold transition cursor-pointer ${
                               isCurrent
-                                ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300"
-                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                                ? "bg-slate-100 text-slate-900 dark:bg-[#bbf246]/15 dark:text-[#bbf246]"
+                                : "text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#20252e]"
                             }`}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-indigo-500">{c.symbol}</span>
+                              <span className="font-bold text-slate-900 dark:text-[#bbf246]">{c.symbol}</span>
                               <span>{c.code}</span>
                             </div>
                             <span className="text-[11px] text-slate-400">{c.name.split(" ")[0]}</span>
@@ -412,15 +426,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               {/* Theme Mode Switcher */}
               <button
                 onClick={toggle}
-                className="rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer transition shadow-2xs"
+                className="rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-300 dark:hover:bg-[#20252e] cursor-pointer transition shadow-2xs"
                 title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
-                {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-amber-400" /> : <Moon className="h-4.5 w-4.5 text-slate-600" />}
+                {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-[#bbf246]" /> : <Moon className="h-4.5 w-4.5 text-slate-600" />}
               </button>
 
               <Link
                 href="/notifications"
-                className="relative rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 transition shadow-2xs"
+                className="relative rounded-xl border border-slate-200/90 bg-slate-50/90 p-2 text-slate-600 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#181c22] dark:text-slate-300 dark:hover:bg-[#20252e] transition shadow-2xs"
               >
                 <Bell className="h-4.5 w-4.5" />
                 {unread > 0 && (
@@ -430,17 +444,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 )}
               </Link>
 
-              <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 mx-1" />
+              <div className="h-5 w-px bg-slate-200 dark:bg-white/[0.08] mx-1" />
 
-              <Link href="/settings" className="flex items-center gap-2.5 rounded-xl border border-slate-200/90 bg-slate-50/90 p-1 pr-2.5 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-800/60 dark:hover:bg-slate-800 transition shadow-2xs">
+              <Link href="/settings" className="flex items-center gap-2.5 rounded-xl border border-slate-200/90 bg-slate-50/90 p-1 pr-2.5 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-[#181c22] dark:hover:bg-[#20252e] transition shadow-2xs">
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
                     alt={user.name}
-                    className="h-8 w-8 rounded-full object-cover shadow-xs border border-indigo-200 dark:border-indigo-900 shrink-0"
+                    className="h-8 w-8 rounded-full object-cover shadow-xs border border-slate-200 dark:border-white/10 shrink-0"
                   />
                 ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white shadow-xs shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#bbf246] text-xs font-black text-[#0b0e11] shadow-xs shrink-0">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -453,7 +467,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-6xl px-4 py-6 pb-24 sm:px-6 lg:pb-10">{children}</main>
+        <main className="mx-auto w-full max-w-6xl px-3.5 py-4 pb-24 sm:px-6 sm:py-6 lg:pb-10">{children}</main>
         <OnboardingModal />
         <SessionTimeoutModal />
 
@@ -465,8 +479,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             title={`Convert Currency to ${currencyModal}?`}
           >
             <div className="space-y-4 pt-1">
-              <div className="rounded-xl border border-indigo-500/25 bg-indigo-500/10 p-4 text-xs text-slate-700 dark:text-slate-200">
-                <div className="flex items-center gap-2 font-bold text-indigo-600 dark:text-indigo-400">
+              <div className="rounded-xl border border-[#bbf246]/30 bg-[#bbf246]/10 p-4 text-xs text-slate-700 dark:text-slate-200">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-[#bbf246]">
                   <ArrowLeftRight className="h-4 w-4" />
                   <span>Real-time Financial Value Conversion</span>
                 </div>
@@ -480,7 +494,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   <li>Savings goals target and accumulated amounts</li>
                   <li>Recurring bills and subscription commitments</li>
                 </ul>
-                <div className="mt-3 pt-2.5 border-t border-indigo-500/20 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-300">
+                <div className="mt-3 pt-2.5 border-t border-[#bbf246]/20 flex items-center justify-between text-xs font-bold text-slate-900 dark:text-[#bbf246]">
                   <span>Exchange Rate:</span>
                   <span>1 {user.currency || "INR"} ≈ {getEstimatedRate(user.currency || "INR", currencyModal).toFixed(4)} {currencyModal}</span>
                 </div>
@@ -567,7 +581,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 value={quickForm.amount}
                 onChange={(e) => setQuickForm({ ...quickForm, amount: e.target.value })}
                 placeholder="0.00"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />
             </div>
 
@@ -590,7 +604,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   }));
                 }}
                 placeholder="e.g. Coffee, Freelance invoice, Groceries"
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />
             </div>
 
@@ -604,7 +618,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   value={quickForm.categoryName}
                   onChange={(e) => setQuickForm({ ...quickForm, categoryName: e.target.value })}
                   placeholder="Category"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                 />
               </div>
               <div>
@@ -614,7 +628,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <select
                   value={quickForm.paymentMethod}
                   onChange={(e) => setQuickForm({ ...quickForm, paymentMethod: e.target.value })}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white cursor-pointer"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-[#bbf246] focus:ring-1 focus:ring-[#bbf246] dark:border-slate-800 dark:bg-slate-900 dark:text-white cursor-pointer"
                 >
                   <option value="UPI">UPI</option>
                   <option value="Credit Card">Credit Card</option>
@@ -639,27 +653,92 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {/* FinBot AI Autonomous Financial Copilot */}
         <FinBotAssistant />
 
-        {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-md lg:hidden dark:border-slate-800/80 dark:bg-[#111827]/95">
-          <div className="grid grid-cols-5 px-2 py-1.5">
-            {[
-              { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-              { href: "/transactions", icon: ArrowLeftRight, label: "Txns" },
-              { href: "/budgets", icon: Wallet, label: "Budget" },
-              { href: "/analytics", icon: BarChart3, label: "Stats" },
-              { href: "/settings", icon: Settings, label: "More" },
-            ].map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] font-semibold transition ${
-                  pathname === n.href ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"
-                }`}
+        {/* Mobile bottom nav with Center Quick-Add Action */}
+        <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200/80 bg-white/95 backdrop-blur-xl lg:hidden dark:border-white/[0.08] dark:bg-[#121519]/95 shadow-[0_-4px_24px_rgba(0,0,0,0.25)] pb-[env(safe-area-inset-bottom,0px)]">
+          <div className="grid grid-cols-5 items-center px-1.5 py-1">
+            {/* 1. Home */}
+            <Link
+              href="/dashboard"
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] font-semibold transition active:scale-95 ${
+                pathname === "/dashboard"
+                  ? "text-[#0b0e11] dark:text-[#bbf246] font-bold"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <div className="relative">
+                <LayoutDashboard className="h-5 w-5" />
+                {pathname === "/dashboard" && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0b0e11] dark:bg-[#bbf246] shadow-xs dark:shadow-[#bbf246]/60" />
+                )}
+              </div>
+              <span className="leading-tight text-[10px]">Home</span>
+            </Link>
+
+            {/* 2. Transactions */}
+            <Link
+              href="/transactions"
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] font-semibold transition active:scale-95 ${
+                pathname.startsWith("/transactions")
+                  ? "text-[#0b0e11] dark:text-[#bbf246] font-bold"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <div className="relative">
+                <ArrowLeftRight className="h-5 w-5" />
+                {pathname.startsWith("/transactions") && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0b0e11] dark:bg-[#bbf246] shadow-xs dark:shadow-[#bbf246]/60" />
+                )}
+              </div>
+              <span className="leading-tight text-[10px]">Txns</span>
+            </Link>
+
+            {/* 3. Center Elevated Quick Add Button */}
+            <div className="flex justify-center -mt-5">
+              <button
+                type="button"
+                onClick={() => setQuickAddOpen(true)}
+                className="group relative flex h-12 w-12 items-center justify-center rounded-full bg-[#bbf246] text-[#0b0e11] shadow-lg shadow-[#bbf246]/35 ring-4 ring-white dark:ring-[#0b0e11] active:scale-90 transition-all cursor-pointer"
+                aria-label="Quick Add Transaction"
               >
-                <n.icon className="h-5 w-5" />
-                {n.label}
-              </Link>
-            ))}
+                <Plus className="h-6 w-6 stroke-[3] group-active:rotate-90 transition-transform duration-200" />
+              </button>
+            </div>
+
+            {/* 4. Budgets */}
+            <Link
+              href="/budgets"
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] font-semibold transition active:scale-95 ${
+                pathname.startsWith("/budgets")
+                  ? "text-[#0b0e11] dark:text-[#bbf246] font-bold"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <div className="relative">
+                <Wallet className="h-5 w-5" />
+                {pathname.startsWith("/budgets") && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0b0e11] dark:bg-[#bbf246] shadow-xs dark:shadow-[#bbf246]/60" />
+                )}
+              </div>
+              <span className="leading-tight text-[10px]">Budgets</span>
+            </Link>
+
+            {/* 5. Analytics */}
+            <Link
+              href="/analytics"
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] font-semibold transition active:scale-95 ${
+                pathname.startsWith("/analytics")
+                  ? "text-[#0b0e11] dark:text-[#bbf246] font-bold"
+                  : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <div className="relative">
+                <BarChart3 className="h-5 w-5" />
+                {pathname.startsWith("/analytics") && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0b0e11] dark:bg-[#bbf246] shadow-xs dark:shadow-[#bbf246]/60" />
+                )}
+              </div>
+              <span className="leading-tight text-[10px]">Analytics</span>
+            </Link>
           </div>
         </nav>
       </div>

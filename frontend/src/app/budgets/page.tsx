@@ -90,16 +90,14 @@ const CATEGORY_COLORS_MAP: Record<string, string> = {
 };
 
 const CHART_PALETTE = [
-  "#6366f1",
-  "#10b981",
-  "#f59e0b",
-  "#ec4899",
-  "#8b5cf6",
-  "#0ea5e9",
-  "#f97316",
-  "#14b8a6",
-  "#ef4444",
-  "#64748b",
+  "#bbf246", // Electric Lime
+  "#ff6347", // Coral Orange
+  "#8b5cf6", // Purple
+  "#06b6d4", // Cyan
+  "#ec4899", // Pink
+  "#eab308", // Amber
+  "#3b82f6", // Blue
+  "#10b981", // Emerald
 ];
 
 const PRESET_AMOUNTS = ["1000", "2500", "5000", "10000", "25000"];
@@ -375,87 +373,87 @@ export default function BudgetsPage() {
         </div>
 
         {/* 4 Standard Metric Cards (Identical to Dashboard layout & style) */}
-        <div className="grid gap-3.5 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Card 1: Total Budget */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Total Budget
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
-                <Wallet className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+                <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-1.5 sm:mt-2.5 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
               {formatCurrency(summary.totalBudget, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              {budgets.length} {budgets.length === 1 ? "category target" : "category targets"}
+            <p className="mt-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+              {budgets.length} {budgets.length === 1 ? "category" : "categories"}
             </p>
           </div>
 
           {/* Card 2: Actual Spent */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Total Spent
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-700 border border-rose-100 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
-                <TrendingDown className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-700 border border-rose-100 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
+                <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-1.5 sm:mt-2.5 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
               {formatCurrency(summary.totalSpent, currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
               {summary.percentUsed}% of planned budget
             </p>
           </div>
 
           {/* Card 3: Net Remaining */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Net Remaining
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+                Remaining
               </span>
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-xl ring-1 ${
+                className={`flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl ring-1 ${
                   summary.remaining >= 0
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 ring-emerald-500/20"
                     : "bg-rose-50 text-rose-700 border border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 ring-rose-500/20"
                 }`}
               >
-                {summary.remaining >= 0 ? <PiggyBank className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+                {summary.remaining >= 0 ? <PiggyBank className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               </div>
             </div>
             <p
-              className={`mt-2.5 text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+              className={`mt-1.5 sm:mt-2.5 text-base sm:text-2xl lg:text-3xl font-black tracking-tight tabular-nums truncate ${
                 summary.remaining >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"
               }`}
             >
               {formatCurrency(Math.abs(summary.remaining), currency)}
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              {summary.remaining >= 0 ? "Available left to spend" : "Budget exceeded"}
+            <p className="mt-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+              {summary.remaining >= 0 ? "Left to spend" : "Budget exceeded"}
             </p>
           </div>
 
           {/* Card 4: Daily Rate */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
                 Daily Allowance
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
-                <Clock className="h-4 w-4" />
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </div>
-            <p className="mt-2.5 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums">
+            <p className="mt-1.5 sm:mt-2.5 text-base sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums truncate">
               {velocityInfo.dailyBudget > 0 ? formatCurrency(velocityInfo.dailyBudget, currency) : formatCurrency(0, currency)}
-              <span className="text-xs font-normal text-slate-400 dark:text-slate-500"> /day</span>
+              <span className="text-[11px] sm:text-xs font-normal text-slate-400 dark:text-slate-500"> /d</span>
             </p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-              {velocityInfo.daysRemaining > 0 ? `${velocityInfo.daysRemaining} days left this month` : "Month concluded"}
+            <p className="mt-1.5 text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+              {velocityInfo.daysRemaining > 0 ? `${velocityInfo.daysRemaining} days left` : "Month ended"}
             </p>
           </div>
         </div>
@@ -463,7 +461,7 @@ export default function BudgetsPage() {
         {/* Toolbar: Segmented Tabs on Left, Analytics Toggle + Search + Sort on Right */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Segmented status control */}
-          <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 dark:bg-slate-800/80 text-xs font-semibold">
+          <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 dark:bg-slate-800/80 text-xs font-semibold overflow-x-auto max-w-full no-scrollbar">
             <button
               onClick={() => setStatusFilter("all")}
               className={`rounded-lg px-3 py-1.5 transition cursor-pointer ${

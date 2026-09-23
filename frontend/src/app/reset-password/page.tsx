@@ -12,7 +12,6 @@ import {
   XCircle,
   AlertTriangle,
   ArrowRight,
-  ShieldCheck,
   RotateCcw,
 } from "lucide-react";
 import { Button, Field, inputCls, toast } from "@/components/ui";
@@ -134,7 +133,7 @@ function ResetPasswordForm() {
   if (verifying) {
     return (
       <div className="py-12 text-center space-y-3">
-        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+        <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#bbf246] border-t-transparent" />
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
           Verifying security token...
         </p>
@@ -161,9 +160,9 @@ function ResetPasswordForm() {
         <div className="pt-2 space-y-2">
           <Link
             href="/forgot-password"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-4 text-xs font-bold transition shadow-xs"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] py-2.5 px-4 text-xs font-black transition shadow-xs"
           >
-            <RotateCcw className="h-4 w-4" /> Request New Reset Link
+            <RotateCcw className="h-4 w-4 stroke-[2.5]" /> Request New Reset Link
           </Link>
           <Link
             href="/login"
@@ -199,7 +198,7 @@ function ResetPasswordForm() {
         <div className="pt-2">
           <Link
             href="/login"
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 px-4 text-xs font-bold transition shadow-xs"
+            className="flex w-full items-center justify-center gap-2 rounded-full bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] py-2.5 px-4 text-xs font-black transition shadow-xs"
           >
             Sign In Now <ArrowRight className="h-4 w-4" />
           </Link>
@@ -211,10 +210,7 @@ function ResetPasswordForm() {
   // State: Standard Reset Password Form
   return (
     <div>
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400 mb-4">
-        <Lock className="h-5 w-5" />
-      </div>
-      <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+      <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">
         Reset password
       </h1>
       <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
@@ -382,50 +378,73 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-white dark:bg-[#0b0e11] overflow-hidden">
       {/* Left Brand Showcase (Desktop) */}
-      <div className="hidden flex-1 flex-col justify-between bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 p-10 text-white lg:flex">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
+      <div className="relative hidden lg:flex lg:w-[52%] xl:w-[55%] flex-col justify-between overflow-hidden bg-[#111419] border-r border-slate-200 dark:border-white/[0.08] p-10 text-white">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-[#bbf246]/10 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="absolute top-1/2 left-1/3 h-[300px] w-[300px] -translate-y-1/2 rounded-full bg-[#bbf246]/5 blur-2xl" />
+        </div>
+
+        <Link href="/" className="relative flex items-center gap-2.5 w-fit">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#bbf246] text-[#0b0e11] font-black shadow-lg shadow-[#bbf246]/20">
             <Wallet className="h-5 w-5" />
           </div>
-          <span className="text-xl font-extrabold">FinTrack</span>
+          <span className="text-xl font-extrabold tracking-tight">FinTrack</span>
         </Link>
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur-md mb-4">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" />
-            <span>Secure Password Encryption</span>
-          </div>
-          <h2 className="text-4xl font-extrabold leading-tight">
-            Fortify your account.<br />Set a new password.
+        <div className="relative">
+          <h2 className="text-4xl xl:text-5xl font-black leading-[1.08] tracking-tight">
+            Fortify your account.<br />
+            <span className="text-white/80">Set a new password.</span>
           </h2>
-          <p className="mt-3 max-w-md text-indigo-100 text-sm">
+          <p className="mt-4 max-w-sm text-slate-400 leading-relaxed text-base">
             Your new password will be salted and hashed using bcrypt before securely updating your credentials.
           </p>
         </div>
-        <p className="text-xs text-indigo-200">Take Control of Your Money.</p>
+        <p className="relative text-sm text-slate-500">© 2026 FinTrack · Take Control of Your Money.</p>
       </div>
 
-      {/* Right Form Container */}
-      <div className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl dark:border-slate-800 dark:bg-[#111827]">
-          {/* Mobile brand header */}
-          <div className="flex items-center gap-2.5 lg:hidden mb-6">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
-              <Wallet className="h-5 w-5" />
-            </div>
-            <span className="font-extrabold text-slate-900 dark:text-white">FinTrack</span>
-          </div>
+      {/* Right Form Container (Mobile & Desktop) */}
+      <div className="relative flex flex-1 flex-col overflow-hidden bg-white dark:bg-[#0b0e11]">
 
-          <Suspense
-            fallback={
-              <div className="py-12 text-center text-xs font-semibold text-slate-400">
-                Loading...
-              </div>
-            }
-          >
-            <ResetPasswordForm />
-          </Suspense>
+        {/* Ambient Visual Atmosphere (Visible on mobile & desktop) */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-28 -right-28 h-[360px] w-[360px] sm:h-[460px] sm:w-[460px] rounded-full bg-gradient-to-br from-[#bbf246]/15 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "7s" }} />
+          <div className="absolute -bottom-28 -left-28 h-[320px] w-[320px] sm:h-[420px] sm:w-[420px] rounded-full bg-gradient-to-tr from-emerald-500/10 via-[#bbf246]/5 to-transparent blur-3xl animate-pulse" style={{ animationDuration: "9s" }} />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] dark:bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)]" />
+        </div>
+
+        {/* Mobile header */}
+        <div className="relative z-10 flex items-center px-6 pt-7 pb-2 lg:hidden">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-md shadow-[#bbf246]/25">
+              <Wallet className="h-5 w-5 stroke-[2.5]" />
+            </div>
+            <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white">FinTrack</span>
+          </Link>
+        </div>
+
+        <div className="relative z-10 flex flex-1 items-center justify-center px-5 py-8 sm:px-8">
+          <div className="w-full max-w-md">
+
+            {/* Main Card with Neon Accent Trim & Glassmorphism */}
+            <div className="relative rounded-3xl border border-slate-200/90 bg-white/95 p-7 shadow-2xl backdrop-blur-xl dark:border-white/[0.08] dark:bg-[#15181d]/90 sm:p-8">
+              {/* Neon Lime Top Accent Line */}
+              <div className="absolute -top-[1px] left-10 right-10 h-[2px] bg-gradient-to-r from-transparent via-[#bbf246] to-transparent rounded-full opacity-90 shadow-[0_0_12px_rgba(187,242,70,0.6)]" />
+
+              <Suspense
+                fallback={
+                  <div className="py-12 text-center text-xs font-semibold text-slate-400">
+                    Loading security token...
+                  </div>
+                }
+              >
+                <ResetPasswordForm />
+              </Suspense>
+            </div>
+
+          </div>
         </div>
       </div>
     </div>

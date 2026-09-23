@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Plus, Search, Pencil, Trash2, ArrowLeftRight, ChevronLeft, ChevronRight, X,
-  Download, FileText, ArrowDownLeft, ArrowUpRight, Wallet, Landmark, Check, UploadCloud, Sparkles
+  Download, FileText, ArrowDownLeft, ArrowUpRight, Wallet, Landmark, Check, UploadCloud, Sparkles,
+  Split, PlusCircle, Minus
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Button, Modal, Field, inputCls, EmptyState, ConfirmDialog, toast } from "@/components/ui";
@@ -80,10 +81,10 @@ function TransactionsSkeleton() {
       </div>
       <div className="grid gap-3.5 sm:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-28 rounded-2xl border border-slate-200/80 bg-white p-4.5 dark:border-slate-800/80 dark:bg-[#111827]" />
+          <div key={i} className="h-28 rounded-2xl border border-slate-200/80 bg-white p-4.5 dark:border-white/[0.08] dark:bg-[#15181d]" />
         ))}
       </div>
-      <div className="h-96 rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-slate-800/80 dark:bg-[#111827]" />
+      <div className="h-96 rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-white/[0.08] dark:bg-[#15181d]" />
     </div>
   );
 }
@@ -131,6 +132,35 @@ function TransactionsContent() {
     paymentMethod: "UPI",
     notes: "",
   });
+
+  // Split transaction state
+  interface SplitRow {
+    id: string;
+    amount: string;
+    categoryId: string;
+    categoryName: string;
+    description: string;
+  }
+  const [splitMode, setSplitMode] = useState(false);
+  const [splits, setSplits] = useState<SplitRow[]>([]);
+
+  const addSplitRow = () => {
+    setSplits((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), amount: "", categoryId: "", categoryName: "", description: "" },
+    ]);
+  };
+  const removeSplitRow = (id: string) => {
+    setSplits((prev) => prev.filter((s) => s.id !== id));
+  };
+  const updateSplitRow = (id: string, field: keyof SplitRow, value: string) => {
+    setSplits((prev) => prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)));
+  };
+
+  const totalAmt = parseFloat(form.amount) || 0;
+  const splitsSum = splits.reduce((acc, s) => acc + (parseFloat(s.amount) || 0), 0);
+  const splitRemainder = Math.round((totalAmt - splitsSum) * 100) / 100;
+  const splitsValid = splitMode ? splits.length >= 2 && Math.abs(splitRemainder) < 0.01 : true;
 
   const [exportingCsv, setExportingCsv] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
@@ -257,6 +287,8 @@ function TransactionsContent() {
       paymentMethod: "UPI",
       notes: "",
     });
+    setSplitMode(false);
+    setSplits([]);
     setModal(true);
   };
 
@@ -274,14 +306,29 @@ function TransactionsContent() {
       paymentMethod: t.paymentMethod || "UPI",
       notes: t.notes || "",
     });
+    setSplitMode(false);
+    setSplits([]);
     setModal(true);
   };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate splits before submit
+    if (splitMode && !editing) {
+      if (splits.length < 2) {
+        toast("Add at least 2 split rows", "error");
+        return;
+      }
+      if (Math.abs(splitRemainder) >= 0.01) {
+        toast(`Split amounts must equal total. Remaining: ${splitRemainder < 0 ? "-" : "+"}${Math.abs(splitRemainder).toFixed(2)}`, "error");
+        return;
+      }
+    }
+
     setSaving(true);
     try {
-      const payload = {
+      const payload: Record<string, unknown> = {
         type: form.type,
         amount: form.amount,
         description: form.description,
@@ -294,6 +341,16 @@ function TransactionsContent() {
         notes: form.notes,
       };
 
+      // Include splits only on new transactions
+      if (splitMode && !editing && splits.length >= 2) {
+        payload.splits = splits.map((s) => ({
+          amount: s.amount,
+          categoryId: s.categoryId || undefined,
+          categoryName: s.categoryName || undefined,
+          description: s.description || undefined,
+        }));
+      }
+
       const url = editing ? `/api/transactions/${editing.id}` : "/api/transactions";
       const res = await fetch(url, {
         method: editing ? "PUT" : "POST",
@@ -304,8 +361,14 @@ function TransactionsContent() {
 
       const json = await res.json();
       if (!json.success) throw new Error(json.message || "Failed to save transaction");
-      toast(editing ? "Transaction updated" : "Transaction added");
+      if (json.data?.isSplit) {
+        toast(`Transaction split into ${json.data.transactions?.length ?? splits.length} entries ✨`);
+      } else {
+        toast(editing ? "Transaction updated" : "Transaction added");
+      }
       setModal(false);
+      setSplitMode(false);
+      setSplits([]);
       load();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Failed to save transaction", "error");
@@ -384,6 +447,7 @@ function TransactionsContent() {
   return (
     <div className="space-y-5">
       {/* ── 1. Top Header ────────────────────────────────────────── */}
+      {/* ── 1. Top Header ────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 print:hidden">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
@@ -393,91 +457,99 @@ function TransactionsContent() {
             Track and audit every transaction in and out of your financial accounts.
           </p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            variant="outline"
-            onClick={() => setImportModalOpen(true)}
-            className="h-9 px-3 text-xs font-semibold cursor-pointer border-indigo-200/80 bg-indigo-50/50 text-indigo-700 hover:bg-indigo-100/70 dark:border-indigo-800/60 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-900/40"
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+          <div className="grid grid-cols-3 gap-1.5 sm:flex sm:items-center sm:gap-2 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => setImportModalOpen(true)}
+              className="h-9 px-2 sm:px-3 text-xs font-semibold cursor-pointer border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-200 dark:hover:bg-[#1a1e24] truncate justify-center"
+            >
+              <UploadCloud className="h-3.5 w-3.5 sm:mr-1 shrink-0" />
+              <span className="truncate">Import</span>
+            </Button>
+            <Button variant="outline" onClick={exportPdf} className="h-9 px-2 sm:px-3 text-xs font-semibold justify-center border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-200 dark:hover:bg-[#1a1e24]">
+              <FileText className="h-3.5 w-3.5 sm:mr-1 shrink-0" />
+              <span className="truncate">PDF</span>
+            </Button>
+            <Button variant="outline" onClick={exportCsv} loading={exportingCsv} className="h-9 px-2 sm:px-3 text-xs font-semibold cursor-pointer justify-center border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-200 dark:hover:bg-[#1a1e24]">
+              <Download className="h-3.5 w-3.5 sm:mr-1 shrink-0" />
+              <span className="truncate">CSV</span>
+            </Button>
+          </div>
+          <button
+            onClick={openAdd}
+            className="flex items-center justify-center gap-1.5 h-9 px-4 text-xs font-black rounded-full bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] shadow-sm shadow-[#bbf246]/25 transition cursor-pointer w-full sm:w-auto"
           >
-            <UploadCloud className="h-3.5 w-3.5 mr-1" /> Import Statement
-          </Button>
-          <Button variant="outline" onClick={exportPdf} className="h-9 px-3 text-xs font-semibold">
-            <FileText className="h-3.5 w-3.5 mr-1" /> Export PDF
-          </Button>
-          <Button variant="outline" onClick={exportCsv} loading={exportingCsv} className="h-9 px-3 text-xs font-semibold cursor-pointer">
-            <Download className="h-3.5 w-3.5 mr-1" /> Export CSV
-          </Button>
-          <Button onClick={openAdd} className="h-9 px-3.5 text-xs font-bold shadow-xs">
-            <Plus className="h-3.5 w-3.5 mr-1" /> Add Transaction
-          </Button>
+            <Plus className="h-4 w-4 stroke-[3]" /> Add Transaction
+          </button>
         </div>
       </div>
 
       {/* ── 2. Metric Cards ──────────────────────────────────────── */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {/* Inflow */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Total Inflow
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+              Inflow
             </span>
-            <span className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/20">
+            <span className="hidden sm:flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/20">
               <ArrowDownLeft className="h-4 w-4" />
             </span>
           </div>
-          <div className="mt-2.5">
-            <p className="text-2xl sm:text-3xl font-black text-emerald-700 dark:text-emerald-400 tracking-tight tabular-nums">
+          <div className="mt-1 sm:mt-2.5">
+            <p className="text-sm sm:text-2xl lg:text-3xl font-black text-emerald-700 dark:text-[#bbf246] tracking-tight tabular-nums truncate">
               {formatCurrency(summary.income, currency)}
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Incoming credits & deposits</p>
+            <p className="hidden sm:block mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Incoming credits</p>
           </div>
         </div>
 
         {/* Outflow */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Total Outflow
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
+              Outflow
             </span>
-            <span className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-rose-50 text-rose-700 border border-rose-200/70 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/20">
+            <span className="hidden sm:flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-rose-50 text-rose-700 border border-rose-200/70 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/20">
               <ArrowUpRight className="h-4 w-4" />
             </span>
           </div>
-          <div className="mt-2.5">
-            <p className="text-2xl sm:text-3xl font-black text-rose-700 dark:text-rose-400 tracking-tight tabular-nums">
+          <div className="mt-1 sm:mt-2.5">
+            <p className="text-sm sm:text-2xl lg:text-3xl font-black text-rose-700 dark:text-rose-400 tracking-tight tabular-nums truncate">
               {formatCurrency(summary.expenses, currency)}
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Expenses, bills & withdrawals</p>
+            <p className="hidden sm:block mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Monthly expenses</p>
           </div>
         </div>
 
         {/* Net Cash */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 truncate">
               Net Balance
             </span>
-            <span className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/20">
+            <span className="hidden sm:flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-[#bbf246]/10 text-slate-800 border border-[#bbf246]/20 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
               <Wallet className="h-4 w-4" />
             </span>
           </div>
-          <div className="mt-2.5">
+          <div className="mt-1 sm:mt-2.5">
             <p
-              className={`text-2xl sm:text-3xl font-black tracking-tight tabular-nums ${
+              className={`text-sm sm:text-2xl lg:text-3xl font-black tracking-tight tabular-nums truncate ${
                 summary.net >= 0 ? "text-slate-900 dark:text-white" : "text-rose-700 dark:text-rose-400"
               }`}
             >
               {formatCurrency(summary.net, currency)}
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Net overall cash balance</p>
+            <p className="hidden sm:block mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Net overall cash</p>
           </div>
         </div>
       </div>
 
       {/* ── 3. Table & Filters Card ──────────────────────────────── */}
-      <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none overflow-hidden">
+      <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-white/[0.08] dark:bg-[#15181d] dark:shadow-none overflow-hidden">
         {/* Toolbar */}
-        <div className="p-3.5 sm:p-4 border-b border-slate-200/80 bg-slate-50/50 dark:border-slate-800/80 dark:bg-transparent flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="p-3.5 sm:p-4 border-b border-slate-200/80 bg-slate-50/50 dark:border-white/[0.08] dark:bg-transparent flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative w-full md:w-72 lg:w-80">
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -488,7 +560,7 @@ function TransactionsContent() {
                 setPage(1);
               }}
               placeholder="Search description, notes, method..."
-              className="w-full rounded-xl border border-slate-200/90 bg-white pl-9 pr-8 py-2 text-xs text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-100 dark:focus:bg-[#0b0f19] shadow-2xs"
+              className="w-full rounded-xl border border-slate-200/90 bg-white pl-9 pr-8 py-2 text-xs text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/15 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-100 dark:focus:bg-[#0b0e11] dark:focus:border-[#bbf246] shadow-2xs"
             />
             {search && (
               <button
@@ -509,7 +581,7 @@ function TransactionsContent() {
           {/* Filter Pills & Selects */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Type Segment Control */}
-            <div className="inline-flex items-center rounded-xl bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-slate-800 dark:bg-slate-800/80 text-xs font-semibold">
+            <div className="inline-flex items-center rounded-full bg-slate-100/90 p-0.5 border border-slate-200/60 dark:border-white/[0.08] dark:bg-[#0b0e11] text-xs font-semibold">
               {[
                 { label: "All", value: "" },
                 { label: "+ Income", value: "income" },
@@ -521,9 +593,9 @@ function TransactionsContent() {
                     setTypeF(f.value);
                     setPage(1);
                   }}
-                  className={`rounded-lg px-3 py-1.5 transition cursor-pointer text-xs font-bold ${
+                  className={`rounded-full px-3 py-1.5 transition cursor-pointer text-xs font-bold ${
                     typeF === f.value
-                      ? "bg-white text-indigo-700 shadow-2xs ring-1 ring-black/5 dark:bg-indigo-600 dark:text-white dark:ring-0"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11]"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
@@ -539,7 +611,7 @@ function TransactionsContent() {
                 setCatF(e.target.value);
                 setPage(1);
               }}
-              className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 cursor-pointer shadow-2xs"
+              className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/15 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-200 cursor-pointer shadow-2xs"
             >
               <option value="">All Categories</option>
               {[...new Set(cats.map((c) => c.name))].map((n) => (
@@ -557,7 +629,7 @@ function TransactionsContent() {
                   setAccountF(e.target.value);
                   setPage(1);
                 }}
-                className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 cursor-pointer shadow-2xs"
+                className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/15 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-200 cursor-pointer shadow-2xs"
               >
                 <option value="">All Accounts</option>
                 {accounts.map((a) => (
@@ -576,7 +648,7 @@ function TransactionsContent() {
                 setSortBy(a);
                 setSortDir(b);
               }}
-              className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-200 cursor-pointer shadow-2xs"
+              className="h-8.5 rounded-xl border border-slate-200/90 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/15 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-200 cursor-pointer shadow-2xs"
             >
               <option value="date-desc">Newest First</option>
               <option value="date-asc">Oldest First</option>
@@ -635,7 +707,7 @@ function TransactionsContent() {
                           checked={isAllSelected}
                           onChange={toggleSelectAll}
                           aria-label="Select all transactions"
-                          className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 cursor-pointer accent-indigo-600"
+                          className="h-4 w-4 rounded border-slate-300 text-[#bbf246] focus:ring-[#bbf246]/30 dark:border-white/[0.12] dark:bg-[#0b0e11] cursor-pointer accent-[#bbf246]"
                         />
                       </th>
                       <th className="px-5 py-3.5">Transaction</th>
@@ -647,7 +719,7 @@ function TransactionsContent() {
                       <th className="px-5 py-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/[0.06]">
                     {txs.map((t) => {
                       const acc = accounts.find((a) => a.id === t.accountId);
                       const isInc = t.type === "income";
@@ -659,8 +731,8 @@ function TransactionsContent() {
                           key={t.id}
                           className={`transition-colors ${
                             isSelected
-                              ? "bg-indigo-50/60 dark:bg-indigo-950/20"
-                              : "hover:bg-slate-50/80 dark:hover:bg-slate-800/30"
+                              ? "bg-[#bbf246]/10 dark:bg-[#bbf246]/10"
+                              : "hover:bg-slate-50/80 dark:hover:bg-white/[0.02]"
                           }`}
                         >
                           {/* Checkbox */}
@@ -670,7 +742,7 @@ function TransactionsContent() {
                               checked={isSelected}
                               onChange={() => toggleSelectOne(t.id)}
                               aria-label={`Select transaction ${t.description}`}
-                              className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 cursor-pointer accent-indigo-600"
+                              className="h-4 w-4 rounded border-slate-300 text-[#bbf246] focus:ring-[#bbf246]/30 dark:border-white/[0.12] dark:bg-[#0b0e11] cursor-pointer accent-[#bbf246]"
                             />
                           </td>
 
@@ -699,10 +771,10 @@ function TransactionsContent() {
 
                           {/* Category */}
                           <td className="px-4 py-3.5">
-                            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
                               <span
                                 className={`h-1.5 w-1.5 rounded-full ${
-                                  isInc ? "bg-emerald-500" : "bg-indigo-500"
+                                  isInc ? "bg-emerald-500" : "bg-[#bbf246]"
                                 }`}
                               />
                               {t.categoryName || "Uncategorized"}
@@ -748,7 +820,7 @@ function TransactionsContent() {
                             <div className="flex justify-end gap-1">
                               <button
                                 onClick={() => openEdit(t)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800 dark:hover:text-indigo-400 cursor-pointer transition"
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-[#bbf246] cursor-pointer transition"
                                 title="Edit Transaction"
                               >
                                 <Pencil className="h-3.5 w-3.5" />
@@ -770,19 +842,31 @@ function TransactionsContent() {
               </div>
 
               {/* Mobile Card View */}
-              <div className="space-y-2.5 p-3.5 md:hidden">
+              <div className="space-y-2.5 p-3 md:hidden">
                 {txs.map((t) => {
                   const isInc = t.type === "income";
                   const amtNum = parseFloat(t.amount || "0");
                   const acc = accounts.find((a) => a.id === t.accountId);
+                  const isSelected = selectedIds.includes(t.id);
 
                   return (
                     <div
                       key={t.id}
-                      className="rounded-2xl border border-slate-200/80 p-3.5 dark:border-slate-800 bg-white dark:bg-[#111827]"
+                      className={`rounded-2xl border p-3.5 transition-colors ${
+                        isSelected
+                          ? "border-[#bbf246] bg-[#bbf246]/10 dark:border-[#bbf246] dark:bg-[#bbf246]/10"
+                          : "border-slate-200/80 bg-white dark:border-white/[0.08] dark:bg-[#15181d]"
+                      }`}
                     >
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-start justify-between gap-2.5">
                         <div className="flex items-center gap-2.5 min-w-0">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => toggleSelectOne(t.id)}
+                            aria-label={`Select transaction ${t.description}`}
+                            className="h-4 w-4 rounded border-slate-300 text-[#bbf246] focus:ring-[#bbf246]/30 dark:border-white/[0.12] dark:bg-[#0b0e11] cursor-pointer accent-[#bbf246] shrink-0"
+                          />
                           <span
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ring-1 ${
                               isInc
@@ -812,7 +896,7 @@ function TransactionsContent() {
                       </div>
 
                       <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-2 text-xs text-slate-500">
-                        <span className="truncate">
+                        <span className="truncate text-[11px]">
                           {acc ? `${acc.name} · ` : ""}
                           {t.paymentMethod || "UPI"}
                         </span>
@@ -1024,13 +1108,139 @@ function TransactionsContent() {
             </Field>
           </div>
 
+          {/* ── Split Transaction Section ─────────────────────────── */}
+          {!editing && (
+            <div className="sm:col-span-2">
+              {/* Toggle button */}
+              <button
+                type="button"
+                onClick={() => {
+                  const next = !splitMode;
+                  setSplitMode(next);
+                  if (next && splits.length === 0) {
+                    // Pre-populate 2 rows
+                    setSplits([
+                      { id: crypto.randomUUID(), amount: "", categoryId: "", categoryName: "", description: "" },
+                      { id: crypto.randomUUID(), amount: "", categoryId: "", categoryName: "", description: "" },
+                    ]);
+                  }
+                }}
+                className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition cursor-pointer border ${
+                  splitMode
+                    ? "bg-[#bbf246] text-[#0b0e11] border-[#bbf246] shadow-sm font-black"
+                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-[#bbf246]/10 hover:text-slate-900 hover:border-[#bbf246]/40 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-[#bbf246]/10 dark:hover:text-[#bbf246]"
+                }`}
+              >
+                <Split className="h-3.5 w-3.5" />
+                {splitMode ? "Splitting Transaction" : "Split Transaction"}
+              </button>
+
+              {/* Split rows panel */}
+              {splitMode && (
+                <div className="mt-3 rounded-2xl border border-slate-200/70 bg-slate-50/60 dark:border-slate-700/40 dark:bg-slate-800/30 p-3.5 space-y-3">
+                  {/* Header + remainder badge */}
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Split Allocation
+                    </p>
+                    <span
+                      className={`text-xs font-black px-2.5 py-0.5 rounded-full tabular-nums ${
+                        Math.abs(splitRemainder) < 0.01
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                          : splitRemainder > 0
+                          ? "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
+                          : "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400"
+                      }`}
+                    >
+                      {Math.abs(splitRemainder) < 0.01
+                        ? "✓ Balanced"
+                        : splitRemainder > 0
+                        ? `+${splitRemainder.toFixed(2)} remaining`
+                        : `${splitRemainder.toFixed(2)} over`}
+                    </span>
+                  </div>
+
+                  {/* Split rows */}
+                  <div className="space-y-2">
+                    {splits.map((s, idx) => {
+                      const splitCats = cats.filter((c) => c.type === form.type);
+                      return (
+                        <div key={s.id} className="rounded-xl bg-white dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60 p-3 flex flex-col gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#bbf246]/20 dark:bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] text-[10px] font-black flex-shrink-0">
+                              {idx + 1}
+                            </span>
+                            <div className="flex gap-2 flex-1">
+                              {/* Split amount */}
+                              <input
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                value={s.amount}
+                                onChange={(e) => updateSplitRow(s.id, "amount", e.target.value)}
+                                placeholder="Amount"
+                                className="w-24 rounded-lg border border-slate-200/90 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-900 outline-none focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                              />
+                              {/* Category */}
+                              <select
+                                value={s.categoryId}
+                                onChange={(e) => {
+                                  const c = cats.find((x) => x.id === e.target.value);
+                                  updateSplitRow(s.id, "categoryId", e.target.value);
+                                  updateSplitRow(s.id, "categoryName", c?.name || "");
+                                }}
+                                className="flex-1 min-w-0 rounded-lg border border-slate-200/90 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 outline-none focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                              >
+                                <option value="">Category</option>
+                                {splitCats.map((c) => (
+                                  <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                              </select>
+                              {/* Remove row */}
+                              {splits.length > 2 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeSplitRow(s.id)}
+                                  className="flex-shrink-0 p-1.5 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 transition cursor-pointer"
+                                >
+                                  <Minus className="h-3.5 w-3.5" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          {/* Split description */}
+                          <input
+                            type="text"
+                            value={s.description}
+                            onChange={(e) => updateSplitRow(s.id, "description", e.target.value)}
+                            placeholder="Split note (optional)"
+                            className="w-full rounded-lg border border-slate-200/90 bg-white px-2.5 py-1.5 text-xs text-slate-700 outline-none focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Add row button */}
+                  <button
+                    type="button"
+                    onClick={addSplitRow}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-900 dark:text-[#bbf246] hover:underline transition cursor-pointer"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5" /> Add another split
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Buttons */}
           <div className="flex justify-end gap-2 sm:col-span-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <Button variant="secondary" onClick={() => setModal(false)}>
+            <Button variant="secondary" onClick={() => { setModal(false); setSplitMode(false); setSplits([]); }}>
               Cancel
             </Button>
-            <Button type="submit" loading={saving}>
-              {editing ? "Save Changes" : "Add Transaction"}
+            <Button type="submit" loading={saving} disabled={splitMode && !splitsValid}>
+              {editing ? "Save Changes" : splitMode ? "Save Split Transaction" : "Add Transaction"}
             </Button>
           </div>
         </form>
@@ -1069,9 +1279,9 @@ function TransactionsContent() {
 
       {/* ── 7. Floating Glassmorphic Bulk Toolbar ─────────────────── */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 py-3 shadow-2xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/60 animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-4 sm:px-5 py-2.5 sm:py-3 shadow-2xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/60 animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-[92vw] sm:max-w-none">
           <span className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-[11px] font-black text-white">
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#bbf246] px-1 text-[11px] font-black text-[#0b0e11]">
               {selectedIds.length}
             </span>
             selected

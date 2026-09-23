@@ -37,16 +37,16 @@ export default function ProfilePage() {
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
         {/* User Identity Card */}
-        <div className="flex flex-col items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+        <div className="flex flex-col items-center justify-between rounded-3xl border border-slate-200/80 bg-white p-6 text-center shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
           <div className="flex flex-col items-center">
             {user?.avatarUrl ? (
               <img
                 src={user.avatarUrl}
                 alt={user?.name || "User"}
-                className="h-20 w-20 rounded-3xl object-cover shadow-md shadow-indigo-500/20 border-2 border-indigo-300 dark:border-indigo-700"
+                className="h-20 w-20 rounded-3xl object-cover shadow-md shadow-black/20 border-2 border-[#bbf246]"
               />
             ) : (
-              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 text-3xl font-black text-white shadow-md shadow-indigo-500/20">
+              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#bbf246] text-3xl font-black text-[#0b0e11] shadow-md shadow-black/20">
                 {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
               </div>
             )}
@@ -56,7 +56,7 @@ export default function ProfilePage() {
               <span>{user?.email}</span>
             </div>
             <div className="mt-3 flex items-center gap-2">
-              <span className="rounded-full bg-indigo-500/10 px-2.5 py-0.5 text-xs font-bold text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
+              <span className="rounded-full bg-[#bbf246]/20 px-2.5 py-0.5 text-xs font-bold text-slate-900 dark:bg-[#bbf246]/15 dark:text-[#bbf246]">
                 {currency} Currency
               </span>
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
@@ -73,7 +73,7 @@ export default function ProfilePage() {
         {/* Lifetime Stats Grid */}
         <div className="grid gap-3.5 sm:grid-cols-2 lg:col-span-2">
           {/* Lifetime Income */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lifetime Inflow</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
@@ -89,7 +89,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Lifetime Expenses */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lifetime Outflow</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400">
@@ -105,11 +105,11 @@ export default function ProfilePage() {
           </div>
 
           {/* Savings Goals */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Goals</span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400">
-                <Target className="h-4 w-4" />
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#bbf246]/20 text-slate-900 dark:bg-[#bbf246]/15 dark:text-[#bbf246] font-black">
+                <Target className="h-4 w-4 stroke-[2.5]" />
               </span>
             </div>
             <div className="mt-2.5">
@@ -121,7 +121,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Budgets */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-slate-800/80 dark:bg-[#111827]">
+          <div className="rounded-3xl border border-slate-200/80 bg-white p-4.5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Configured Budgets</span>
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400">

@@ -8,7 +8,7 @@ export function Card({ children, className = "", onClick }: { children: ReactNod
   return (
     <div
       onClick={onClick}
-      className={`rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(15,23,42,0.06)] hover:border-slate-300/90 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-slate-700/80 dark:shadow-none ${className}`}
+      className={`rounded-3xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(15,23,42,0.06)] hover:border-slate-300/90 dark:border-white/[0.08] dark:bg-[#15181d] dark:hover:border-white/[0.15] dark:shadow-none ${className}`}
     >
       {children}
     </div>
@@ -35,20 +35,20 @@ export function Button({
 }) {
   const styles: Record<string, string> = {
     primary:
-      "bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-sm shadow-indigo-600/25 font-semibold",
+      "bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] shadow-sm shadow-[#bbf246]/25 font-black rounded-full dark:text-[#0b0e11]",
     secondary:
-      "bg-slate-100 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700 font-semibold",
-    ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 font-medium",
-    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 font-semibold",
+      "bg-slate-100 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 dark:border-white/[0.08] dark:bg-[#1b1f26] dark:text-slate-100 dark:hover:bg-[#222730] font-bold rounded-full",
+    ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 font-medium rounded-full",
+    danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 font-bold rounded-full",
     outline:
-      "border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/40 dark:text-slate-200 dark:hover:bg-slate-800/80 font-medium",
+      "border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs dark:border-white/[0.08] dark:bg-[#15181d] dark:text-slate-200 dark:hover:bg-[#1e2229] font-bold rounded-full",
   };
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all duration-150 active:scale-[0.98] hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 cursor-pointer ${styles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm transition-all duration-150 active:scale-[0.98] hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 cursor-pointer ${styles[variant]} ${className}`}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
@@ -68,7 +68,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-200/90 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 hover:bg-white focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/80 dark:bg-slate-900/80 dark:text-slate-100 dark:hover:bg-slate-900 dark:focus:bg-slate-900 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/30";
+  "w-full rounded-2xl border border-slate-200/90 bg-slate-50/80 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors duration-150 hover:bg-white focus:bg-white focus:border-[#bbf246] focus:ring-2 focus:ring-[#bbf246]/20 dark:border-white/[0.08] dark:bg-[#1a1e24] dark:text-slate-100 dark:hover:bg-[#1a1e24] dark:focus:bg-[#1a1e24] dark:focus:border-[#bbf246] dark:focus:ring-[#bbf246]/30";
 
 // ---------- Modal ----------
 export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean }) {
@@ -79,11 +79,13 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
   }, [open, onClose]);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-md sm:items-center sm:p-6" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`animate-fade-up w-full ${wide ? "max-w-2xl" : "max-w-lg"} max-h-[92vh] overflow-y-auto rounded-t-3xl border border-slate-200/80 bg-white p-6 shadow-2xl sm:rounded-3xl dark:border-slate-800 dark:bg-[#0f172a]`}
+        className={`animate-fade-up w-full ${wide ? "max-w-2xl" : "max-w-lg"} max-h-[92vh] overflow-y-auto rounded-t-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xl sm:rounded-3xl dark:border-white/[0.08] dark:bg-[#15181d]`}
       >
+        {/* Mobile Sheet Drag Handle */}
+        <div className="mx-auto -mt-1.5 mb-3.5 h-1.5 w-12 rounded-full bg-slate-300/80 dark:bg-slate-700/80 sm:hidden" />
         <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800/80">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white">{title}</h3>
           <button onClick={onClose} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition">
@@ -131,7 +133,7 @@ export function ConfirmDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md animate-in fade-in zoom-in-95 duration-150 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-[#0f172a]"
+        className="w-full max-w-md animate-in fade-in zoom-in-95 duration-150 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-white/[0.08] dark:bg-[#15181d]"
       >
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 ring-1 ring-rose-500/25">
@@ -185,8 +187,8 @@ export function Badge({ children, tone = "slate" }: { children: ReactNode; tone?
     green: "bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50",
     red: "bg-rose-50 text-rose-700 border border-rose-200/80 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50",
     amber: "bg-amber-50 text-amber-800 border border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50",
-    indigo: "bg-indigo-50 text-indigo-700 border border-indigo-200/80 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/50",
-    blue: "bg-sky-50 text-sky-700 border border-sky-200/80 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800/50",
+    indigo: "bg-[#bbf246]/15 text-slate-900 border border-[#bbf246]/30 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-[#bbf246]/30",
+    blue: "bg-slate-100 text-slate-800 border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700",
   };
   return <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${map[tone]}`}>{children}</span>;
 }
@@ -206,15 +208,15 @@ export function EmptyState({
   badge?: string;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-300/80 bg-gradient-to-b from-white to-slate-50/50 px-6 py-14 text-center transition-colors dark:border-slate-800 dark:from-slate-900/60 dark:to-slate-950/60 shadow-xs">
+    <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-300/80 bg-gradient-to-b from-white to-slate-50/50 px-6 py-14 text-center transition-colors dark:border-white/[0.08] dark:bg-[#111419] dark:from-[#111419] dark:to-[#0b0e11] shadow-xs">
       {badge && (
-        <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50/80 px-3 py-1 text-xs font-semibold text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300">
+        <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-[#bbf246]/30 dark:bg-[#bbf246]/10 dark:text-[#bbf246]">
           {badge}
         </div>
       )}
       <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center">
-        <div className="absolute inset-0 animate-pulse rounded-2xl bg-indigo-500/15 blur-lg dark:bg-indigo-500/25" />
-        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-violet-50 text-indigo-600 shadow-md shadow-indigo-500/10 dark:border-indigo-500/20 dark:bg-slate-800 dark:text-indigo-400">
+        <div className="absolute inset-0 animate-pulse rounded-2xl bg-[#bbf246]/10 blur-xl dark:bg-[#bbf246]/15" />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-800 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] dark:text-[#bbf246]">
           {icon}
         </div>
       </div>
@@ -266,7 +268,7 @@ export function ToastHost() {
           ) : t.kind === "error" ? (
             <AlertCircle className="h-4 w-4 text-rose-400 shrink-0" />
           ) : (
-            <Info className="h-4 w-4 text-indigo-400 shrink-0" />
+            <Info className="h-4 w-4 text-[#bbf246] shrink-0 stroke-[2.5]" />
           )}
           <span className="flex-1">{t.message}</span>
         </div>
