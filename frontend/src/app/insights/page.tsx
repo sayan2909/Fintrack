@@ -151,6 +151,10 @@ export default function InsightsPage() {
   );
 
   // Recommended Next Steps (3 balanced horizontal tiles)
+  const isNewProfile =
+    (metrics?.monthlyExpense === 0 && metrics?.monthlyIncome === 0) ||
+    insights.some((i) => i.id === "no-data-notice");
+
   const nextSteps = useMemo(() => {
     const steps: { id: string; title: string; desc: string; actionUrl: string; actionText: string; tag: string }[] = [];
 
@@ -162,6 +166,15 @@ export default function InsightsPage() {
         actionUrl: "/budgets",
         actionText: "Set Budget",
         tag: "Budget Cap",
+      });
+    } else {
+      steps.push({
+        id: "set-budget",
+        title: "Establish monthly budgets",
+        desc: "Create category-wise budget caps to keep discretionary lifestyle expenses under control.",
+        actionUrl: "/budgets",
+        actionText: "Set Budgets",
+        tag: "Budget Planning",
       });
     }
 
@@ -265,21 +278,21 @@ export default function InsightsPage() {
                       r="40"
                       strokeWidth="8"
                       strokeDasharray={251}
-                      strokeDashoffset={251 - (251 * Math.min(100, Math.max(0, score))) / 100}
+                      strokeDashoffset={251 - (251 * Math.min(100, Math.max(0, isNewProfile ? 100 : score))) / 100}
                       strokeLinecap="round"
                       className={`transition-all duration-1000 ease-out ${
-                        score >= 75
+                        isNewProfile || score >= 60
                           ? "stroke-[#bbf246]"
-                          : score >= 55
-                          ? "stroke-[#bbf246]"
-                          : "stroke-amber-500"
+                          : score >= 45
+                          ? "stroke-amber-500"
+                          : "stroke-rose-500"
                       }`}
                       fill="transparent"
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                     <span className="text-xl font-black text-slate-900 tabular-nums dark:text-white">
-                      {score}
+                      {isNewProfile ? "100" : score}
                     </span>
                     <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
                       / 100
@@ -294,20 +307,24 @@ export default function InsightsPage() {
                     </h2>
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                        score >= 75
+                        isNewProfile
+                          ? "bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30"
+                          : score >= 75
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-0"
                           : score >= 55
-                          ? "bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-0"
+                          ? "bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30"
                           : "bg-amber-50 text-amber-700 border border-amber-200/70 dark:bg-amber-500/15 dark:text-amber-400 dark:border-0"
                       }`}
                     >
                       <Zap className="h-3 w-3" />
-                      Grade {gradeLetter} • {grade}
+                      {isNewProfile ? "New Profile • Ready to Track" : `Grade ${gradeLetter} • ${grade}`}
                     </span>
                   </div>
 
                   <p className="mt-1 max-w-xl text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {score >= 75
+                    {isNewProfile
+                      ? "Welcome to FinTrack Insights! Start logging your daily income and expenses to unlock real-time cashflow analytics, category spending trends, and personalized health scores."
+                      : score >= 75
                       ? "Outstanding balance discipline. Your savings momentum is healthy and expenses are well aligned with your core targets."
                       : score >= 55
                       ? "Healthy baseline with steady cashflow discipline. Moderating top discretionary categories will lift your rating into Optimal."
@@ -319,7 +336,7 @@ export default function InsightsPage() {
               {/* Monthly Score Boost Simulator */}
               <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <Sliders className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <Sliders className="h-3.5 w-3.5 text-[#86bf12] dark:text-[#bbf246]" />
                   Simulate Monthly Savings Boost:
                 </span>
                 <div className="flex items-center gap-1.5">
@@ -334,14 +351,14 @@ export default function InsightsPage() {
                       className={`rounded-xl px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
                         simulationBoost === btn.val
                           ? "bg-slate-900 text-white dark:bg-[#bbf246] dark:text-[#0b0e11] font-black shadow-xs"
-                          : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#0b0e11] dark:text-slate-300"
+                          : "border border-slate-200/80 bg-slate-50 text-slate-700 hover:border-slate-300 dark:border-white/[0.08] dark:bg-[#1b1f26] dark:text-slate-300"
                       }`}
                     >
                       {btn.label}
                     </button>
                   ))}
                   {simulationBoost > 0 && (
-                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums ml-1">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-[#bbf246] tabular-nums ml-1">
                       → {simulatedScore} pts (+{simulatedScore - score})
                     </span>
                   )}
@@ -349,18 +366,18 @@ export default function InsightsPage() {
               </div>
             </div>
 
-            {/* Bottom row: 3 Equal Horizontal Metric Pods (NO awkward wrap!) */}
-            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+            {/* Bottom row: 3 Equal Horizontal Metric Pods */}
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 dark:border-white/[0.06]">
               {/* Pod 1: Net Cashflow */}
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/70 dark:bg-slate-900/40">
+              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Net Cashflow</span>
-                  <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-[#bbf246]" />
                 </div>
                 <p
                   className={`mt-1 text-base font-black tabular-nums ${
                     (metrics?.netCashflow ?? 0) >= 0
-                      ? "text-emerald-600 dark:text-emerald-400"
+                      ? "text-emerald-600 dark:text-[#bbf246]"
                       : "text-rose-600 dark:text-rose-400"
                   }`}
                 >
@@ -370,36 +387,36 @@ export default function InsightsPage() {
               </div>
 
               {/* Pod 2: Savings Velocity */}
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/70 dark:bg-slate-900/40">
+              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Savings Rate</span>
-                  <Target className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <Target className="h-3.5 w-3.5 text-[#86bf12] dark:text-[#bbf246]" />
                 </div>
                 <div className="mt-1 flex items-baseline justify-between">
-                  <p className="text-base font-black text-indigo-600 dark:text-indigo-400 tabular-nums">
+                  <p className="text-base font-black text-slate-900 dark:text-white tabular-nums">
                     {metrics?.savingsRate ?? 0}%
                   </p>
                   <span className="text-[10px] font-semibold text-slate-400">Target: 20%</span>
                 </div>
-                <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-slate-800">
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200/70 dark:bg-white/[0.08]">
                   <div
-                    className="h-full rounded-full bg-indigo-500 transition-all duration-500"
+                    className="h-full rounded-full bg-[#bbf246] transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(4, ((metrics?.savingsRate ?? 0) / 20) * 100))}%` }}
                   />
                 </div>
               </div>
 
               {/* Pod 3: Top Expense Driver */}
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800/70 dark:bg-slate-900/40">
+              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]/60">
                 <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
                   <span>Top Expense Category</span>
-                  <Crown className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                  <Crown className="h-3.5 w-3.5 text-amber-500 dark:text-[#bbf246]" />
                 </div>
                 <p className="mt-1 text-base font-black text-slate-900 dark:text-white truncate">
-                  {metrics?.topCategory?.name || "General"}
+                  {metrics?.topCategory ? metrics.topCategory.name : "No Expenses Yet"}
                 </p>
-                <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 tabular-nums">
-                  {metrics?.topCategory?.share || 0}% of period spend
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 tabular-nums">
+                  {metrics?.topCategory ? `${metrics.topCategory.share}% of period spend` : "Log spend to track"}
                 </span>
               </div>
             </div>
@@ -409,7 +426,7 @@ export default function InsightsPage() {
           <div>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                <Zap className="h-4 w-4 text-[#86bf12] dark:text-[#bbf246]" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                   Suggested Action Plan
                 </h3>
@@ -423,11 +440,11 @@ export default function InsightsPage() {
               {nextSteps.map((step) => (
                 <div
                   key={step.id}
-                  className="rounded-2xl border border-slate-200/90 bg-white p-4.5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between transition hover:shadow-md"
+                  className="rounded-2xl border border-slate-200/90 bg-white p-4.5 shadow-2xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between transition hover:border-[#bbf246]/40"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-1.5">
-                      <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400">
+                      <span className="rounded-full bg-[#bbf246]/15 px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-[#699c04] dark:text-[#bbf246]">
                         {step.tag}
                       </span>
                     </div>
@@ -439,10 +456,10 @@ export default function InsightsPage() {
                     </p>
                   </div>
 
-                  <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-end">
+                  <div className="mt-3.5 pt-2.5 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-end">
                     <Link
                       href={step.actionUrl}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-[#699c04] hover:text-[#86bf12] dark:text-[#bbf246] dark:hover:text-[#d4ff70] transition"
                     >
                       <span>{step.actionText}</span>
                       <ArrowRight className="h-3 w-3" />
@@ -453,73 +470,84 @@ export default function InsightsPage() {
             </div>
           </div>
 
-          {/* Section 3: AI Observations Grid with Filter Tabs */}
+          {/* Section 3: AI Observations Grid with Segmented Filter Pills */}
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                <Sparkles className="h-4 w-4 text-[#86bf12] dark:text-[#bbf246]" />
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                   Active Observations
                 </h3>
               </div>
 
-              {/* Segmented Filter Pills */}
-              <div className="flex items-center gap-1.5">
+              {/* Segmented Filter Pills - Unified Track */}
+              <div className="flex items-center gap-1 rounded-2xl border border-slate-200/80 bg-slate-100/80 p-1 dark:border-white/[0.08] dark:bg-[#15181d]">
                 <button
+                  type="button"
                   onClick={() => setFilter("all")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "all"
-                      ? "bg-white text-slate-900 shadow-2xs border border-slate-200/90 dark:border-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
+                      ? "bg-white text-slate-900 shadow-2xs dark:bg-[#bbf246] dark:text-[#0b0e11] font-black"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   <span>All</span>
-                  <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-1.5 py-0.2 text-[10px]">
+                  <span
+                    className={`rounded-full px-1.5 py-0.5 text-[10px] font-black transition-colors ${
+                      filter === "all"
+                        ? "bg-slate-200 text-slate-800 dark:bg-black/20 dark:text-[#0b0e11]"
+                        : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                    }`}
+                  >
                     {counts.all}
                   </span>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setFilter("attention")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "attention"
-                      ? "bg-white text-rose-600 shadow-2xs border border-slate-200/90 dark:border-slate-700 dark:bg-[#111827] dark:text-rose-400"
+                      ? "bg-white text-rose-600 shadow-2xs dark:bg-rose-500/20 dark:text-rose-400 font-black border border-rose-200/50 dark:border-rose-500/30"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   <span>Needs Attention</span>
                   {counts.attention > 0 && (
-                    <span className="rounded-full bg-rose-50 text-rose-700 px-1.5 py-0.2 text-[10px] dark:bg-rose-500/20 dark:text-rose-400 font-bold">
+                    <span className="rounded-full bg-rose-50 text-rose-700 px-1.5 py-0.5 text-[10px] dark:bg-rose-500/30 dark:text-rose-300 font-black">
                       {counts.attention}
                     </span>
                   )}
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setFilter("growth")}
                   className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition cursor-pointer ${
                     filter === "growth"
-                      ? "bg-white text-emerald-600 shadow-2xs border border-slate-200/90 dark:border-slate-700 dark:bg-[#111827] dark:text-emerald-400"
+                      ? "bg-white text-emerald-600 shadow-2xs dark:bg-[#bbf246]/20 dark:text-[#bbf246] font-black border border-emerald-200/50 dark:border-[#bbf246]/30"
                       : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                   }`}
                 >
                   <span>Wins & Growth</span>
-                  <span className="rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.2 text-[10px] dark:bg-emerald-500/20 dark:text-emerald-400 font-bold">
-                    {counts.growth}
-                  </span>
+                  {counts.growth > 0 && (
+                    <span className="rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[10px] dark:bg-[#bbf246]/30 dark:text-[#bbf246] font-black">
+                      {counts.growth}
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
 
-            {/* Proportional 2-Column Grid of Insight Cards */}
+            {/* Proportional Grid of Insight Cards */}
             {filteredInsights.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300/80 bg-white p-12 text-center dark:border-slate-800 dark:bg-[#111827]">
-                <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-500" />
+              <div className="rounded-3xl border border-dashed border-slate-300/80 bg-white p-12 text-center dark:border-white/[0.08] dark:bg-[#15181d]">
+                <CheckCircle2 className="mx-auto h-8 w-8 text-[#86bf12] dark:text-[#bbf246]" />
                 <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white">
                   No matching observations
                 </h3>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                  Switch to "All" to view all active algorithmic insights.
+                  Switch to &quot;All&quot; to view all active algorithmic insights.
                 </p>
               </div>
             ) : (
@@ -536,16 +564,16 @@ export default function InsightsPage() {
                     : isWarning
                     ? "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400"
                     : isPositive
-                    ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400"
-                    : "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400";
+                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#bbf246]/15 dark:text-[#bbf246]"
+                    : "bg-slate-100 text-slate-700 dark:bg-white/[0.08] dark:text-slate-200";
 
                   const tagStyle = isDanger
                     ? "bg-rose-50 text-rose-700 border border-rose-200/70 dark:border-0 dark:bg-rose-500/15 dark:text-rose-400"
                     : isWarning
                     ? "bg-amber-50 text-amber-700 border border-amber-200/70 dark:border-0 dark:bg-amber-500/15 dark:text-amber-400"
                     : isPositive
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:border-0 dark:bg-emerald-500/15 dark:text-emerald-400"
-                    : "bg-indigo-50 text-indigo-700 border border-indigo-200/70 dark:border-0 dark:bg-indigo-500/15 dark:text-indigo-400";
+                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200/70 dark:border-0 dark:bg-[#bbf246]/15 dark:text-[#bbf246]"
+                    : "bg-slate-100 text-slate-700 border border-slate-200 dark:border-0 dark:bg-white/[0.08] dark:text-slate-300";
 
                   const tagLabel = isDanger
                     ? "Critical Alert"
@@ -555,10 +583,14 @@ export default function InsightsPage() {
                     ? "Goal Milestone"
                     : "Advisory Tip";
 
+                  const isSingleNotice = ins.id === "no-data-notice" || filteredInsights.length === 1;
+
                   return (
                     <div
                       key={ins.id}
-                      className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between"
+                      className={`rounded-3xl border border-slate-200/90 bg-white p-5 shadow-2xs transition hover:border-[#bbf246]/40 dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between ${
+                        isSingleNotice ? "md:col-span-2" : ""
+                      }`}
                     >
                       <div>
                         {/* Header: Icon + Category + Badge */}
@@ -582,20 +614,27 @@ export default function InsightsPage() {
                           {ins.title}
                         </h3>
 
-                        <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        <p className="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
                           {ins.message}
                         </p>
                       </div>
 
                       {/* Footer CTA */}
-                      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-end">
-                        <Link
-                          href={ins.actionUrl || "/analytics"}
-                          className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition"
-                        >
-                          <span>{ins.actionText || "View Module"}</span>
-                          <ArrowUpRight className="h-3.5 w-3.5" />
-                        </Link>
+                      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
+                        {isSingleNotice && (
+                          <span className="text-[11px] text-slate-400">
+                            Automated ML diagnostics will activate as soon as your first transaction is logged.
+                          </span>
+                        )}
+                        <div className="flex items-center gap-2 ml-auto">
+                          <Link
+                            href={ins.actionUrl || "/transactions"}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#699c04] hover:text-[#86bf12] dark:text-[#bbf246] dark:hover:text-[#d4ff70] transition"
+                          >
+                            <span>{ins.actionText || "Add Transaction"}</span>
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   );

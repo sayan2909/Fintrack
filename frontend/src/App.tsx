@@ -22,6 +22,8 @@ import LoginPage from "./app/login/page";
 import RegisterPage from "./app/register/page";
 import ForgotPasswordPage from "./app/forgot-password/page";
 import ResetPasswordPage from "./app/reset-password/page";
+import PrivacyPolicyPage from "./app/privacy/page";
+import TermsOfServicePage from "./app/terms/page";
 
 export default function App() {
   return (
@@ -53,6 +55,8 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

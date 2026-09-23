@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import Link from "next/link";
 import {
   User,
   Bell,
@@ -30,6 +31,7 @@ import {
   Sun,
   Moon,
   ChevronRight,
+  FileSpreadsheet,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Card, Button, Field, inputCls, toast, Modal } from "@/components/ui";
@@ -239,6 +241,89 @@ export default function SettingsPage() {
       toast(err instanceof Error ? err.message : "Error downloading data backup", "error");
     } finally {
       setExportingBackup(false);
+    }
+  };
+
+  // Import / Restore Backup Archive
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importParsed, setImportParsed] = useState<{
+    version?: string;
+    app?: string;
+    exportedAt?: string;
+    counts: {
+      accounts: number;
+      categories: number;
+      transactions: number;
+    };
+    rawPayload: any;
+  } | null>(null);
+  const [importing, setImporting] = useState(false);
+  const importFileRef = useRef<HTMLInputElement>(null);
+
+  const handleSelectImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith(".json")) {
+      toast("Please select a valid FinTrack JSON backup file", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const text = event.target?.result as string;
+        const parsed = JSON.parse(text);
+        const data = parsed.data || parsed;
+        const accountsCount = Array.isArray(data.accounts) ? data.accounts.length : 0;
+        const categoriesCount = Array.isArray(data.categories) ? data.categories.length : 0;
+        const txCount = Array.isArray(data.transactions) ? data.transactions.length : 0;
+
+        if (accountsCount === 0 && categoriesCount === 0 && txCount === 0) {
+          toast("Selected JSON archive contains no financial records", "error");
+          return;
+        }
+
+        setImportParsed({
+          version: parsed.version || "2.0.0",
+          app: parsed.app || "FinTrack",
+          exportedAt: parsed.exportedAt || new Date().toISOString(),
+          counts: {
+            accounts: accountsCount,
+            categories: categoriesCount,
+            transactions: txCount,
+          },
+          rawPayload: parsed,
+        });
+        setImportModalOpen(true);
+      } catch {
+        toast("Failed to parse JSON backup file. Ensure it is a valid backup.", "error");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const executeImport = async () => {
+    if (!importParsed?.rawPayload) return;
+    try {
+      setImporting(true);
+      const res = await fetch("/api/auth/import-data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(importParsed.rawPayload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message || "Failed to restore backup");
+
+      toast(`Backup restored! Imported ${json.data?.imported?.transactions || 0} transactions and ${json.data?.imported?.categories || 0} categories. 🎉`);
+      setImportModalOpen(false);
+      setImportParsed(null);
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Error restoring data", "error");
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -1114,15 +1199,140 @@ export default function SettingsPage() {
       {/* TAB 4: Account & Data Controls */}
       {activeTab === "data" && (
         <div className="mt-4 space-y-4 animate-fade-up">
-          {/* Account Session & Sign Out */}
-          <Card>
+          {/* Account Overview Card */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {profile.avatarUrl ? (
+                  <img
+                    src={profile.avatarUrl}
+                    alt={profile.name}
+                    className="h-13 w-13 rounded-2xl object-cover border-2 border-[#bbf246]/30 shadow-xs"
+                  />
+                ) : (
+                  <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-[#0b0e11] text-[#bbf246] dark:bg-[#bbf246] dark:text-[#0b0e11] text-lg font-black shadow-xs">
+                    {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white truncate">
+                      {profile.name || "FinTrack User"}
+                    </h2>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#bbf246]/15 px-2.5 py-0.5 text-[11px] font-black text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#bbf246]" />
+                      FinTrack Pro
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                    {profile.email}
+                  </p>
+                </div>
+              </div>
+
+              <Button
+                variant="outline"
+                onClick={() => handleTabChange("general")}
+                className="shrink-0 text-xs h-9 px-3.5 font-semibold text-slate-700 dark:text-slate-200 cursor-pointer"
+              >
+                Edit Profile Preferences →
+              </Button>
+            </div>
+          </div>
+
+          {/* Financial Data Portability (Export & Import) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Card 1: Export Data Backup */}
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30 font-black">
+                    <Download className="h-5 w-5 stroke-[2.5]" />
+                  </div>
+                  <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    JSON Archive
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Export Financial Backup
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Download a complete offline copy of your transactions, accounts, categories, budgets, and savings goals.
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleExportBackup}
+                  loading={exportingBackup}
+                  className="flex-1 text-xs h-9 font-bold cursor-pointer justify-center"
+                >
+                  <Download className="h-3.5 w-3.5 mr-1.5" /> Download Backup
+                </Button>
+                <Link
+                  href="/reports"
+                  className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.04] transition"
+                >
+                  <FileSpreadsheet className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>CSV Reports →</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Card 2: Restore / Import Backup */}
+            <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 font-black">
+                    <Upload className="h-5 w-5 stroke-[2.5]" />
+                  </div>
+                  <span className="rounded-full bg-cyan-500/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                    Data Restore
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Restore & Import Backup
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Upload a previously saved FinTrack backup file to restore or merge your financial records into your account.
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06]">
+                <input
+                  ref={importFileRef}
+                  type="file"
+                  accept=".json,application/json"
+                  className="hidden"
+                  onChange={handleSelectImportFile}
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => importFileRef.current?.click()}
+                  className="w-full text-xs h-9 font-bold cursor-pointer justify-center border-cyan-500/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/10"
+                >
+                  <Upload className="h-3.5 w-3.5 mr-1.5" /> Upload Backup File (.json)
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Session & Sign Out */}
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-white/[0.08] dark:bg-[#15181d]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3.5">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300">
                   <LogOut className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">Sign Out of FinTrack</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Sign Out of FinTrack</h3>
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      Active Session
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Terminate your active authenticated session on this browser device.
                   </p>
@@ -1131,46 +1341,15 @@ export default function SettingsPage() {
               <Button
                 variant="outline"
                 onClick={logout}
-                className="shrink-0 text-xs h-9 px-4 font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white cursor-pointer"
+                className="shrink-0 text-xs h-9 px-4 font-bold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white border-slate-200 dark:border-white/[0.08] cursor-pointer"
               >
                 <LogOut className="h-3.5 w-3.5 mr-1.5" /> Log Out
               </Button>
             </div>
-          </Card>
+          </div>
 
-          {/* Financial Data Backup & Portability Card */}
-          <Card>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-3.5">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#bbf246]/20 text-[#0b0e11] border border-[#bbf246]/40 dark:bg-[#bbf246]/15 dark:text-[#bbf246] dark:border-0 font-black">
-                  <Download className="h-5 w-5 stroke-[2.5]" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Export Financial Data Backup</h3>
-                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                      JSON Archive
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
-                    Download a complete offline backup archive of your accounts, transactions, custom categories, monthly budgets, and savings goals.
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                onClick={handleExportBackup}
-                loading={exportingBackup}
-                className="shrink-0 text-xs h-9 px-4 font-bold cursor-pointer"
-              >
-                <Download className="h-3.5 w-3.5 mr-1.5" /> Download Backup
-              </Button>
-            </div>
-          </Card>
-
-          {/* Danger Zone: Unified Enterprise Action Panel */}
-          <div className="rounded-2xl border border-rose-200/80 bg-white dark:border-rose-950/60 dark:bg-[#111827] shadow-xs overflow-hidden">
-            {/* Danger Zone Header */}
+          {/* Danger Zone */}
+          <div className="rounded-2xl border border-rose-200/80 bg-white dark:border-rose-950/60 dark:bg-[#15181d] shadow-xs overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 sm:p-5 border-b border-rose-100 dark:border-rose-950/50 bg-rose-50/40 dark:bg-rose-950/20">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 ring-1 ring-rose-500/25">
@@ -1192,10 +1371,9 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            {/* Actions List */}
-            <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <div className="divide-y divide-slate-100 dark:divide-white/[0.04]">
               {/* Action 1: Reset Financial Data */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition">
                 <div className="flex items-start gap-3.5 min-w-0">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20 mt-0.5 sm:mt-0">
                     <RefreshCw className="h-4.5 w-4.5" />
@@ -1323,6 +1501,66 @@ export default function SettingsPage() {
               disabled={!deletePassword}
             >
               Permanently Delete Account
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Import / Restore Backup Modal */}
+      <Modal open={importModalOpen} onClose={() => setImportModalOpen(false)} title="Restore Financial Archive">
+        <div className="space-y-4">
+          <div className="flex items-start gap-3 rounded-xl bg-cyan-500/10 p-3.5 text-xs text-cyan-800 dark:text-cyan-300 border border-cyan-500/20">
+            <Upload className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-400" />
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-white">
+                Valid FinTrack archive detected ({importParsed?.app} v{importParsed?.version})
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Exported: {formatLastActive(importParsed?.exportedAt)}
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.08] p-3.5 space-y-2">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              Discovered Records in File
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.04]">
+                <div className="text-base font-black text-slate-900 dark:text-white">
+                  {importParsed?.counts.transactions ?? 0}
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">Transactions</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.04]">
+                <div className="text-base font-black text-slate-900 dark:text-white">
+                  {importParsed?.counts.categories ?? 0}
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">Categories</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-white/[0.03] border border-slate-100 dark:border-white/[0.04]">
+                <div className="text-base font-black text-slate-900 dark:text-white">
+                  {importParsed?.counts.accounts ?? 0}
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">Accounts</div>
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1">
+              Existing categories and transactions will not be overwritten. New records will be safely inserted into your active workspace.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <Button variant="secondary" onClick={() => setImportModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={executeImport}
+              loading={importing}
+              className="bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] font-bold"
+            >
+              Restore & Ingest Data
             </Button>
           </div>
         </div>

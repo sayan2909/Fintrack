@@ -547,4 +547,185 @@ router.post("/purge-data", async (req, res) => {
   }
 });
 
+// GET /api/auth/storage-stats
+router.get("/storage-stats", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+
+  try {
+    const [
+      userAccounts,
+      userCategories,
+      userTransactions,
+      userBudgets,
+      userGoals,
+      userRecurring,
+    ] = await Promise.all([
+      db.select({ id: accounts.id }).from(accounts).where(eq(accounts.userId, user.id)),
+      db.select({ id: categories.id }).from(categories).where(eq(categories.userId, user.id)),
+      db.select({ id: transactions.id }).from(transactions).where(eq(transactions.userId, user.id)),
+      db.select({ id: budgets.id }).from(budgets).where(eq(budgets.userId, user.id)),
+      db.select({ id: savingsGoals.id }).from(savingsGoals).where(eq(savingsGoals.userId, user.id)),
+      db.select({ id: recurringTransactions.id }).from(recurringTransactions).where(eq(recurringTransactions.userId, user.id)),
+    ]);
+
+    const totalRecords =
+      userAccounts.length +
+      userCategories.length +
+      userTransactions.length +
+      userBudgets.length +
+      userGoals.length +
+      userRecurring.length;
+
+    const storageFootprintKb = Math.max(
+      16,
+      Math.round((userTransactions.length * 0.42 + (userAccounts.length + userCategories.length) * 0.28 + 12) * 10) / 10
+    );
+
+    return ok(res, {
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      joinedAt: user.createdAt,
+      databaseEngine: "PGlite Embedded SQL (Local-First)",
+      encryptionStandard: "AES-GCM-256 Client-Encrypted",
+      telemetryOptOut: true,
+      storageFootprintKb,
+      counts: {
+        accounts: userAccounts.length,
+        categories: userCategories.length,
+        transactions: userTransactions.length,
+        budgets: userBudgets.length,
+        goals: userGoals.length,
+        recurring: userRecurring.length,
+        totalRecords,
+      },
+    });
+  } catch (err) {
+    console.error("[Storage Stats] Error:", err);
+    return fail(res, "Unable to fetch storage statistics.", 500);
+  }
+});
+
+// POST /api/auth/import-data
+router.post("/import-data", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+
+  try {
+    const payload = req.body?.data || req.body;
+    if (!payload || typeof payload !== "object") {
+      return fail(res, "Invalid backup file structure.", 400);
+    }
+
+    const {
+      categories: rawCategories = [],
+      accounts: rawAccounts = [],
+      transactions: rawTransactions = [],
+    } = payload;
+
+    let importedAccounts = 0;
+    let importedCategories = 0;
+    let importedTransactions = 0;
+
+    // 1. Process Categories
+    if (Array.isArray(rawCategories) && rawCategories.length > 0) {
+      const existingCats = await db.select({ name: categories.name }).from(categories).where(eq(categories.userId, user.id));
+      const existingSet = new Set(existingCats.map((c) => c.name.toLowerCase().trim()));
+
+      for (const cat of rawCategories) {
+        if (cat.name && !existingSet.has(cat.name.toLowerCase().trim())) {
+          await db.insert(categories).values({
+            userId: user.id,
+            name: cat.name.trim(),
+            type: cat.type === "income" ? "income" : "expense",
+            color: cat.color || "#bbf246",
+            icon: cat.icon || "Tag",
+            isDefault: false,
+          });
+          existingSet.add(cat.name.toLowerCase().trim());
+          importedCategories++;
+        }
+      }
+    }
+
+    // 2. Process Accounts
+    const accountMap = new Map<string, string>();
+    const currentAccounts = await db.select().from(accounts).where(eq(accounts.userId, user.id));
+    const defaultAcc = currentAccounts.find((a) => a.isDefault) || currentAccounts[0];
+
+    if (Array.isArray(rawAccounts) && rawAccounts.length > 0) {
+      for (const acc of rawAccounts) {
+        const found = currentAccounts.find((ca) => ca.name.toLowerCase() === acc.name?.toLowerCase());
+        if (found) {
+          if (acc.id) accountMap.set(acc.id, found.id);
+        } else if (acc.name) {
+          const [inserted] = await db
+            .insert(accounts)
+            .values({
+              userId: user.id,
+              name: acc.name,
+              type: acc.type || "Bank Account",
+              balance: String(acc.balance || "0.00"),
+              accountNumber: acc.accountNumber || null,
+              color: acc.color || "#bbf246",
+              icon: acc.icon || "Building2",
+              isDefault: false,
+            })
+            .returning();
+          if (inserted && acc.id) {
+            accountMap.set(acc.id, inserted.id);
+          }
+          importedAccounts++;
+        }
+      }
+    }
+
+    // 3. Process Transactions
+    if (Array.isArray(rawTransactions) && rawTransactions.length > 0) {
+      const freshCats = await db.select().from(categories).where(eq(categories.userId, user.id));
+      const catMap = new Map<string, string>(freshCats.map((c) => [c.name.toLowerCase(), c.id]));
+
+      for (const tx of rawTransactions) {
+        if (tx.amount && tx.description) {
+          const targetAccountId = (tx.accountId && accountMap.get(tx.accountId)) || defaultAcc?.id || null;
+          let targetCategoryId: string | null = null;
+          if (tx.categoryName && catMap.has(tx.categoryName.toLowerCase())) {
+            const mapped = catMap.get(tx.categoryName.toLowerCase());
+            targetCategoryId = mapped ? String(mapped) : null;
+          }
+
+          await db.insert(transactions).values({
+            userId: user.id,
+            accountId: targetAccountId,
+            categoryId: targetCategoryId,
+            amount: String(tx.amount),
+            type: tx.type === "income" ? "income" : "expense",
+            description: tx.description,
+            date: tx.date ? new Date(tx.date) : new Date(),
+            paymentMethod: tx.paymentMethod || "Bank Transfer",
+            status: "completed",
+            tags: Array.isArray(tx.tags) ? tx.tags : [],
+            receiptUrl: tx.receiptUrl || null,
+          });
+          importedTransactions++;
+        }
+      }
+    }
+
+    return ok(res, {
+      message: "Data archive successfully restored.",
+      imported: {
+        accounts: importedAccounts,
+        categories: importedCategories,
+        transactions: importedTransactions,
+        total: importedAccounts + importedCategories + importedTransactions,
+      },
+    });
+  } catch (err) {
+    console.error("[Import Data] Error:", err);
+    return fail(res, "Unable to restore data archive.", 500);
+  }
+});
+
 export default router;

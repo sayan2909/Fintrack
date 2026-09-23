@@ -343,14 +343,14 @@ export default function DashboardPage() {
         })()}
 
         {/* ── Row 1: Balance Hero Card & My Cards / Accounts (Unified Theme) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Balance Hero Card */}
-          <div className="lg:col-span-7 rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+          {/* Balance Hero Card - Compact & Balanced (50% on desktop) */}
+          <div className="lg:col-span-6 rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Balance</p>
+                <p className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Balance</p>
                 <span
-                  className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                  className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full ${
                     data.cards.balance.value >= 0
                       ? "bg-[#bbf246]/15 text-[#0b0e11] dark:text-[#bbf246] border border-[#bbf246]/30"
                       : "bg-rose-500/15 text-rose-400 border border-rose-500/30"
@@ -359,71 +359,73 @@ export default function DashboardPage() {
                   {data.cards.balance.value >= 0 ? "Surplus" : "Deficit"}
                 </span>
               </div>
-              <h1 className="mt-2 text-3xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white tabular-nums">
+              <h1 className="mt-1 text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white tabular-nums">
                 {formatCurrency(data.cards.balance.value, currency)}
               </h1>
 
-              {/* "Well done!" Card matching Figma Mockup */}
-              <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 dark:border-white/[0.06] dark:bg-[#1b1f26]">
+              {/* Compact Savings Rate Banner */}
+              <div className="mt-2.5 flex items-center justify-between rounded-xl border border-slate-200/80 bg-slate-50/70 px-3 py-2 dark:border-white/[0.06] dark:bg-[#1b1f26]">
                 <div className="min-w-0 pr-2">
-                  <p className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Well done!</p>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-tight mt-0.5">
-                    Savings rate at <span className="font-bold text-[#0b0e11] dark:text-[#bbf246]">{Math.max(12, Math.round(data.cards.savings.rate))}%</span> this month
-                  </p>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Well done!</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Savings rate at <strong className="font-bold text-[#0b0e11] dark:text-[#bbf246]">{Math.max(12, Math.round(data.cards.savings.rate))}%</strong> this month
+                    </span>
+                  </div>
                 </div>
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-[#bbf246] bg-[#bbf246]/10 text-xs font-black text-[#0b0e11] dark:text-[#bbf246] shadow-sm shadow-[#bbf246]/20">
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#bbf246]/60 bg-[#bbf246]/15 text-[10px] font-black text-[#0b0e11] dark:text-[#bbf246]">
                   {Math.max(12, Math.round(data.cards.savings.rate))}%
                 </div>
               </div>
             </div>
 
-            {/* Quick Action 4-Grid matching Figma Mockup */}
-            <div className="grid grid-cols-4 gap-2.5 mt-5">
+            {/* Quick Action 4-Grid - Compact & Sleek */}
+            <div className="grid grid-cols-4 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-white/[0.06]">
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent("fintrack-open-quick-add"))}
-                className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-[#bbf246]/50 transition cursor-pointer active:scale-95"
+                className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200/80 bg-slate-50/60 py-2 px-1 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-[#bbf246]/50 transition cursor-pointer active:scale-95"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#bbf246] text-[#0b0e11] font-black shadow-xs shadow-[#bbf246]/20">
-                  <Plus className="h-5 w-5 stroke-[3]" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#bbf246] text-[#0b0e11] font-black shadow-xs shadow-[#bbf246]/20">
+                  <Plus className="h-3.5 w-3.5 stroke-[3]" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Add</span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-300">Add</span>
               </button>
 
               <Link
                 href="/accounts"
-                className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
+                className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200/80 bg-slate-50/60 py-2 px-1 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
-                  <ArrowRightLeft className="h-4 w-4" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
+                  <ArrowRightLeft className="h-3.5 w-3.5" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Transfer</span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-300">Transfer</span>
               </Link>
 
               <Link
                 href="/recurring"
-                className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
+                className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200/80 bg-slate-50/60 py-2 px-1 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
-                  <CalendarClock className="h-4 w-4" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
+                  <CalendarClock className="h-3.5 w-3.5" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Bills</span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-300">Bills</span>
               </Link>
 
               <Link
                 href="/analytics"
-                className="flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-3 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
+                className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200/80 bg-slate-50/60 py-2 px-1 shadow-2xs dark:border-white/[0.06] dark:bg-[#1b1f26] hover:border-slate-300 dark:hover:border-white/20 transition cursor-pointer active:scale-95"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
-                  <BarChart3 className="h-4 w-4" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-200/80 dark:bg-[#20252e] text-slate-700 dark:text-white">
+                  <BarChart3 className="h-3.5 w-3.5" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">Stats</span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-300">Stats</span>
               </Link>
             </div>
           </div>
 
-          {/* My Cards & Accounts */}
-          <div className="lg:col-span-5 rounded-3xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-3">
+          {/* My Cards & Accounts - Matching 50% width and height on desktop */}
+          <div className="lg:col-span-6 rounded-3xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-sm dark:border-white/[0.08] dark:bg-[#15181d] flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2.5">
               <div>
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">My Cards & Accounts</h3>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">Active wallets and reserve vault</p>
@@ -433,15 +435,15 @@ export default function DashboardPage() {
               </Link>
             </div>
 
-            {/* Accounts List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+            {/* Accounts List - Side-by-side on desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5">
               {(accounts.length > 0 ? accounts.slice(0, 2) : [
                 { id: "1", name: "Mastercard Vault", type: "Credit Card", balance: data.cards.balance.value * 0.65, accountNumber: "4290", color: "#bbf246" },
                 { id: "2", name: "Primary Checking", type: "Bank Account", balance: data.cards.balance.value * 0.35, accountNumber: "8104", color: "#38bdf8" }
               ]).map((acc, idx) => (
                 <div
                   key={acc.id || idx}
-                  className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-4 shadow-sm dark:border-white/[0.08] dark:from-[#1b1f26] dark:to-[#121519] flex flex-col justify-between h-28 hover:border-[#bbf246]/40 transition"
+                  className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white to-slate-50 p-3.5 shadow-sm dark:border-white/[0.08] dark:from-[#1b1f26] dark:to-[#121519] flex flex-col justify-between h-24 hover:border-[#bbf246]/40 transition"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">{acc.name}</span>

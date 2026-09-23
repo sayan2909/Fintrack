@@ -336,9 +336,9 @@ router.get("/", async (req, res) => {
   baseScore -= dangerCount * 12;
   baseScore -= warningCount * 5;
 
-  const score = Math.max(10, Math.min(100, Math.round(baseScore)));
-  const gradeLetter = score >= 85 ? "A+" : score >= 75 ? "A" : score >= 60 ? "B" : score >= 45 ? "C" : "D";
-  const grade = score >= 75 ? "Optimal Health" : score >= 50 ? "Stable Financial Health" : "Attention Required";
+  const score = cmTxs.length === 0 ? 100 : Math.max(10, Math.min(100, Math.round(baseScore)));
+  const gradeLetter = cmTxs.length === 0 ? "A" : score >= 85 ? "A+" : score >= 75 ? "A" : score >= 60 ? "B" : score >= 45 ? "C" : "D";
+  const grade = cmTxs.length === 0 ? "Ready to Track" : score >= 75 ? "Optimal Health" : score >= 50 ? "Stable Financial Health" : "Attention Required";
 
   return ok(res, {
     insights: insights.slice(0, 25),

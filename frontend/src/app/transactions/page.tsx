@@ -5,11 +5,12 @@ import { useSearchParams } from "next/navigation";
 import {
   Plus, Search, Pencil, Trash2, ArrowLeftRight, ChevronLeft, ChevronRight, X,
   Download, FileText, ArrowDownLeft, ArrowUpRight, Wallet, Landmark, Check, UploadCloud, Sparkles,
-  Split, PlusCircle, Minus
+  Split, PlusCircle, Minus, Scan
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Button, Modal, Field, inputCls, EmptyState, ConfirmDialog, toast } from "@/components/ui";
 import { CsvImportModal } from "@/components/CsvImportModal";
+import { ReceiptScannerModal, ReceiptScanResult } from "@/components/ReceiptScannerModal";
 import { predictCategory } from "@/lib/categorizer";
 import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
@@ -96,6 +97,7 @@ function TransactionsContent() {
 
   const initialSearch = searchParams?.get("search") || "";
   const initialDate = searchParams?.get("date") || "";
+  const initialCat = searchParams?.get("category") || "";
 
   const [txs, setTxs] = useState<Tx[]>([]);
   const [cats, setCats] = useState<Cat[]>([]);
@@ -103,7 +105,7 @@ function TransactionsContent() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(initialSearch);
   const [typeF, setTypeF] = useState("");
-  const [catF, setCatF] = useState("");
+  const [catF, setCatF] = useState(initialCat);
   const [accountF, setAccountF] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const [sortDir, setSortDir] = useState("desc");
@@ -164,6 +166,39 @@ function TransactionsContent() {
 
   const [exportingCsv, setExportingCsv] = useState(false);
   const [importModalOpen, setImportModalOpen] = useState(false);
+  const [receiptModalOpen, setReceiptModalOpen] = useState(false);
+
+  const handleReceiptApply = (res: ReceiptScanResult) => {
+    let matchedCat = cats.find(
+      (c) => c.name.toLowerCase() === res.category.toLowerCase()
+    );
+    if (!matchedCat && res.category) {
+      matchedCat = cats.find((c) =>
+        c.name.toLowerCase().includes(res.category.toLowerCase()) ||
+        res.category.toLowerCase().includes(c.name.toLowerCase())
+      );
+    }
+
+    setEditing(null);
+    setForm((prev) => ({
+      ...prev,
+      type: "expense",
+      amount: res.amount !== null ? res.amount.toString() : prev.amount,
+      description: res.merchant || prev.description,
+      date: res.date || prev.date,
+      categoryId: matchedCat?.id || prev.categoryId,
+      categoryName: matchedCat?.name || res.category || prev.categoryName,
+      notes: res.merchant
+        ? `Scanned Receipt: ${res.merchant} (${CURRENCY_SYMBOLS[currency] || currency}${res.amount ?? 0})`
+        : prev.notes,
+    }));
+    setSplitMode(false);
+    setSplits([]);
+    setModal(true);
+    toast(
+      `Receipt parsed! Pre-filled ${res.merchant} ${res.amount ? `(${CURRENCY_SYMBOLS[currency] || currency}${res.amount})` : ""} 🧾✨`
+    );
+  };
 
   const exportCsv = async () => {
     try {
@@ -476,6 +511,13 @@ function TransactionsContent() {
               <span className="truncate">CSV</span>
             </Button>
           </div>
+          <button
+            type="button"
+            onClick={() => setReceiptModalOpen(true)}
+            className="flex items-center justify-center gap-1.5 h-9 px-3.5 text-xs font-bold rounded-full border border-[#bbf246]/40 bg-[#bbf246]/10 text-[#699c04] hover:bg-[#bbf246]/20 dark:text-[#bbf246] transition cursor-pointer w-full sm:w-auto"
+          >
+            <Scan className="h-4 w-4" /> Scan Receipt
+          </button>
           <button
             onClick={openAdd}
             className="flex items-center justify-center gap-1.5 h-9 px-4 text-xs font-black rounded-full bg-[#bbf246] hover:bg-[#a8e030] text-[#0b0e11] shadow-sm shadow-[#bbf246]/25 transition cursor-pointer w-full sm:w-auto"
@@ -955,6 +997,31 @@ function TransactionsContent() {
       {/* ── 4. Add / Edit Transaction Modal ──────────────────────── */}
       <Modal open={modal} onClose={() => setModal(false)} title={editing ? "Edit Transaction" : "Add Transaction"} wide>
         <form onSubmit={save} className="grid gap-4 sm:grid-cols-2">
+          {/* Quick Receipt Scan Banner for New Transactions */}
+          {!editing && (
+            <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 rounded-2xl border border-dashed border-[#bbf246]/50 bg-[#bbf246]/5 p-3 dark:bg-[#bbf246]/5">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#bbf246]/20 text-[#699c04] dark:text-[#bbf246]">
+                  <Scan className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-800 dark:text-white">Have a paper or digital receipt?</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Auto-detect merchant & amount via client-side OCR</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setModal(false);
+                  setReceiptModalOpen(true);
+                }}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#bbf246] px-3.5 py-1.5 text-xs font-black text-[#0b0e11] hover:bg-[#a8e030] shadow-xs transition cursor-pointer"
+              >
+                <Sparkles className="h-3.5 w-3.5" /> Scan Receipt
+              </button>
+            </div>
+          )}
+
           {/* Income / Expense Switcher */}
           <div className="sm:col-span-2 flex gap-2 rounded-2xl bg-slate-100 p-1 dark:bg-slate-800">
             <button
@@ -1275,6 +1342,14 @@ function TransactionsContent() {
         }}
         accounts={accounts}
         currency={currency}
+      />
+
+      {/* ── 9. Smart Receipt Auto-Scan Modal (Client-side OCR) ───────── */}
+      <ReceiptScannerModal
+        open={receiptModalOpen}
+        onClose={() => setReceiptModalOpen(false)}
+        onApply={handleReceiptApply}
+        currencySymbol={CURRENCY_SYMBOLS[currency] || currency}
       />
 
       {/* ── 7. Floating Glassmorphic Bulk Toolbar ─────────────────── */}

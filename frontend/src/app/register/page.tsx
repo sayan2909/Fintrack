@@ -180,6 +180,17 @@ export default function RegisterPage() {
                   <span>Create Account</span>
                   <ArrowRight className="h-4 w-4 stroke-[2.5]" />
                 </Button>
+                <p className="mt-3 text-center text-[11px] text-slate-500 dark:text-slate-400">
+                  By registering, you agree to our{" "}
+                  <Link href="/terms" className="font-semibold underline hover:text-slate-900 dark:hover:text-[#bbf246]">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="font-semibold underline hover:text-slate-900 dark:hover:text-[#bbf246]">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
               </form>
             </div>
 

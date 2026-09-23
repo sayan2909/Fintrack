@@ -38,6 +38,7 @@ body {
   background-image: radial-gradient(at 50% 0%, rgba(187, 242, 70, 0.06) 0px, transparent 70%);
   background-attachment: fixed;
   color: var(--text-main);
+  min-height: 100vh;
 }
 
 .dark body {
