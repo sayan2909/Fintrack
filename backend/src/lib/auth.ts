@@ -68,6 +68,10 @@ export async function getAuthUser(req: Request) {
   const decoded = verifyToken(token);
   if (!decoded) return null;
 
+  const rows = await db.select().from(users).where(eq(users.id, decoded.id)).limit(1);
+  const user = rows[0];
+  if (!user) return null;
+
   const sessionRows = await db
     .select()
     .from(sessions)
@@ -77,20 +81,21 @@ export async function getAuthUser(req: Request) {
   let currentSession = sessionRows[0];
 
   if (!currentSession) {
-    currentSession = (await createUserSession({
-      userId: decoded.id,
-      token,
-      req,
-    })) as typeof sessions.$inferSelect;
+    try {
+      currentSession = (await createUserSession({
+        userId: user.id,
+        token,
+        req,
+      })) as typeof sessions.$inferSelect;
+    } catch {
+      // ignore
+    }
   } else if (new Date(currentSession.expiresAt) < new Date()) {
     return null;
   } else {
     touchSession(token);
   }
 
-  const rows = await db.select().from(users).where(eq(users.id, decoded.id)).limit(1);
-  const user = rows[0];
-  if (!user) return null;
   const { passwordHash: _ph, resetToken: _rt, resetExpires: _re, ...safe } = user;
   return { ...safe, currentSessionId: currentSession?.id };
 }
