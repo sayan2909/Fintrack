@@ -105,4 +105,25 @@ router.all("/:id/read", async (req, res) => {
   return ok(res, { updated: true });
 });
 
+// DELETE /api/notifications/clear-all
+router.delete("/clear-all", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+  await db.delete(notifications).where(eq(notifications.userId, user.id));
+  return ok(res, { cleared: true });
+});
+
+// DELETE /api/notifications/:id
+router.delete("/:id", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+  const { id } = req.params;
+  if (id === "clear-all") {
+    await db.delete(notifications).where(eq(notifications.userId, user.id));
+    return ok(res, { cleared: true });
+  }
+  await db.delete(notifications).where(and(eq(notifications.id, id), eq(notifications.userId, user.id)));
+  return ok(res, { deleted: true });
+});
+
 export default router;
