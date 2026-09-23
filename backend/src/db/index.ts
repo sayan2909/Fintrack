@@ -227,12 +227,15 @@ function initDatabase() {
   }
 
   // Clean stale lock files from previous abrupt process termination
-  const pidFile = path.join(dataDir, "postmaster.pid");
-  if (fs.existsSync(pidFile)) {
-    try {
-      fs.unlinkSync(pidFile);
-    } catch {
-      // ignore
+  const lockFiles = ["postmaster.pid", ".s.PGSQL.5432.lock", ".s.PGSQL.5432.lock.out"];
+  for (const lf of lockFiles) {
+    const fPath = path.join(dataDir, lf);
+    if (fs.existsSync(fPath)) {
+      try {
+        fs.unlinkSync(fPath);
+      } catch {
+        // ignore
+      }
     }
   }
 

@@ -113,6 +113,11 @@ function TransactionsContent() {
   const [del, setDel] = useState<Tx | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Bulk operations state
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkConfirm, setBulkConfirm] = useState(false);
+
   const [form, setForm] = useState({
     type: "expense" as "expense" | "income",
     amount: "",
@@ -320,6 +325,42 @@ function TransactionsContent() {
       load();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Failed to delete transaction", "error");
+    }
+  };
+
+  const isAllSelected = txs.length > 0 && txs.every((t) => selectedIds.includes(t.id));
+  const toggleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(txs.map((t) => t.id));
+    }
+  };
+  const toggleSelectOne = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    setBulkDeleting(true);
+    try {
+      const res = await fetch("/api/transactions/bulk-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ ids: selectedIds }),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Failed to delete transactions");
+      toast(`Successfully deleted ${json.data?.deletedCount ?? selectedIds.length} transactions!`);
+      setSelectedIds([]);
+      setBulkConfirm(false);
+      load();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Bulk delete failed", "error");
+    } finally {
+      setBulkDeleting(false);
     }
   };
 
@@ -575,6 +616,15 @@ function TransactionsContent() {
                 <table className="w-full text-left text-sm">
                   <thead>
                     <tr className="border-b border-slate-200/90 bg-slate-50/90 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800/80 dark:bg-slate-800/30 dark:text-slate-400">
+                      <th className="w-10 px-4 py-3.5">
+                        <input
+                          type="checkbox"
+                          checked={isAllSelected}
+                          onChange={toggleSelectAll}
+                          aria-label="Select all transactions"
+                          className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 cursor-pointer accent-indigo-600"
+                        />
+                      </th>
                       <th className="px-5 py-3.5">Transaction</th>
                       <th className="px-4 py-3.5">Category</th>
                       <th className="px-4 py-3.5">Account / Wallet</th>
@@ -588,10 +638,28 @@ function TransactionsContent() {
                     {txs.map((t) => {
                       const acc = accounts.find((a) => a.id === t.accountId);
                       const isInc = t.type === "income";
-                      const amtNum = parseFloat(t.amount || "0");
+                      const isSelected = selectedIds.includes(t.id);
 
                       return (
-                        <tr key={t.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors">
+                        <tr
+                          key={t.id}
+                          className={`transition-colors ${
+                            isSelected
+                              ? "bg-indigo-50/60 dark:bg-indigo-950/20"
+                              : "hover:bg-slate-50/80 dark:hover:bg-slate-800/30"
+                          }`}
+                        >
+                          {/* Checkbox */}
+                          <td className="w-10 px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleSelectOne(t.id)}
+                              aria-label={`Select transaction ${t.description}`}
+                              className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 cursor-pointer accent-indigo-600"
+                            />
+                          </td>
+
                           {/* Description */}
                           <td className="px-5 py-3.5">
                             <div className="flex items-center gap-3">
@@ -941,6 +1009,44 @@ function TransactionsContent() {
         title="Delete transaction?"
         message={`Delete "${del?.description}"? This action cannot be undone.`}
       />
+
+      {/* ── 6. Bulk Delete Confirm Dialog ─────────────────────────── */}
+      <ConfirmDialog
+        open={bulkConfirm}
+        onClose={() => setBulkConfirm(false)}
+        onConfirm={handleBulkDelete}
+        title={`Delete ${selectedIds.length} Transactions?`}
+        message={`This will permanently remove ${selectedIds.length} selected transactions and restore their account balances. This action cannot be undone.`}
+        confirmLabel={bulkDeleting ? "Deleting..." : `Delete ${selectedIds.length} Transactions`}
+        danger
+      />
+
+      {/* ── 7. Floating Glassmorphic Bulk Toolbar ─────────────────── */}
+      {selectedIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/95 px-5 py-3 shadow-2xl backdrop-blur-md dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/60 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <span className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-[11px] font-black text-white">
+              {selectedIds.length}
+            </span>
+            selected
+          </span>
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-700" />
+          <button
+            onClick={() => setSelectedIds([])}
+            className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition cursor-pointer"
+          >
+            Deselect
+          </button>
+          <button
+            onClick={() => setBulkConfirm(true)}
+            disabled={bulkDeleting}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-rose-700 shadow-xs shadow-rose-600/30 transition cursor-pointer disabled:opacity-50"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            <span>{bulkDeleting ? "Deleting..." : "Delete Selected"}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

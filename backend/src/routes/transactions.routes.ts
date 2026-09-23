@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "@/db";
 import { transactions, categories, accounts } from "@/db/schema";
-import { and, eq, gte, lte, desc, asc } from "drizzle-orm";
+import { and, eq, gte, lte, desc, asc, inArray } from "drizzle-orm";
 import { getAuthUser } from "@/lib/auth";
 import { ok, fail, unauthorized, notFound } from "@/lib/response";
 import { parseAmount } from "@/lib/server-utils";
@@ -400,6 +400,54 @@ router.delete("/:id", async (req, res) => {
   } catch (e) {
     console.error("delete tx error:", e);
     return fail(res, "Unable to delete transaction.", 500);
+  }
+});
+
+// POST /api/transactions/bulk-delete
+router.post("/bulk-delete", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+
+  try {
+    const { ids } = req.body ?? {};
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return fail(res, "ids array is required and must not be empty.", 400);
+    }
+
+    const txs = await db
+      .select()
+      .from(transactions)
+      .where(and(inArray(transactions.id, ids), eq(transactions.userId, user.id)));
+
+    if (txs.length === 0) {
+      return ok(res, { deletedCount: 0 });
+    }
+
+    // Roll back balances for accounts
+    for (const tx of txs) {
+      if (tx.accountId) {
+        const acc = await db.select().from(accounts).where(eq(accounts.id, tx.accountId)).limit(1);
+        if (acc[0]) {
+          const curBal = parseFloat(acc[0].balance || "0");
+          const revDelta = tx.type === "income" ? -parseFloat(tx.amount) : parseFloat(tx.amount);
+          await db
+            .update(accounts)
+            .set({
+              balance: String(Math.round((curBal + revDelta) * 100) / 100),
+              updatedAt: new Date(),
+            })
+            .where(eq(accounts.id, acc[0].id));
+        }
+      }
+    }
+
+    const validIds = txs.map((t) => t.id);
+    await db.delete(transactions).where(and(inArray(transactions.id, validIds), eq(transactions.userId, user.id)));
+
+    return ok(res, { success: true, deletedCount: validIds.length });
+  } catch (e) {
+    console.error("bulk delete error:", e);
+    return fail(res, "Unable to delete transactions.", 500);
   }
 });
 

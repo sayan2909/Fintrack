@@ -5,7 +5,7 @@ import {
   Plus, Repeat, Pencil, Trash2, Power, Search,
   LayoutGrid, List, ArrowUpRight, ArrowDownLeft, Activity,
   Film, Music, Play, Wifi, Home, Briefcase, TrendingUp, Zap,
-  Layers, Sparkles, X, BellRing, CalendarClock, PieChart, ChevronDown, ChevronUp,
+  Layers, Sparkles, X, BellRing, CalendarClock, PieChart, ChevronDown, ChevronUp, CheckCircle2,
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Button, Modal, Field, inputCls, EmptyState, ConfirmDialog, toast } from "@/components/ui";
@@ -64,6 +64,7 @@ export default function RecurringPage() {
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [showAlert, setShowAlert] = useState(true);
   const [showInsights, setShowInsights] = useState(false);
+  const [payingId, setPayingId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     name: "", amount: "", type: "expense", categoryName: "",
@@ -140,6 +141,25 @@ export default function RecurringPage() {
       }
     } finally {
       setTogglingId(null);
+    }
+  };
+
+  const markAsPaid = async (r: Rec) => {
+    setPayingId(r.id);
+    try {
+      const res = await fetch(`/api/recurring/${r.id}/pay`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Failed to mark as paid");
+      toast(json.message || `Marked "${r.name}" as paid! Next cycle scheduled.`);
+      load();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Failed to record payment", "error");
+    } finally {
+      setPayingId(null);
     }
   };
 
@@ -326,6 +346,15 @@ export default function RecurringPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => markAsPaid(nextUp)}
+                    disabled={payingId === nextUp.id || !nextUp.isActive}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-600 hover:bg-emerald-500/20 disabled:opacity-40 transition cursor-pointer dark:bg-emerald-500/15 dark:text-emerald-400"
+                    title="Mark paid & record transaction now"
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <span>{payingId === nextUp.id ? "Processing..." : "Mark Paid"}</span>
+                  </button>
                   <button
                     onClick={() => toggleActive(nextUp)}
                     disabled={togglingId === nextUp.id}
@@ -758,7 +787,16 @@ export default function RecurringPage() {
 
                         {/* Actions */}
                         <td className="px-5 py-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              onClick={() => markAsPaid(r)}
+                              disabled={payingId === r.id || !r.isActive}
+                              className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-600 hover:bg-emerald-500/20 disabled:opacity-40 transition cursor-pointer dark:bg-emerald-500/15 dark:text-emerald-400"
+                              title="Mark as paid (creates transaction & moves cycle forward)"
+                            >
+                              <CheckCircle2 className="h-3 w-3" />
+                              <span className="hidden sm:inline">{payingId === r.id ? "Paying..." : "Pay"}</span>
+                            </button>
                             <button
                               onClick={() => openEdit(r)}
                               className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
@@ -814,6 +852,15 @@ export default function RecurringPage() {
                       </div>
 
                       <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          onClick={() => markAsPaid(r)}
+                          disabled={payingId === r.id || !r.isActive}
+                          className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-600 hover:bg-emerald-500/20 disabled:opacity-40 transition cursor-pointer dark:bg-emerald-500/15 dark:text-emerald-400"
+                          title="Mark as paid"
+                        >
+                          <CheckCircle2 className="h-3 w-3" />
+                          <span>{payingId === r.id ? "Paying..." : "Pay"}</span>
+                        </button>
                         <button
                           onClick={() => openEdit(r)}
                           className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"

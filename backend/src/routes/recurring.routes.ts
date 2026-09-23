@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@/db";
-import { recurringTransactions, categories } from "@/db/schema";
+import { recurringTransactions, categories, transactions, accounts } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getAuthUser } from "@/lib/auth";
 import { ok, fail, unauthorized, notFound } from "@/lib/response";
@@ -151,6 +151,87 @@ router.delete("/:id", async (req, res) => {
   if (!rows[0]) return notFound(res, "Recurring transaction not found.");
   await db.delete(recurringTransactions).where(eq(recurringTransactions.id, id));
   return ok(res, { deleted: true });
+});
+
+// POST /api/recurring/:id/pay
+router.post("/:id/pay", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+  const { id } = req.params;
+  const rows = await db
+    .select()
+    .from(recurringTransactions)
+    .where(and(eq(recurringTransactions.id, id), eq(recurringTransactions.userId, user.id)))
+    .limit(1);
+  if (!rows[0]) return notFound(res, "Recurring transaction not found.");
+  const rec = rows[0];
+
+  try {
+    const userAccounts = await db
+      .select()
+      .from(accounts)
+      .where(eq(accounts.userId, user.id));
+    const targetAccount = userAccounts.find((a) => a.isDefault) || userAccounts[0] || null;
+
+    const amt = parseFloat(rec.amount);
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    const tx = await db
+      .insert(transactions)
+      .values({
+        userId: user.id,
+        categoryId: rec.categoryId,
+        categoryName: rec.categoryName,
+        accountId: targetAccount ? targetAccount.id : null,
+        type: rec.type,
+        amount: String(amt),
+        description: `Payment: ${rec.name}`,
+        date: todayStr,
+        paymentMethod: rec.paymentMethod || "Bank Transfer",
+        notes: `Recorded via Recurring Subscriptions (${rec.frequency})`,
+      })
+      .returning();
+
+    if (targetAccount) {
+      const curBal = parseFloat(targetAccount.balance || "0");
+      const delta = rec.type === "income" ? amt : -amt;
+      await db
+        .update(accounts)
+        .set({
+          balance: String(Math.round((curBal + delta) * 100) / 100),
+          updatedAt: new Date(),
+        })
+        .where(eq(accounts.id, targetAccount.id));
+    }
+
+    const now = new Date();
+    const nextDate = nextDueDate(rec.startDate, rec.frequency);
+    if (nextDate <= now) {
+      const f = rec.frequency.toLowerCase();
+      if (f === "daily") nextDate.setDate(nextDate.getDate() + 1);
+      else if (f === "weekly") nextDate.setDate(nextDate.getDate() + 7);
+      else if (f === "yearly") nextDate.setFullYear(nextDate.getFullYear() + 1);
+      else nextDate.setMonth(nextDate.getMonth() + 1);
+    }
+
+    const updated = await db
+      .update(recurringTransactions)
+      .set({
+        startDate: nextDate.toISOString().slice(0, 10),
+      })
+      .where(eq(recurringTransactions.id, id))
+      .returning();
+
+    return ok(res, {
+      success: true,
+      transaction: tx[0],
+      recurring: updated[0],
+      message: `Marked "${rec.name}" as paid!`,
+    });
+  } catch (e) {
+    console.error("mark recurring paid error", e);
+    return fail(res, "Unable to process payment for recurring item.", 500);
+  }
 });
 
 export default router;

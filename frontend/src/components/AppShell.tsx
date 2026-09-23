@@ -14,6 +14,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { Modal, Button, toast } from "@/components/ui";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { SessionTimeoutModal } from "@/components/SessionTimeoutModal";
+import FinBotAssistant from "@/components/FinBotAssistant";
 import { SUPPORTED_CURRENCIES, CURRENCY_SYMBOLS, getEstimatedRate, fetchLiveRates } from "@/lib/currency";
 
 const NAV = [
@@ -50,6 +51,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const currencyMenuRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  // Global Quick Add Modal State
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const [quickForm, setQuickForm] = useState({
+    type: "expense" as "expense" | "income",
+    amount: "",
+    description: "",
+    categoryName: "General",
+    paymentMethod: "UPI",
+    date: new Date().toISOString().slice(0, 10),
+  });
+  const [quickSaving, setQuickSaving] = useState(false);
+
   useEffect(() => {
     fetchLiveRates().catch(() => {});
   }, []);
@@ -85,8 +98,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      const isInput = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+      if (!isInput && (e.key === "n" || e.key === "N")) {
+        e.preventDefault();
+        setQuickAddOpen(true);
+        return;
+      }
       if (
-        (e.key === "/" && (e.target as HTMLElement).tagName !== "INPUT" && (e.target as HTMLElement).tagName !== "TEXTAREA") ||
+        (e.key === "/" && !isInput) ||
         ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")
       ) {
         e.preventDefault();
@@ -96,6 +116,40 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  const handleQuickAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickForm.amount || !quickForm.description) return;
+    setQuickSaving(true);
+    try {
+      const res = await fetch("/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(quickForm),
+      });
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Failed to create transaction");
+      toast("Transaction logged successfully! ⚡");
+      setQuickAddOpen(false);
+      setQuickForm({
+        type: "expense",
+        amount: "",
+        description: "",
+        categoryName: "General",
+        paymentMethod: "UPI",
+        date: new Date().toISOString().slice(0, 10),
+      });
+      window.dispatchEvent(new CustomEvent("fintrack-transaction-created"));
+      if (pathname === "/transactions" || pathname === "/dashboard") {
+        window.location.reload();
+      }
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Failed to add transaction", "error");
+    } finally {
+      setQuickSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -129,9 +183,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const linkCls = (href: string, isSidebarCollapsed: boolean) => {
     const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
-    return `flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-sm transition-all duration-150 ${
+    return `group relative flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3 py-2"} rounded-xl text-sm transition-all duration-150 ${
       isActive
-        ? "bg-gradient-to-r from-indigo-600 to-indigo-600 text-white font-bold shadow-sm shadow-indigo-600/30 dark:from-indigo-600 dark:to-indigo-500"
+        ? "bg-indigo-50/90 text-indigo-700 font-semibold border border-indigo-200/70 shadow-xs dark:bg-indigo-500/15 dark:text-indigo-300 dark:border-indigo-500/25 dark:shadow-indigo-950/40"
         : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white"
     }`;
   };
@@ -158,38 +212,50 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <nav className="mt-6 flex-1 space-y-1 overflow-y-auto">
-        {NAV.map((n) => (
-          <Link
-            key={n.href}
-            href={n.href}
-            className={linkCls(n.href, isSidebarCollapsed)}
-            onClick={() => setMobileOpen(false)}
-            title={isSidebarCollapsed ? n.label : undefined}
-          >
-            <n.icon className="h-[18px] w-[18px] shrink-0" />
-            {!isSidebarCollapsed && <span>{n.label}</span>}
-          </Link>
-        ))}
-        <div className="my-3 border-t border-slate-200/80 dark:border-slate-800" />
-        {SECONDARY.map((n) => (
-          <Link
-            key={n.href}
-            href={n.href}
-            className={linkCls(n.href, isSidebarCollapsed)}
-            onClick={() => setMobileOpen(false)}
-            title={isSidebarCollapsed ? n.label : undefined}
-          >
-            <div className="relative shrink-0">
-              <n.icon className="h-[18px] w-[18px]" />
-              {n.href === "/notifications" && unread > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
-                  {unread > 9 ? "9+" : unread}
-                </span>
+        {NAV.map((n) => {
+          const isActive = pathname === n.href || (n.href !== "/dashboard" && pathname.startsWith(n.href));
+          return (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={linkCls(n.href, isSidebarCollapsed)}
+              onClick={() => setMobileOpen(false)}
+              title={isSidebarCollapsed ? n.label : undefined}
+            >
+              <n.icon className={`h-[18px] w-[18px] shrink-0 transition-colors ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"}`} />
+              {!isSidebarCollapsed && <span className="flex-1 truncate">{n.label}</span>}
+              {!isSidebarCollapsed && isActive && (
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-xs shadow-indigo-500/50" />
               )}
-            </div>
-            {!isSidebarCollapsed && <span>{n.label}</span>}
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
+        <div className="my-3 border-t border-slate-200/80 dark:border-slate-800" />
+        {SECONDARY.map((n) => {
+          const isActive = pathname === n.href || (n.href !== "/dashboard" && pathname.startsWith(n.href));
+          return (
+            <Link
+              key={n.href}
+              href={n.href}
+              className={linkCls(n.href, isSidebarCollapsed)}
+              onClick={() => setMobileOpen(false)}
+              title={isSidebarCollapsed ? n.label : undefined}
+            >
+              <div className="relative shrink-0">
+                <n.icon className={`h-[18px] w-[18px] transition-colors ${isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"}`} />
+                {n.href === "/notifications" && unread > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
+                    {unread > 9 ? "9+" : unread}
+                  </span>
+                )}
+              </div>
+              {!isSidebarCollapsed && <span className="flex-1 truncate">{n.label}</span>}
+              {!isSidebarCollapsed && isActive && (
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-xs shadow-indigo-500/50" />
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Collapse Desktop Toggle & Logout */}
@@ -273,6 +339,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="ml-auto flex items-center gap-2">
+              {/* Quick Add Button with N shortcut */}
+              <button
+                onClick={() => setQuickAddOpen(true)}
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 shadow-sm shadow-indigo-600/30 transition cursor-pointer"
+                title="Quick Add Transaction (Press N)"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>New</span>
+                <kbd className="hidden md:inline rounded bg-indigo-700/80 px-1 py-0.2 text-[9px] font-bold text-indigo-100">N</kbd>
+              </button>
 
               {/* Quick Currency Selector */}
               <div className="relative" ref={currencyMenuRef}>
@@ -436,6 +512,110 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </Modal>
         )}
+
+        {/* Quick Add Transaction Modal */}
+        <Modal open={quickAddOpen} onClose={() => setQuickAddOpen(false)} title="Quick Log Transaction">
+          <form onSubmit={handleQuickAdd} className="space-y-4">
+            <div className="flex gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+              <button
+                type="button"
+                onClick={() => setQuickForm({ ...quickForm, type: "expense" })}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition cursor-pointer ${
+                  quickForm.type === "expense"
+                    ? "bg-rose-500 text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                Expense
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuickForm({ ...quickForm, type: "income" })}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-bold transition cursor-pointer ${
+                  quickForm.type === "income"
+                    ? "bg-emerald-500 text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                Income
+              </button>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Amount ({CURRENCY_SYMBOLS[user.currency || "INR"] || user.currency || "₹"})
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                required
+                autoFocus
+                value={quickForm.amount}
+                onChange={(e) => setQuickForm({ ...quickForm, amount: e.target.value })}
+                placeholder="0.00"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Description
+              </label>
+              <input
+                type="text"
+                required
+                value={quickForm.description}
+                onChange={(e) => setQuickForm({ ...quickForm, description: e.target.value })}
+                placeholder="e.g. Coffee, Freelance invoice, Groceries"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Category
+                </label>
+                <input
+                  type="text"
+                  value={quickForm.categoryName}
+                  onChange={(e) => setQuickForm({ ...quickForm, categoryName: e.target.value })}
+                  placeholder="Category"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Payment Method
+                </label>
+                <select
+                  value={quickForm.paymentMethod}
+                  onChange={(e) => setQuickForm({ ...quickForm, paymentMethod: e.target.value })}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="UPI">UPI</option>
+                  <option value="Credit Card">Credit Card</option>
+                  <option value="Debit Card">Debit Card</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Cash">Cash</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setQuickAddOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" loading={quickSaving}>
+                Save Transaction
+              </Button>
+            </div>
+          </form>
+        </Modal>
+
+        {/* FinBot AI Autonomous Financial Copilot */}
+        <FinBotAssistant />
 
         {/* Mobile bottom nav */}
         <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-md lg:hidden dark:border-slate-800/80 dark:bg-[#111827]/95">
