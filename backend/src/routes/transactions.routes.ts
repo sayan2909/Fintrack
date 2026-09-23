@@ -451,4 +451,92 @@ router.post("/bulk-delete", async (req, res) => {
   }
 });
 
+// POST /api/transactions/import
+router.post("/import", async (req, res) => {
+  const user = await getAuthUser(req);
+  if (!user) return unauthorized(res);
+
+  const { items } = req.body;
+  if (!Array.isArray(items) || items.length === 0) {
+    return fail(res, "Invalid or empty import batch. Expected array of transactions.", 400);
+  }
+
+  if (items.length > 500) {
+    return fail(res, "Batch size exceeds maximum limit of 500 transactions.", 400);
+  }
+
+  try {
+    // Get user accounts to validate or associate default
+    const userAccounts = await db.select().from(accounts).where(eq(accounts.userId, user.id));
+    const defaultAccount = userAccounts.find((a) => a.isDefault) || userAccounts[0];
+
+    const inserted: Array<{ id: string; description: string; amount: string }> = [];
+    const accountBalanceAdjustments: Record<string, number> = {};
+
+    for (const item of items) {
+      const amt = parseAmount(item.amount);
+      if (!amt || amt <= 0) continue;
+
+      const dateStr = item.date && !isNaN(Date.parse(item.date))
+        ? new Date(item.date).toISOString().slice(0, 10)
+        : new Date().toISOString().slice(0, 10);
+
+      const type = item.type === "income" ? "income" : "expense";
+      const desc = (item.description || "Imported Transaction").trim().slice(0, 200);
+      const category = (item.categoryName || "General").trim().slice(0, 50);
+      const paymentMethod = (item.paymentMethod || "Bank Transfer").trim().slice(0, 50);
+      
+      const targetAccountId = item.accountId && userAccounts.some((a) => a.id === item.accountId)
+        ? item.accountId
+        : defaultAccount?.id || null;
+
+      const [newTx] = await db
+        .insert(transactions)
+        .values({
+          userId: user.id,
+          accountId: targetAccountId,
+          amount: String(amt),
+          type,
+          categoryName: category,
+          description: desc,
+          date: dateStr,
+          paymentMethod,
+          notes: item.notes ? String(item.notes).slice(0, 500) : "Imported via CSV Bank Statement",
+        })
+        .returning();
+
+      if (newTx) {
+        inserted.push({ id: newTx.id, description: newTx.description, amount: newTx.amount });
+
+        if (targetAccountId) {
+          const delta = type === "income" ? amt : -amt;
+          accountBalanceAdjustments[targetAccountId] = (accountBalanceAdjustments[targetAccountId] || 0) + delta;
+        }
+      }
+    }
+
+    // Apply accumulated balance adjustments to accounts
+    for (const [accId, delta] of Object.entries(accountBalanceAdjustments)) {
+      const acc = userAccounts.find((a) => a.id === accId);
+      if (acc) {
+        const curBal = parseFloat(acc.balance || "0");
+        const nextBal = Math.round((curBal + delta) * 100) / 100;
+        await db
+          .update(accounts)
+          .set({ balance: String(nextBal), updatedAt: new Date() })
+          .where(eq(accounts.id, accId));
+      }
+    }
+
+    return ok(res, {
+      importedCount: inserted.length,
+      totalReceived: items.length,
+      inserted,
+    });
+  } catch (e) {
+    console.error("CSV import error:", e);
+    return fail(res, "Failed to import transactions. Please check your data format.", 500);
+  }
+});
+
 export default router;

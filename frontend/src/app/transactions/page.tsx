@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Plus, Search, Pencil, Trash2, ArrowLeftRight, ChevronLeft, ChevronRight, X,
-  Download, FileText, ArrowDownLeft, ArrowUpRight, Wallet, Landmark, Check
+  Download, FileText, ArrowDownLeft, ArrowUpRight, Wallet, Landmark, Check, UploadCloud, Sparkles
 } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { Button, Modal, Field, inputCls, EmptyState, ConfirmDialog, toast } from "@/components/ui";
+import { CsvImportModal } from "@/components/CsvImportModal";
+import { predictCategory } from "@/lib/categorizer";
 import { formatCurrency, CURRENCY_SYMBOLS } from "@/lib/currency";
 import { useAuth } from "@/contexts/AuthContext";
 import { PAYMENT_METHODS } from "@/lib/constants";
@@ -131,6 +133,7 @@ function TransactionsContent() {
   });
 
   const [exportingCsv, setExportingCsv] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
 
   const exportCsv = async () => {
     try {
@@ -390,7 +393,14 @@ function TransactionsContent() {
             Track and audit every transaction in and out of your financial accounts.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => setImportModalOpen(true)}
+            className="h-9 px-3 text-xs font-semibold cursor-pointer border-indigo-200/80 bg-indigo-50/50 text-indigo-700 hover:bg-indigo-100/70 dark:border-indigo-800/60 dark:bg-indigo-950/30 dark:text-indigo-300 dark:hover:bg-indigo-900/40"
+          >
+            <UploadCloud className="h-3.5 w-3.5 mr-1" /> Import Statement
+          </Button>
           <Button variant="outline" onClick={exportPdf} className="h-9 px-3 text-xs font-semibold">
             <FileText className="h-3.5 w-3.5 mr-1" /> Export PDF
           </Button>
@@ -910,14 +920,35 @@ function TransactionsContent() {
             />
           </Field>
 
-          {/* Description */}
+          {/* Description with auto-categorization */}
           <div className="sm:col-span-2">
             <Field label="Description">
               <input
                 className={inputCls}
                 required
                 value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setForm((prev) => {
+                    const next = { ...prev, description: val };
+                    if (!editing && val.trim().length >= 3) {
+                      const pred = predictCategory(val);
+                      if (pred.confidence >= 0.7) {
+                        const matchedCat = cats.find(
+                          (c) => c.name.toLowerCase() === pred.category.toLowerCase()
+                        );
+                        if (matchedCat) {
+                          next.categoryId = matchedCat.id;
+                          next.categoryName = matchedCat.name;
+                        } else {
+                          next.categoryName = pred.category;
+                        }
+                        next.type = pred.type;
+                      }
+                    }
+                    return next;
+                  });
+                }}
                 placeholder="e.g. Swiggy dinner, Grocery, Freelance project"
               />
             </Field>
@@ -1020,6 +1051,18 @@ function TransactionsContent() {
         message={`This will permanently remove ${selectedIds.length} selected transactions and restore their account balances. This action cannot be undone.`}
         confirmText={bulkDeleting ? "Deleting..." : `Delete ${selectedIds.length} Transactions`}
         danger
+      />
+
+      {/* ── 8. Bank Statement / CSV Importer Modal ─────────────────── */}
+      <CsvImportModal
+        open={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        onSuccess={() => {
+          load();
+          loadSummary();
+        }}
+        accounts={accounts}
+        currency={currency}
       />
 
       {/* ── 7. Floating Glassmorphic Bulk Toolbar ─────────────────── */}

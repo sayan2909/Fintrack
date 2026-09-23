@@ -16,6 +16,7 @@ import { OnboardingModal } from "@/components/OnboardingModal";
 import { SessionTimeoutModal } from "@/components/SessionTimeoutModal";
 import FinBotAssistant from "@/components/FinBotAssistant";
 import { SUPPORTED_CURRENCIES, CURRENCY_SYMBOLS, getEstimatedRate, fetchLiveRates } from "@/lib/currency";
+import { predictCategory } from "@/lib/categorizer";
 
 const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -578,7 +579,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 type="text"
                 required
                 value={quickForm.description}
-                onChange={(e) => setQuickForm({ ...quickForm, description: e.target.value })}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const pred = predictCategory(val);
+                  setQuickForm((prev) => ({
+                    ...prev,
+                    description: val,
+                    categoryName: pred.confidence >= 0.7 ? pred.category : prev.categoryName,
+                    type: pred.confidence >= 0.8 ? pred.type : prev.type,
+                  }));
+                }}
                 placeholder="e.g. Coffee, Freelance invoice, Groceries"
                 className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               />

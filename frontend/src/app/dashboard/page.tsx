@@ -13,6 +13,10 @@ import {
   BellRing,
   CalendarClock,
   X,
+  ShieldCheck,
+  Flame,
+  Sparkles,
+  Clock,
 } from "lucide-react";
 import {
   AreaChart,
@@ -80,6 +84,14 @@ interface DashData {
     isDueTomorrow: boolean;
     isDueSoon: boolean;
   }[];
+  runway?: {
+    liquidReserves: number;
+    avgMonthlyBurn: number;
+    runwayMonths: number;
+    targetBuffer: number;
+    emergencyFundHealth: number;
+    status: "optimal" | "adequate" | "caution";
+  };
 }
 
 const PIE_COLORS = [
@@ -439,6 +451,124 @@ export default function DashboardPage() {
             </p>
           </div>
         </div>
+
+        {/* ── Executive Financial Runway & Emergency Health ────────────── */}
+        {data.runway && (
+          <div className="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-gradient-to-br from-white via-indigo-50/20 to-violet-50/30 p-5 sm:p-6 shadow-sm dark:border-slate-800/80 dark:bg-gradient-to-br dark:from-slate-900/95 dark:via-slate-900/60 dark:to-indigo-950/25">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/70 pb-4 dark:border-slate-800/70">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/25">
+                  <ShieldCheck className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                      Financial Health & Liquid Runway
+                    </h3>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${
+                        data.runway.status === "optimal"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
+                          : data.runway.status === "adequate"
+                          ? "bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-500/15 dark:text-indigo-300 dark:border-indigo-500/30"
+                          : "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30"
+                      }`}
+                    >
+                      <Sparkles className="h-2.5 w-2.5" />
+                      {data.runway.status === "optimal"
+                        ? "Optimal Runway"
+                        : data.runway.status === "adequate"
+                        ? "Adequate Buffer"
+                        : "Caution Needed"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Institutional solvency metrics based on your 3-month rolling burn rate.
+                  </p>
+                </div>
+              </div>
+
+              <Link href="/accounts">
+                <Button variant="outline" className="h-8.5 px-3.5 text-xs font-semibold shrink-0 cursor-pointer">
+                  Manage Reserve Accounts <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              {/* Runway Months */}
+              <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 dark:border-slate-800/80 dark:bg-slate-900/60 backdrop-blur-sm">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span className="font-semibold flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-indigo-500" /> Liquid Runway
+                  </span>
+                  <span className="text-[11px] font-bold">Target: ≥ 6 mos</span>
+                </div>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-slate-900 dark:text-white tabular-nums">
+                    {data.runway.runwayMonths > 50 ? "50+" : data.runway.runwayMonths.toFixed(1)}
+                  </span>
+                  <span className="text-xs font-bold text-slate-500">months</span>
+                </div>
+                <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  At average burn of{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {formatCurrency(data.runway.avgMonthlyBurn, currency)}/mo
+                  </span>
+                </p>
+              </div>
+
+              {/* Emergency Fund Health */}
+              <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 dark:border-slate-800/80 dark:bg-slate-900/60 backdrop-blur-sm">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span className="font-semibold flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Emergency Buffer Score
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                    {data.runway.emergencyFundHealth}%
+                  </span>
+                </div>
+                <div className="mt-3">
+                  <Progress
+                    value={data.runway.emergencyFundHealth}
+                    color={
+                      data.runway.emergencyFundHealth >= 80
+                        ? "bg-emerald-500"
+                        : data.runway.emergencyFundHealth >= 50
+                        ? "bg-amber-500"
+                        : "bg-rose-500"
+                    }
+                  />
+                </div>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                  <span>Current: {formatCurrency(data.runway.liquidReserves, currency)}</span>
+                  <span>Target (6 mo): {formatCurrency(data.runway.targetBuffer, currency)}</span>
+                </div>
+              </div>
+
+              {/* Monthly Burn Rate Benchmark */}
+              <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-4 dark:border-slate-800/80 dark:bg-slate-900/60 backdrop-blur-sm">
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span className="font-semibold flex items-center gap-1.5">
+                    <Flame className="h-3.5 w-3.5 text-rose-500" /> Monthly Burn Rate
+                  </span>
+                  <span className="text-[11px] font-bold text-slate-400">3-mo rolling</span>
+                </div>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-3xl font-black text-rose-600 dark:text-rose-400 tabular-nums">
+                    {formatCurrency(data.runway.avgMonthlyBurn, currency)}
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  Total liquid cash:{" "}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    {formatCurrency(data.runway.liquidReserves, currency)}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {!hasTx && (
           <EmptyState

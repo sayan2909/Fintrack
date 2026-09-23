@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { db } from "@/db";
-import { transactions, budgets, savingsGoals, recurringTransactions } from "@/db/schema";
+import { transactions, budgets, savingsGoals, recurringTransactions, accounts } from "@/db/schema";
 import { and, eq, gte, lte, desc } from "drizzle-orm";
 import { getAuthUser } from "@/lib/auth";
 import { ok, unauthorized } from "@/lib/response";
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
   const pmStart = `${pmKey}-01`;
   const pmEnd = `${pmKey}-${new Date(pm.getFullYear(), pm.getMonth() + 1, 0).getDate()}`;
 
-  const [allTxs, cmTxs, pmTxs, monthBudgets, goals, recent, recs] = await Promise.all([
+  const [allTxs, cmTxs, pmTxs, monthBudgets, goals, recent, recs, userAccounts] = await Promise.all([
     db.select().from(transactions).where(eq(transactions.userId, user.id)),
     db.select().from(transactions).where(and(eq(transactions.userId, user.id), gte(transactions.date, cmStart), lte(transactions.date, cmEnd))),
     db.select().from(transactions).where(and(eq(transactions.userId, user.id), gte(transactions.date, pmStart), lte(transactions.date, pmEnd))),
@@ -30,6 +30,7 @@ router.get("/", async (req, res) => {
     db.select().from(savingsGoals).where(eq(savingsGoals.userId, user.id)),
     db.select().from(transactions).where(eq(transactions.userId, user.id)).orderBy(desc(transactions.date)).limit(6),
     db.select().from(recurringTransactions).where(and(eq(recurringTransactions.userId, user.id), eq(recurringTransactions.isActive, true))),
+    db.select().from(accounts).where(eq(accounts.userId, user.id)),
   ]);
 
   const sum = (arr: typeof allTxs, ty: string) => arr.filter((t) => t.type === ty).reduce((a, t) => a + parseFloat(t.amount), 0);
@@ -109,6 +110,40 @@ router.get("/", async (req, res) => {
     .filter((p) => p.isDueSoon)
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
+  // ── Executive Financial Health & Runway Intelligence ────────
+  const liquidReserves = userAccounts.length > 0
+    ? userAccounts
+        .filter((a) => a.type !== "credit_card")
+        .reduce((sum, a) => sum + Math.max(0, parseFloat(a.balance || "0")), 0)
+    : Math.max(0, balance);
+
+  // 3-month rolling average burn rate
+  const expSamples = [cmExpenses, pmExpenses].filter((e) => e > 0);
+  const avgMonthlyBurn = expSamples.length > 0
+    ? Math.round((expSamples.reduce((a, b) => a + b, 0) / expSamples.length) * 100) / 100
+    : cmExpenses > 0 ? cmExpenses : 1500;
+
+  const runwayMonths = avgMonthlyBurn > 0
+    ? Math.round((liquidReserves / avgMonthlyBurn) * 10) / 10
+    : 99.9;
+
+  const targetBuffer = Math.round(avgMonthlyBurn * 6);
+  const emergencyFundHealth = targetBuffer > 0
+    ? Math.min(100, Math.round((liquidReserves / targetBuffer) * 100))
+    : 100;
+
+  const runwayStatus: "optimal" | "adequate" | "caution" =
+    runwayMonths >= 6 ? "optimal" : runwayMonths >= 3 ? "adequate" : "caution";
+
+  const runway = {
+    liquidReserves,
+    avgMonthlyBurn,
+    runwayMonths,
+    targetBuffer,
+    emergencyFundHealth,
+    status: runwayStatus,
+  };
+
   return ok(res, {
     cards: {
       balance: { value: balance, change: pctChange(cmBalance, pmBalance) },
@@ -116,6 +151,7 @@ router.get("/", async (req, res) => {
       expenses: { value: cmExpenses, change: pctChange(cmExpenses, pmExpenses) },
       savings: { value: totalSavings, rate: savingsRate },
     },
+    runway,
     series,
     breakdown,
     budgets: budgetOverview,
