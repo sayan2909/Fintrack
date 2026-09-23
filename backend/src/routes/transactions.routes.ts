@@ -53,12 +53,16 @@ router.get("/", async (req, res) => {
     let filtered = all;
     if (search) {
       const s = search.toLowerCase();
+      const userAccs = await db.select().from(accounts).where(eq(accounts.userId, user.id));
+      const accMap = new Map(userAccs.map((a) => [a.id, (a.name || "").toLowerCase()]));
+
       filtered = all.filter(
         (t) =>
           (t.description || "").toLowerCase().includes(s) ||
           (t.categoryName || "").toLowerCase().includes(s) ||
           (t.notes || "").toLowerCase().includes(s) ||
-          (t.paymentMethod || "").toLowerCase().includes(s)
+          (t.paymentMethod || "").toLowerCase().includes(s) ||
+          (t.accountId && (accMap.get(t.accountId) || "").includes(s))
       );
     }
 
