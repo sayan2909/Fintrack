@@ -639,6 +639,7 @@ function TransactionsContent() {
                       const acc = accounts.find((a) => a.id === t.accountId);
                       const isInc = t.type === "income";
                       const isSelected = selectedIds.includes(t.id);
+                      const amtNum = parseFloat(t.amount || "0");
 
                       return (
                         <tr
@@ -1017,7 +1018,7 @@ function TransactionsContent() {
         onConfirm={handleBulkDelete}
         title={`Delete ${selectedIds.length} Transactions?`}
         message={`This will permanently remove ${selectedIds.length} selected transactions and restore their account balances. This action cannot be undone.`}
-        confirmLabel={bulkDeleting ? "Deleting..." : `Delete ${selectedIds.length} Transactions`}
+        confirmText={bulkDeleting ? "Deleting..." : `Delete ${selectedIds.length} Transactions`}
         danger
       />
 

@@ -105,6 +105,7 @@ export function ConfirmDialog({
   message,
   loading,
   confirmText = "Delete",
+  danger = true,
 }: {
   open: boolean;
   onClose: () => void;
@@ -113,6 +114,7 @@ export function ConfirmDialog({
   message: string;
   loading?: boolean;
   confirmText?: string;
+  danger?: boolean;
 }) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => e.key === "Escape" && onClose();

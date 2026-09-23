@@ -78,7 +78,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!loading && !user) router.replace("/");
+    if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
 
   useEffect(() => {
@@ -179,7 +179,19 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-  if (!user) return null;
+
+  if (!user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#0b0f19]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 animate-pulse">
+            <Wallet className="h-6 w-6" />
+          </div>
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   const linkCls = (href: string, isSidebarCollapsed: boolean) => {
     const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
