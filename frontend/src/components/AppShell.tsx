@@ -129,23 +129,28 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const linkCls = (href: string, isSidebarCollapsed: boolean) => {
     const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
-    return `flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-sm transition-all ${
+    return `flex items-center ${isSidebarCollapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3.5 py-2.5"} rounded-xl text-sm transition-all duration-150 ${
       isActive
-        ? "bg-indigo-600 text-white font-bold shadow-sm shadow-indigo-600/25 dark:bg-indigo-600 dark:text-white dark:shadow-indigo-600/20"
-        : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/80 dark:hover:text-white"
+        ? "bg-gradient-to-r from-indigo-600 to-indigo-600 text-white font-bold shadow-sm shadow-indigo-600/30 dark:from-indigo-600 dark:to-indigo-500"
+        : "font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white"
     }`;
   };
 
   const renderSidebar = (isSidebarCollapsed: boolean) => (
     <div className="flex h-full flex-col">
       <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "justify-between"} px-1 py-1`}>
-        <Link href="/dashboard" className="flex items-center gap-2.5" title="FinTrack Dashboard">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-500/25">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group" title="FinTrack Dashboard">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 text-white shadow-sm shadow-indigo-500/30 group-hover:scale-105 transition-transform">
             <Wallet className="h-5 w-5" />
           </div>
           {!isSidebarCollapsed && (
             <div>
-              <p className="text-base font-black tracking-tight text-slate-900 dark:text-white">FinTrack</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-base font-black tracking-tight text-slate-900 dark:text-white">FinTrack</p>
+                <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-bold text-indigo-600 border border-indigo-200/50 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20">
+                  PRO
+                </span>
+              </div>
               <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Take Control of Your Money</p>
             </div>
           )}
@@ -214,10 +219,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#eef2f6] text-slate-900 dark:bg-[#0b0f19] dark:text-slate-100 transition-colors">
+    <div className="min-h-screen text-slate-900 dark:text-slate-100 transition-colors">
       {/* Desktop sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white p-4 lg:block dark:border-slate-800/80 dark:bg-[#111827] z-40 shadow-xs ${
+        className={`fixed inset-y-0 left-0 hidden transition-all duration-300 border-r border-slate-200/80 bg-white/95 p-4 lg:block dark:border-slate-800/80 dark:bg-[#0c121e]/95 backdrop-blur-md z-40 shadow-xs ${
           collapsed ? "w-[72px]" : "w-[260px]"
         }`}
       >
@@ -228,7 +233,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-[280px] bg-white p-4 dark:bg-[#111827] shadow-2xl">
+          <div className="absolute inset-y-0 left-0 w-[280px] bg-white p-4 dark:bg-[#0c121e] shadow-2xl">
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute right-3 top-3 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
@@ -242,7 +247,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className={`transition-all duration-300 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[260px]"}`}>
         {/* Top navbar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-[#111827] shadow-2xs">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/80 dark:border-slate-800/80 dark:bg-[#0c121e]/80 backdrop-blur-md shadow-2xs">
           <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
             <button
               onClick={() => setMobileOpen(true)}
@@ -252,7 +257,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
 
             {/* Quick Search with shortcut */}
-            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/90 bg-slate-50/90 px-3 py-1.5 text-sm text-slate-600 md:flex dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-400 focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:ring-2 focus-within:ring-indigo-500/15 transition shadow-2xs">
+            <div className="hidden items-center gap-2 rounded-xl border border-slate-200/90 bg-slate-100/70 px-3 py-1.5 text-sm text-slate-600 md:flex dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400 focus-within:border-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:ring-2 focus-within:ring-indigo-500/15 transition shadow-2xs">
               <Search className="h-4 w-4 shrink-0 text-slate-400" />
               <input
                 ref={searchInputRef}

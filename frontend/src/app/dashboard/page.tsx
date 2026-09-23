@@ -225,14 +225,14 @@ export default function DashboardPage() {
               </h1>
 
               {/* Clean, Subtle Health Score */}
-              <div className="flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/90 px-3 py-1 text-xs shadow-2xs dark:border-slate-800 dark:bg-[#111827]">
+              <div className="flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/90 px-3 py-1 text-xs shadow-2xs dark:border-slate-800 dark:bg-[#0f172a] ring-1 ring-slate-200/50 dark:ring-slate-800/50">
                 <span
-                  className={`h-2 w-2 rounded-full ${
+                  className={`h-2 w-2 rounded-full animate-pulse ${
                     healthScore >= 70
-                      ? "bg-emerald-500"
+                      ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
                       : healthScore >= 40
-                      ? "bg-amber-500"
-                      : "bg-rose-500"
+                      ? "bg-amber-500 shadow-sm shadow-amber-500/50"
+                      : "bg-rose-500 shadow-sm shadow-rose-500/50"
                   }`}
                 />
                 <span className="text-slate-500 dark:text-slate-400 text-[11px] font-semibold">Health Score:</span>
@@ -356,16 +356,15 @@ export default function DashboardPage() {
           );
         })()}
 
-        {/* 4 Clean KPI Metric Cards */}
         {/* 4 Clean, Consistent KPI Metric Cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Card 1: Total Balance */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-indigo-500/30 dark:shadow-none">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Total Balance
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100/80 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400 shadow-2xs">
                 <Wallet className="h-4 w-4" />
               </div>
             </div>
@@ -391,12 +390,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 2: Income */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-emerald-500/30 dark:shadow-none">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Income
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100/80 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-400 shadow-2xs">
                 <TrendingUp className="h-4 w-4" />
               </div>
             </div>
@@ -407,12 +406,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 3: Expenses */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-rose-500/30 dark:shadow-none">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Monthly Expenses
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100/80 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-400 shadow-2xs">
                 <TrendingDown className="h-4 w-4" />
               </div>
             </div>
@@ -423,12 +422,12 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 4: Savings in Goals */}
-          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition hover:shadow-md hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none">
+          <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-slate-300 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-violet-500/30 dark:shadow-none">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Savings in Goals
               </span>
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-600 border border-violet-100/80 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-400 shadow-2xs">
                 <Target className="h-4 w-4" />
               </div>
             </div>
@@ -459,7 +458,7 @@ export default function DashboardPage() {
         {/* Charts Row */}
         <div className="grid gap-5 lg:grid-cols-3">
           {/* Income vs Expenses Area Chart */}
-          <div className="rounded-3xl border border-slate-200/80 bg-white/90 backdrop-blur-xl p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none lg:col-span-2">
+          <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-xl p-6 shadow-sm dark:border-slate-800/80 dark:bg-[#0f172a] lg:col-span-2">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">Income vs Expenses</h3>
@@ -534,7 +533,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Expense Breakdown Donut Chart */}
-          <div className="rounded-3xl border border-slate-200/80 bg-white/90 backdrop-blur-xl p-6 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-200/80 bg-white/95 backdrop-blur-xl p-6 shadow-sm dark:border-slate-800/80 dark:bg-[#0f172a] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
                 <div>

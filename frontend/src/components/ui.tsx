@@ -1,14 +1,14 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { Loader2, X, AlertTriangle } from "lucide-react";
+import { Loader2, X, AlertTriangle, CheckCircle2, AlertCircle, Info } from "lucide-react";
 
 // ---------- Card ----------
 export function Card({ children, className = "", onClick }: { children: ReactNode; className?: string; onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-2xl border border-slate-200/90 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.06),0_1px_2px_rgba(15,23,42,0.04)] transition-all hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] dark:border-slate-800/80 dark:bg-[#111827] dark:shadow-none ${className}`}
+      className={`rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(15,23,42,0.04),0_1px_2px_rgba(15,23,42,0.02)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(15,23,42,0.06)] hover:border-slate-300/90 dark:border-slate-800/80 dark:bg-[#0f172a] dark:hover:border-slate-700/80 dark:shadow-none ${className}`}
     >
       {children}
     </div>
@@ -35,20 +35,20 @@ export function Button({
 }) {
   const styles: Record<string, string> = {
     primary:
-      "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/20 font-semibold",
+      "bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-sm shadow-indigo-600/25 font-semibold",
     secondary:
-      "bg-slate-100 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 dark:border-slate-700/80 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 font-semibold",
+      "bg-slate-100 text-slate-800 hover:bg-slate-200/80 border border-slate-200/80 dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-100 dark:hover:bg-slate-700 font-semibold",
     ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 font-medium",
     danger: "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-600/20 font-semibold",
     outline:
-      "border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs dark:border-slate-700 dark:bg-transparent dark:text-slate-200 dark:hover:bg-slate-800/80 font-medium",
+      "border border-slate-200/90 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs dark:border-slate-700/80 dark:bg-slate-900/40 dark:text-slate-200 dark:hover:bg-slate-800/80 font-medium",
   };
   return (
     <button
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer ${styles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm transition-all duration-150 active:scale-[0.98] hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 cursor-pointer ${styles[variant]} ${className}`}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
@@ -68,7 +68,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition hover:bg-white focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:bg-slate-800 dark:focus:bg-slate-800 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/30";
+  "w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition duration-150 hover:bg-white focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:bg-slate-800 dark:focus:bg-slate-850 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/30";
 
 // ---------- Modal ----------
 export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean }) {
@@ -82,11 +82,11 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`animate-fade-up w-full ${wide ? "max-w-2xl" : "max-w-lg"} max-h-[92vh] overflow-y-auto rounded-t-3xl border border-slate-200/80 bg-white p-6 shadow-2xl sm:rounded-3xl dark:border-slate-800 dark:bg-[#111827]`}
+        className={`animate-fade-up w-full ${wide ? "max-w-2xl" : "max-w-lg"} max-h-[92vh] overflow-y-auto rounded-t-3xl border border-slate-200/80 bg-white p-6 shadow-2xl sm:rounded-3xl dark:border-slate-800 dark:bg-[#0f172a]`}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800/80">
           <h3 className="text-lg font-bold text-slate-900 dark:text-white">{title}</h3>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
+          <button onClick={onClose} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -129,7 +129,7 @@ export function ConfirmDialog({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md animate-in fade-in zoom-in-95 duration-150 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-[#111827]"
+        className="w-full max-w-md animate-in fade-in zoom-in-95 duration-150 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-[#0f172a]"
       >
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400 ring-1 ring-rose-500/25">
@@ -251,11 +251,22 @@ export function ToastHost() {
       {items.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium shadow-xl backdrop-blur ${
-            t.kind === "success" ? "bg-emerald-600 text-white" : t.kind === "error" ? "bg-rose-600 text-white" : "bg-slate-900 text-white dark:bg-white dark:text-slate-900"
+          className={`pointer-events-auto flex items-center gap-2.5 rounded-2xl px-4 py-3 text-sm font-semibold shadow-2xl backdrop-blur-md animate-fade-up border ${
+            t.kind === "success"
+              ? "bg-emerald-950/90 text-emerald-100 border-emerald-800/60 dark:bg-emerald-950/90 dark:text-emerald-200"
+              : t.kind === "error"
+              ? "bg-rose-950/90 text-rose-100 border-rose-800/60 dark:bg-rose-950/90 dark:text-rose-200"
+              : "bg-slate-900/90 text-white border-slate-700/60 dark:bg-slate-800/90"
           }`}
         >
-          {t.message}
+          {t.kind === "success" ? (
+            <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+          ) : t.kind === "error" ? (
+            <AlertCircle className="h-4 w-4 text-rose-400 shrink-0" />
+          ) : (
+            <Info className="h-4 w-4 text-indigo-400 shrink-0" />
+          )}
+          <span className="flex-1">{t.message}</span>
         </div>
       ))}
     </div>
